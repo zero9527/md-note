@@ -1,0 +1,30 @@
+{
+  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts",
+      "coverage/lcov-report/*.js"
+    ]
+  },
+  "rules": {
+    "no-debugger": false,
+    "no-console": false,
+    //声明interface是否需要首字母为大写的I
+    "interface-name": false,
+    //需要按字母顺序引入模块
+    "ordered-imports": false,
+    "object-literal-sort-keys": false,
+    // jsx中匿名函数
+    "jsx-no-lambda": false
+  },
+  "jsRules": {
+    "no-debugger": false,
+    "no-console": false,
+    //声明interface是否需要首字母为大写的I
+    "interface-name": false,
+    //需要按字母顺序引入模块
+    "ordered-imports": false,
+    "object-literal-sort-keys": false
+  }
+}
