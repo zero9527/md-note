@@ -7,23 +7,24 @@ interface Props {
   [prop: string]: any
 }
 
-class App extends React.Component<Props> {
+class App extends React.Component<Props, {}> {
   constructor(props: Props) {
     super(props);
+
+    this.state = {};
   }
-  
+
   public render() {
+    const { history, location } = this.props;
     return (
-      <div>
+      <div style={{display: location.pathname === '/' ? '' : 'none'}}>
         <p>这是app</p>
         <p>
-          <a 
-            href="javascript:;" 
-            onClick={() => this.props.history.push('/hello')}
-          >
+          <a href="javascript:;" onClick={() => history.push('/hello')}>
             go hello
           </a>
         </p>
+        <hr />
       </div>
     );
   }

@@ -8,7 +8,6 @@ interface Props {
 class ErrComp extends React.Component<Props> {
   constructor(props: Props)   {
     super(props);
-    console.log('ErrComp');
   }
 
   public render() {
