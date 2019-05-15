@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@loadable/component": "^5.10.1",
     "@types/history": "^4.7.2",
     "@types/react-redux": "^7.0.6",
     "@types/react-router-dom": "^4.3.1",

@@ -1,4 +1,5 @@
 import * as React from 'react';
+// import {  withRouter } from 'react-router';
 
 function Hello(props: any) {
   return (
@@ -16,4 +17,7 @@ function Hello(props: any) {
   );
 }
 
+// const HelloWithRouter = withRouter(Hello as any);
+
+// export default HelloWithRouter;
 export default Hello;

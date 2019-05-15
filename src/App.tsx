@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './App.css';
 // import logo from './logo.svg';
+// import {  withRouter } from 'react-router';
 
 interface Props {
   [prop: string]: any
@@ -28,4 +29,7 @@ class App extends React.Component<Props> {
   }
 }
 
+// const AppWithRouter = withRouter(App as any);
+
+// export default AppWithRouter;
 export default App;

@@ -1,13 +1,12 @@
 import { Route } from 'react-router-dom';
 import * as React from 'react';
-import Hello from '../views/Hello';
+import Loadable from '@loadable/component';
 
 export default (
   <Route 
     key="hello" 
     exact={true} 
     path="/hello" 
-    // component={React.lazy(() => import('../views/Hello'))} 
-    component={Hello} 
+    component={Loadable(() => import('../views/Hello'))} 
   />
 )
