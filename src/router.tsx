@@ -10,20 +10,27 @@ const ErrComp = Loadable(() => import('./views/ErrComp/index'));
 
 // 生成 路由集合
 const GetRoutes = () => {
+  const AppRoute = 
+    <Route 
+      key='app' 
+      path='/' 
+      exact={true}
+      component={App} 
+    />;
   const ErrRoute = 
     <Route 
-    key='err404' 
-    exact={true} 
-    path='/err404' 
-    component={ErrComp} 
+      key='err404' 
+      exact={true} 
+      path='/err404' 
+      component={ErrComp} 
     />;
   const NoMatchRoute = 
     <Route 
-    key='no-match' 
-    component={ErrComp} 
+      key='no-match' 
+      component={ErrComp} 
     />;
   
-  const routes = [...PageRoutes, ErrRoute, NoMatchRoute];
+  const routes = [AppRoute, ...PageRoutes, ErrRoute, NoMatchRoute];
   
   return (
     <Switch>
@@ -34,21 +41,9 @@ const GetRoutes = () => {
 
 // console.log('GetRoutes: ', GetRoutes());
 
-// 这里 AppRoute单独渲染，匹配所有路由；
-const AppRoute = () => {
-  return (
-    <Route 
-      key='app' 
-      path='/' 
-      component={App} 
-    />
-  );
-}
-
 export default function Routes() {
   return (
     <HashRouter>
-      <AppRoute />
       <GetRoutes />
     </HashRouter>
   );

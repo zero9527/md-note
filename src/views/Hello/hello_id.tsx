@@ -3,7 +3,7 @@ import * as React from 'react';
 function HelloId(props: any) {
   return (
     <div>
-      <p>Hello_{props.match.params.id}!</p>
+      <p>path: {props.match.path}!</p>
       <p>
         <a 
           href="javascript:;" 
