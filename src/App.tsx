@@ -1,7 +1,7 @@
 import * as React from 'react';
+import Hello from './components/Hello';
 import './App.css';
 // import logo from './logo.svg';
-// import {  withRouter } from 'react-router';
 
 interface Props {
   [prop: string]: any
@@ -25,12 +25,10 @@ class App extends React.Component<Props, {}> {
           </a>
         </p>
         <hr />
+        <Hello from="App" />
       </div>
     );
   }
 }
 
-// const AppWithRouter = withRouter(App as any);
-
-// export default AppWithRouter;
 export default App;

@@ -1,16 +1,18 @@
 import * as React from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-// 接口 interface 以大写 I 开头
-export interface IProps {
-  name: string;
+export interface Props {
+  from?: string;
 }
 
-export interface IStates {
+export interface States {
   times: number;
 }
 
-class Hello extends React.Component<IProps, IStates> {
-  constructor(props: IProps) {
+type thisProps = Props & RouteComponentProps;
+
+class Hello extends React.Component<thisProps, States> {
+  constructor(props: thisProps) {
     super(props);
 
     this.state = {
@@ -28,12 +30,12 @@ class Hello extends React.Component<IProps, IStates> {
 
   // 方法名 需要添加 public/ private / protected
   public render() {
-    const { name } = this.props;
+    const { from } = this.props;
     const { times } = this.state;
 
     return (
       <div>
-        <h4>Hello { name }</h4>
+        <h4>Hello { from }</h4>
         点击了 {times}
         <p>
           <button onClick={this.bclick}>点击</button>
@@ -43,4 +45,4 @@ class Hello extends React.Component<IProps, IStates> {
   }
 }
 
-export default Hello;
+export default withRouter<thisProps>(Hello as any);
