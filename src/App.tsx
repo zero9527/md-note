@@ -1,5 +1,6 @@
 import * as React from 'react';
-import Hello from './components/Hello';
+// import Hello from '@/components/Hello';
+import ProdDetail from '@/views/prod-detail/index'
 import './App.css';
 // import logo from './logo.svg';
 
@@ -25,7 +26,8 @@ class App extends React.Component<Props, {}> {
           </a>
         </p>
         <hr />
-        <Hello from="App" />
+        {/* <Hello from="App" /> */}
+        <ProdDetail text={"产品详情"} />
       </div>
     );
   }

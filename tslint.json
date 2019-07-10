@@ -16,7 +16,8 @@
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     // jsx中匿名函数
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "no-implicit-dependencies": ["optional", ["src"]]
   },
   "jsRules": {
     "no-debugger": false,

@@ -41,7 +41,7 @@ const GetRoutes = () => {
 
 // console.log('GetRoutes: ', GetRoutes());
 
-export default function Routes() {
+export default function Router() {
   return (
     <HashRouter>
       <GetRoutes />
