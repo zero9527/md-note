@@ -8,6 +8,7 @@
     ]
   },
   "rules": {
+    "curly": false, //true: for if do while 要有括号
     "no-debugger": false,
     "no-console": false,
     //声明interface是否需要首字母为大写的I

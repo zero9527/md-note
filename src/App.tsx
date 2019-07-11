@@ -19,7 +19,7 @@ class App extends React.Component<Props, {}> {
     const { history, location } = this.props;
     return (
       <div style={{display: location.pathname === '/' ? '' : 'none'}}>
-        <p>这是app</p>
+        <p>Hi App!</p>
         <p>
           <a href="javascript:;" onClick={() => history.push('/hello')}>
             go hello
@@ -27,7 +27,7 @@ class App extends React.Component<Props, {}> {
         </p>
         <hr />
         {/* <Hello from="App" /> */}
-        <ProdDetail text={"产品详情"} />
+        <ProdDetail text={"日历"} />
       </div>
     );
   }

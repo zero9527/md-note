@@ -1,4 +1,3 @@
-
 interface DateFormateParams {
   timeStamp: number,
   splitChar?: string // 日期分隔符
@@ -24,4 +23,41 @@ interface Params {
 }
 export function combine({name, age}: Params = {name: '小明', age: 13}) {
   return `${name}今年${age}岁了`
+}
+
+// H5窗口通知
+export function NoticeU():void {
+  if ('Notification' in window) {
+    if (Notification.permission === 'granted') {
+      noticeFn();
+    } else if (Notification.permission === 'default') {
+      requestPermission();
+    } else if (Notification.permission === 'denied') {
+      console.warn('拒绝通知！');
+    }
+
+  } else {
+    console.log('浏览器不支持Notification!');
+  }
+
+  function noticeFn():void {
+    const notice = new Notification('提示', {
+      body: '你要的额都在这里！',
+      icon: 'img/store-bg.png'
+    });
+    notice.onclick = () => {
+      console.log('点击了通知！')
+    }
+  }
+  
+  function requestPermission():void {
+    Notification.requestPermission()
+    .then((permission) => {
+      if (permission === 'granted') {
+        noticeFn();
+      } else if (permission === 'denied') {
+        console.warn('拒绝通知！');
+      }
+    })
+  }
 }
