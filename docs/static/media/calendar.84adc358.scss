@@ -1,0 +1,84 @@
+$theme-color: lightcoral;
+.calendar {
+  position: relative;
+  padding: 20px 4px;
+  color: #2b2b2b;
+  margin-top: attr(data-px);
+  &::before {
+    content: attr(data-month);
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #f1f1f1;
+    font-size: 70px;
+    z-index: -1;
+  }
+}
+.year-month {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  &>div {
+    flex: 2;
+  }
+  &>span {
+    flex: 1;
+  }
+}
+.weekday {
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px 0;
+  color: #999;
+  &>div {
+    flex: 1;
+    text-align: center;
+  }
+  .weekend {
+    color: $theme-color;
+  }
+}
+.week-item {
+  display: flex;
+  justify-content: flex-start;
+}
+.date-item {
+  flex: 1;
+  // width: 30px;
+  // height: 30px;
+  padding: 12px 0;
+  text-align: center;
+}
+.is-today {
+  font-size: 80%;
+  &::before {
+    background: $theme-color;
+    opacity: .5;
+  }
+}
+.active-date {
+  &::before {
+    opacity: 1;
+  }
+}
+.is-today,
+.active-date {
+  position: relative;
+  color: #fff;
+  &::before {
+    content: '';
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    border-radius: 40px;
+    background: linear-gradient(-45deg, #f1a884, $theme-color);
+    box-shadow: 0 1px 6px -1px $theme-color;
+    z-index: -1;
+  }
+}
