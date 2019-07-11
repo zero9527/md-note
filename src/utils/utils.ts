@@ -34,6 +34,7 @@ export function NoticeU():void {
       requestPermission();
     } else if (Notification.permission === 'denied') {
       console.warn('拒绝通知！');
+      requestPermission();
     }
 
   } else {
@@ -57,6 +58,7 @@ export function NoticeU():void {
         noticeFn();
       } else if (permission === 'denied') {
         console.warn('拒绝通知！');
+        requestPermission();
       }
     })
   }

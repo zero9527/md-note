@@ -25,6 +25,11 @@ class App extends React.Component<Props, {}> {
             go hello
           </a>
         </p>
+        <p>
+          <a href="javascript:;" onClick={() => history.push('/calculator')}>
+            go calculator
+          </a>
+        </p>
         <hr />
         {/* <Hello from="App" /> */}
         <ProdDetail text={"日历"} />

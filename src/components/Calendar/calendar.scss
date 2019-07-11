@@ -22,9 +22,15 @@ $theme-color: lightcoral;
   text-align: center;
   &>div {
     flex: 2;
+    &:active {
+      background: #fafafa;
+    }
   }
   &>span {
     flex: 1;
+    &:active {
+      background: #fafafa;
+    }
   }
 }
 .weekday {
