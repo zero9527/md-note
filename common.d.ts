@@ -12,3 +12,4 @@ declare module '*.scss' {
 }
 
 declare module '@loadable/component';
+declare module 'vconsole';

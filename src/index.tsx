@@ -3,6 +3,9 @@ import * as ReactDOM from 'react-dom';
 import Routes from './router';
 import './index.css';
 // import registerServiceWorker from './registerServiceWorker'; 
+import VConsole from 'vconsole'
+const vconsole = new VConsole();
+console.log('vconsole: ',vconsole);
 
 const Loading = () => <div>loading...</div>;
 
