@@ -1,0 +1,2 @@
+webpackJsonp([3],{54:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var l=n(0);n.n(l);t.default=function(e){return l.createElement("div",null,l.createElement("p",null,"Hello World!"),l.createElement("p",null,l.createElement("a",{href:"javascript:;",onClick:function(){return e.history.push("/")}},"to App")))}}});
+//# sourceMappingURL=3.e685087a.chunk.js.map

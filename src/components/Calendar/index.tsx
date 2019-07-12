@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { NoticeU, dateFormate } from '@/utils/utils'
+import { dateFormate } from '@/utils/utils'
 import { generateCalendar, getDateFormat, IValidDate } from './func'
 import style from './calendar.scss';
 
@@ -23,7 +23,7 @@ function Calendar(params: ICalendarParams) {
   );
   
   useEffect(() => {
-    NoticeU();
+    // NoticeU();
     setMonthDay(generateCalendar(params))
   }, []);
 
