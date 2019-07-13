@@ -13,9 +13,8 @@ function Caculator() {
   const [showHistory, setShowHistory] = useState(false);
   const [calcHistory, setCalcHistory] =  useState(['']); // 计算历史记录
   const [show, setShow] = useState([{ type: '', label: '0' }]); // 表达式
-  const [result, setResult] = useState(0);
+  const [result, setResult] = useState(0); // 显示结果
   const [clearTag, setClearTag] = useState(false); // 点击等号后，初始化
-  const [text, setText] = useState('简易计算器提示');
   const numList:string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   const btnList:Ibtn[][] = [
     [{ type: 'residue', label: '%'}, { type: 'sqrt', label: '√' }, { type: 'square', label: 'x²' }, { type: 'fraction-of', label: '¹/x' }],
@@ -28,50 +27,65 @@ function Caculator() {
 
   useEffect(() => {
     // console.log('load');
-    setText('简易计算器提示');
   }, []);
 
   useMemo(() => {
     console.log('show: ', JSON.stringify(show));
   }, [show]);
 
-  // const showHistory = useMemo(() => {
-  //   return calcHistory.length > 0
-  // }, [result]);
-
   // 点击按钮
-  function btnClick(btn: Ibtn) {
+  async function btnClick(btn: Ibtn) {
     // console.log('btn: ', btn);
     let tempShow = show;
+    // 加减乘除 求余数
     const charList = ['add', 'minus', 'mul', 'divide', 'residue'];
+    // 平方根，平方数，几分之一
+    const oneCharList = ['sqrt', 'square', 'fraction-of'];
 
-    // 下面三个有bug
-    // 平方根
-    if (btn.type === 'sqrt' && show[0].label !== '') {
-      debugger
-      setResult(Math.sqrt(+show[0].label));
-      setShow([{ type: '', label: `${Math.sqrt(+show[0].label)}` }]);
+    // 符号：平方根，平方数，几分之一
+    if (
+      oneCharList.includes(btn.type) && 
+      tempShow[0].label !== ''
+    ) {
+      // 最后一个是符号
+      if (tempShow[tempShow.length-1].type !== 'number') {
+        tempShow.pop();
+      }
+      // 计算结果
+      if (
+        tempShow[tempShow.length-1].type === 'number' &&
+        tempShow.find(item => item.type !== 'number')
+      ) {
+        const temp:Ibtn = getResult();
+        await setShow([temp]);
+      }
+      const { num0 } = divideNumberChar();
+
+      const operate = {
+        'sqrt': { // 平方根
+          result: Math.sqrt(+num0),
+          show: [{ type: 'number', label: `${Math.sqrt(+num0)}` }]
+        },
+        'square': { // 平方数
+          result: +num0 * +num0,
+          show: [{ type: 'number', label: `${+num0 * +num0}` }]
+        },
+        'fraction-of': { // 几分之一
+          result: 1 / (+num0),
+          show: [{ type: 'number', label: `${1 / (+num0)}` }]
+        }
+      }
+      setResult(operate[btn.type].result);
+      setShow(operate[btn.type].show);
     }
 
-    // 平方数
-    if (btn.type === 'square' && show[0].label !== '') {
-      debugger
-      setResult(+show[0].label * +show[0].label);
-      setShow([{ type: '', label: `${+show[0].label * +show[0].label}` }]);
-    }
-
-    // 几分之一
-    if (btn.type === 'fraction-of' && show[0].label !== '') {
-      debugger
-      setResult(1/(+show[0].label));
-      setShow([{ type: '', label: `${1/(+show[0].label)}` }]);
-    }
-
-    // 加减乘除，求余数
+    // 符号：加减乘除，求余数
     if (
       charList.includes(btn.type) && 
       tempShow[0].type === 'number'
     ) {
+      // 点击等号后，继续输入数字则重新运算，继续输入符号则保留上次运算结果
+      setClearTag(false);
       if (tempShow[show.length-1].type !== 'number') { // 上一次点的也是符号，则替换
         tempShow[show.length-1] = btn;
         setShow([...tempShow]);
@@ -80,9 +94,10 @@ function Caculator() {
         const temp:Ibtn = getResult();
         setShow([temp, btn]);
 
-      } else if (tempShow[show.length-1].label === '.') { // 上上一次点击是 '.'
+      } else if (tempShow[show.length-1].label === '.') { // 上一次点击是 '.'
         tempShow.pop();
         setShow([...tempShow]);
+
       } else {
         tempShow.push(btn);
         setShow([...show]);
@@ -105,6 +120,7 @@ function Caculator() {
 
     // 数字
     if (btn.type === 'number') {
+      // 点击等号后，继续输入数字则重新运算，继续输入符号则保留上次运算结果
       if (clearTag) {
         setResult(+btn.label);
         setShow([btn]);
@@ -120,7 +136,7 @@ function Caculator() {
       // 组成一个表达式
       if (
         tempShow.find(item => item.type !== 'number') &&
-        tempShow[show.length-1].type === 'number'
+        tempShow[tempShow.length-1].type === 'number'
       ) {
         getResult(false);
       }
@@ -128,23 +144,22 @@ function Caculator() {
 
     // 等号
     if (btn.type === 'equal') {
+      if (
+        tempShow[tempShow.length-1].type !== 'number' ||
+        !tempShow.find(item => item.type !== 'number')
+      ) {
+        return;
+      }
       getResult();
+      // 点击等号后，继续输入数字则重新运算，继续输入符号则保留上次运算结果
       setClearTag(true);
     }
   }
 
   // 计算结果
   function getResult(updateShow:boolean = true) {
-    const charIndex = show.findIndex(item => item.type !== 'number');
-    const num:string[][] = [
-      show.slice(0, charIndex).map(item => item.label), 
-      show.slice(charIndex+1, show.length).map(item => item.label)
-    ];
-    const char:Ibtn = show.slice(charIndex, charIndex+1)[0];
     let res:string|number = '';
-
-    const num0 = num[0].reduce((acc, cur) => acc+'' + cur+'', '');
-    const num1 = num[1].reduce((acc, cur) => acc+'' + cur+'', '');
+    const { num0, num1, char } = divideNumberChar();
 
     if (char.type === 'add') res = +num0 + +num1; // 加法
     if (char.type === 'minus') res = +num0 - +num1; // 减法
@@ -153,18 +168,59 @@ function Caculator() {
     if (char.type === 'residue') res = +num0 % +num1; // 求余数
     
     setResult(+res);
-    setCalcHistory([Date.now()+'']); // 历史纪录
     // 更新输入显示
     if (updateShow) {
       setShow([{
         type: 'number',
         label: res+''
       }]);
+
+      // 历史纪录
+      const temp = calcHistory;
+      const calcHis = show.map(item => item.label).join('');
+      temp.push(`${calcHis} = ${result}`);
+      setCalcHistory(temp);
     }
+
     return {
       type: 'number',
       label: res+''
     }
+  }
+
+  // 分离数字、符号
+  function divideNumberChar() {
+    // 符号
+    const charIndex = show.findIndex(item => item.type !== 'number');
+
+    if (charIndex >= 0 && charIndex !== show.length-1) { // 组成表达式
+      // 分离运算的两个数字
+      const num:string[][] = [
+        show.slice(0, charIndex).map(item => item.label), 
+        show.slice(charIndex+1, show.length).map(item => item.label)
+      ];
+      // 运算符
+      const char:Ibtn = show.slice(charIndex, charIndex+1)[0];
+
+      // 拼接两个数字
+      const num0 = num[0].reduce((acc, cur) => acc + cur, '');
+      const num1 = num[1].reduce((acc, cur) => acc + cur, '');
+
+      return { num0, num1, char };
+
+    } else if (charIndex < 0) { // 没有符号
+      // 拼接数字
+      const num0 = show.reduce((acc, cur) => acc + cur.label, '');
+      return { num0, num1: '', char:{ type: '', label: '0' } };
+
+    } else if (charIndex === show.length-1) { // 最后一个是符号
+      show.pop(); // 去掉符号
+      // 拼接数字
+      const num0 = show.reduce((acc, cur) => acc + cur.label, '');
+      return { num0, num1: '', char:{ type: '', label: '0' } };
+
+    }
+    return { num0: '', num1: '', char:{ type: 'number', label: '0' } };
   }
 
   return (
@@ -190,7 +246,7 @@ function Caculator() {
           }
         </div>
         <div className={style.result}>{ result }</div>
-        <div className={style.textinfo}>{ text }</div>
+        <div className={style.textinfo}>√，x²，¹/x：这几个请先输入数字再运算！</div>
       </section>
 
       {/* 输入历史纪录 */}
@@ -199,7 +255,9 @@ function Caculator() {
           <section className={style.history}>
             <div className={style['history-content']}>
               {
-                JSON.stringify(calcHistory)
+                calcHistory.map((item, index) => {
+                  return <div key={index}>{ item }</div>
+                })
               }
               <div className={style.close} onClick={() => setShowHistory(false)}>关闭</div>
             </div>
