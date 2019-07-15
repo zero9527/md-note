@@ -17,7 +17,7 @@ class App extends React.Component<Props, {}> {
   public render() {
     // const { history, location } = this.props;
     return (
-      <div style={{display: location.pathname === '/' ? '' : 'none'}}>
+      <div>
         <NoteList />
       </div>
     );
