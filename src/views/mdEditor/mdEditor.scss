@@ -1,0 +1,38 @@
+.editor {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  .title {
+    margin: 0;
+    padding: 16px 4px;
+    border-bottom: 1px solid #eee;
+    background: #fafafa;
+    >span {
+      color: #666;
+    }
+  }
+  .textarea {
+    width: 100%;
+    height: calc(100% - 130px);
+    padding: 6px 12px 6px 20px;
+    border: none;
+    outline: none;
+    box-sizing: border-box;
+    &:focus {
+      outline: 1px solid #2196f3;
+    }
+  }
+  // 光标位置
+  .cursor {
+    position: absolute;
+    left: 0;
+    z-index: 10;
+    color: #2196f3;
+  }
+  .cancel-edit {
+    position: absolute;
+    right: 10px;
+    top: 45px;
+  }
+}
