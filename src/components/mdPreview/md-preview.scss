@@ -16,25 +16,28 @@
     }
     pre {
       position: relative;
-      padding: 14px 6px;
+      padding: 18px 6px;
       border-radius: 2px;
       // background: #f1f1f1;
       color: #abb2bf;
       background: #282c34;
       overflow-x: auto;
+      transform: translatez(0);
       code {
         &::before { // 语言
           content: attr(class);
           width: 100%;
+          min-height: 18px;
           display: block;
           position: absolute;
+          // position: sticky; // html2canvas不支持
           left: 0;
-          margin-top: -14px;
+          margin-top: -18px;
           padding: 0 8px;
           text-align: left;
           border-radius: 6px;
           color: #666;
-          background: #292929;
+          background: #282c34;
           box-sizing: border-box;
         }
       }
@@ -76,12 +79,11 @@
     position: absolute;
     bottom: 80px;
     right: 10px;
-    margin: 4px 0;
   }
 }
 // 详情的样式
 .md-detail {
-  font-size: 90%;
+  font-size: 95%;
   .md-content {
     width: 100%;
     height: 100%;

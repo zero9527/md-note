@@ -4,17 +4,13 @@
   position: relative;
   overflow: hidden;
   .title {
-    margin: 0;
-    padding: 16px 4px;
-    border-bottom: 1px solid #eee;
-    background: #fafafa;
     >span {
       color: #666;
     }
   }
   .textarea {
     width: 100%;
-    height: calc(100% - 130px);
+    height: calc(100% - 94px);
     padding: 6px 12px 6px 20px;
     border: none;
     outline: none;

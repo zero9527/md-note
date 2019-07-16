@@ -15,14 +15,15 @@ import marked from 'marked';
 interface Props {
   isDetail?: boolean,
   isEdit?: boolean,
-  mdtext: string
+  mdtext: string,
+  onPreviewScroll?: (scrollTopRate: number) => void
 }
 interface State {
   previewVisible: boolean
 }
 
 // 使用marked.js+highlight.js的编辑器
-export default class MdPreview extends React.Component<Props, State> {
+class MdPreview extends React.Component<Props, State> {
   public readonly state:State = {
     previewVisible: false
   };
@@ -54,6 +55,19 @@ export default class MdPreview extends React.Component<Props, State> {
       xhtml: false
     });
   };
+  
+  public componentDidUpdate = () => {
+    let mdContent:any = document.querySelector(`.${styles['md-content']}`);
+    if (!mdContent) return;
+    mdContent.onscroll = (e: any) => this.MDPreviewScroll(e);
+  }
+
+  // preview 滚动
+  public MDPreviewScroll = (e: any) => {
+    const { target: {scrollTop, scrollHeight}} = e;
+    if (!this.props.onPreviewScroll) return;
+    this.props.onPreviewScroll(+(scrollTop/scrollHeight).toFixed(2));
+  }
 
   // 显示、关闭预览
   public previewHandler = () => {
@@ -65,13 +79,15 @@ export default class MdPreview extends React.Component<Props, State> {
   public render() {
     // props.isEdit：是否编辑
     // prop.isDetail：是否浏览详情
+    const { isEdit, isDetail } = this.props;
+    const { previewVisible } = this.state;
     return (
       <div
         className={`${styles['md-container']} ${
-          this.props.isEdit ? styles['md-preview'] : styles['md-detail']
+          isEdit ? styles['md-preview'] : styles['md-detail']
         }`}
       >
-        {(this.props.isDetail || this.state.previewVisible) && (
+        {(isDetail || previewVisible) && (
           <section
             data-text="注意：导出图片的效果可能会有出入！"
             className={styles['md-content']}
@@ -81,15 +97,17 @@ export default class MdPreview extends React.Component<Props, State> {
             }}
           />
         )}
-        {this.props.isEdit && (
+        {isEdit && (
           <button
             className={`btn ${styles['handle-btn']}`}
             onClick={this.previewHandler}
           >
-            {this.state.previewVisible ? '关闭预览' : '显示预览'}
+            {previewVisible ? '关闭预览' : '显示预览'}
           </button>
         )}
       </div>
     );
   }
 }
+
+export default MdPreview;

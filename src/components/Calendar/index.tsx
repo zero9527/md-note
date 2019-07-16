@@ -23,7 +23,6 @@ function Calendar(params: ICalendarParams) {
   );
   
   useEffect(() => {
-    // NoticeU();
     setMonthDay(generateCalendar(params))
   }, []);
 
@@ -116,7 +115,7 @@ function Calendar(params: ICalendarParams) {
                         className={
                           `${style["date-item"]} ${isToday(date) ? style['is-today'] : ''} ${IsActiveDate(date) ? style["active-date"] : ''}`
                         }
-                        onTouchStart={() => dateClick(date)}
+                        onClick={() => dateClick(date)}
                       >
                         <div>{ isToday(date) ? '今天' : date.date }</div>
                       </div>

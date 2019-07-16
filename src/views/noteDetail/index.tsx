@@ -1,7 +1,8 @@
 import * as React from 'react';
+import Loading from '@/components/loading';
 import MdPreview from '../../components/mdPreview';
 import Export from '../../components/export';
-import styles from './note-detail.scss';
+import style from './note-detail.scss';
 import { BrowserRouterProps } from 'react-router-dom';
 
 const mobileReg:RegExp = /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i;
@@ -35,7 +36,7 @@ export default class NoteDetail extends React.Component<Props, State> {
     setTimeout(() => {
       window.addEventListener('resize', this.resize);
     }, 0);
-    const localtext = localStorage.getItem('mdtext');
+    const localtext = localStorage.getItem(`mdtext_${this.props.match.params.id}`);
     if (localtext) {
       this.setState({
         mdtext: JSON.parse(localtext)
@@ -47,7 +48,7 @@ export default class NoteDetail extends React.Component<Props, State> {
         .then(res => res.text())
         .then(res => {
           if (res.substring(0, 20).includes('<!DOCTYPE html>')) return;
-          localStorage.setItem('mdtext', JSON.stringify(res));
+          localStorage.setItem(`mdtext_${this.props.match.params.id}`, JSON.stringify(res));
           this.setState({
             mdtext: res
           });
@@ -77,11 +78,12 @@ export default class NoteDetail extends React.Component<Props, State> {
     const { isMobile, btnPCSpace } = this.state;
     const { match: { params: {id}} } = this.props;
     return (
-      <div className={`center-content ${styles['note-detail']}`}>
-        <h4 className={styles.title}>查看详情</h4>
+      <div className={`center-content ${style['note-detail']}`}>
+        <h4 className={`border-1px-bottom title`}>查看详情</h4>
+        {!this.state.mdtext && <Loading />}
         {this.state.mdtext && <MdPreview isDetail={true} mdtext={this.state.mdtext} />}
         <button
-          className={`btn ${styles.edit}`}
+          className={`btn ${style.edit}`}
           style={{ right: isMobile ? '10px' : btnPCSpace }}
           onClick={() => this.props.history.push(`/md-editor/${id}`)}
         >

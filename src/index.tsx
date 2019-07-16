@@ -1,12 +1,13 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Routes from './router';
-import './index.css';
+import Loading from '@/components/loading';
+import './index.scss';
 // import registerServiceWorker from './registerServiceWorker'; 
-const Loading = () => <div>loading...</div>;
+// const Loading = () => <div>loading...</div>;
 
 ReactDOM.render(
-  <React.Suspense fallback={Loading}>
+  <React.Suspense fallback={<Loading />}>
     <Routes />
   </React.Suspense>,
   document.getElementById('root') as HTMLElement

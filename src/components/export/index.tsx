@@ -24,16 +24,15 @@ function Export(props: Props) {
     preview = document.querySelector('#md-content');
     // 获取 code 部分的最大宽度，防止导出图片时，横向滚动条的部分截断
     let codeContent = preview.querySelectorAll('pre>code');
-    let codeWidth = Array.from(codeContent).map((codeTag: HTMLPreElement) => codeTag.offsetWidth);
+    let codeWidth = Array.from(codeContent).map((codeTag: any) => codeTag.offsetWidth);
     maxCodeWidth = Math.max(...codeWidth);
     setOffsetW(maxCodeWidth);
     setOffsetH(preview.offsetHeight);
 
     exportfn('md');
-    setTimeout(() => exportfn('png'), 0);
 
     // 回调的函数会在 unmount 时执行
-    return () => console.log('Export unmount');
+    // return () => console.log('Export unmount');
   }, []);
 
   // 导出处理
@@ -48,6 +47,7 @@ function Export(props: Props) {
         scale: 1, // window.devicePixelRatio
         // 截取的window宽度，使得横向滚动条不出现，避免截取丢失滚动条之外的内容
         windowWidth: maxCodeWidth + 80,
+        width: maxCodeWidth + 80,
         useCORS: true // 图片跨域
       }).then((canvas) => {
         let temppng = canvas.toDataURL('image/png');
@@ -60,9 +60,10 @@ function Export(props: Props) {
       // let url = window.URL || window.webkitURL || window.mozURL;
       let md:string = localStorage.getItem('mdtext')!;
       let tempmd:Blob = new Blob([JSON.parse(md!)], {
-        type: 'application/markdown'
+        type: 'application/text'
       });
       setMdUrl(url.createObjectURL(tempmd));
+      setTimeout(() => exportfn('png'), 0);
     }
   };
 

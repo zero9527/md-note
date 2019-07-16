@@ -1,23 +1,21 @@
 import * as React from 'react';
 import MdPreview from '../../components/mdPreview';
-import MdToolBar, { ToolItem } from '@/components/mdToolbar';
+import MdToolBar, { IToolItem } from '@/components/mdToolbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFeatherAlt } from '@fortawesome/free-solid-svg-icons';
-import styles from './mdEditor.scss';
+import style from './mdEditor.scss';
+import { BrowserRouterProps } from 'react-router-dom';
 
-interface Props {
+interface Props extends BrowserRouterProps {
   [prop: string]: any
 }
 export interface State {
   mdtextRaw: string,
   mdtext: string,
   cursorPos: number, 
-  cursorHandTop: number
+  cursorHandTop: number,
 }
-// export interface IToolItem {
-//   key: string, 
-//   value: string
-// }
+let textarea: any;
 
 // 编辑器
 export default class MdEditor extends React.Component<Props, State> {
@@ -25,21 +23,27 @@ export default class MdEditor extends React.Component<Props, State> {
     mdtextRaw: '', // 原始的编辑数据
     mdtext: '', // 当前编辑数据
     cursorPos: 0, // 光标位置
-    cursorHandTop: 0 // 输入光标距顶部的距离
+    cursorHandTop: 0, // 输入光标距顶部的距离
   };
   constructor(props: Props) {
     super(props);
   }
 
   public componentDidMount = () => {
-    const localtext = localStorage.getItem('mdtext');
+    const localtext = localStorage.getItem(`mdtext_${this.props.match.params.id}`);
     if (localtext) {
       this.setState({
         mdtext: JSON.parse(localtext),
         mdtextRaw: JSON.parse(localtext)
+      }, () => {
+        setTimeout(() => {
+          textarea = document.querySelector(`.${style.textarea}`);
+        },0);
       });
     } else {
-      fetch('./promise_This_is.md')
+      // const filename = 'promise_This_is.md';
+      const filename = './uni-app_calendar.md';
+      fetch(filename)
         .then(res => res.text())
         .then(res => {
           this.setState({
@@ -48,6 +52,12 @@ export default class MdEditor extends React.Component<Props, State> {
         });
     }
   };
+
+  // preview 滚动
+  public onPreviewScroll = (scrollTopRate: number) => {
+    const { scrollHeight } = textarea;
+    textarea.scrollTop = scrollHeight * scrollTopRate;
+  }
 
   // 输入框获得焦点
   public textareaClick = (e: React.MouseEvent) => {
@@ -69,11 +79,11 @@ export default class MdEditor extends React.Component<Props, State> {
     this.setState({
       mdtext: text
     });
-    localStorage.setItem('mdtext', JSON.stringify(text));
+    localStorage.setItem(`mdtext_${this.props.match.params.id}`, JSON.stringify(text));
   };
 
   // 点击快捷栏 某一功能
-  public onToolbarClick = (toolItem: ToolItem) => {
+  public onToolbarClick = (toolItem: IToolItem) => {
     let { mdtext, cursorPos } = this.state;
     // 在当前光标位置插入快捷操作符
     mdtext =
@@ -86,7 +96,7 @@ export default class MdEditor extends React.Component<Props, State> {
     // 光标起始、结束位置
     let cursorPosStart:any;
     let cursorPosEnd:any;
-    const textarea: HTMLTextAreaElement|null = document.querySelector(`.${styles.textarea}`);
+    // const textarea: any = document.querySelector(`.${style.textarea}`);
     if (
       toolItem.key === 'precode' ||
       toolItem.key === 'code' ||
@@ -121,7 +131,7 @@ export default class MdEditor extends React.Component<Props, State> {
   public cancelEdit = () => {
     const confirm = window.confirm('确定取消吗？点击确定将不会保存！');
     if (!confirm) return;
-    localStorage.setItem('mdtext', JSON.stringify(this.state.mdtextRaw));
+    localStorage.setItem(`mdtext_${this.props.match.params.id}`, JSON.stringify(this.state.mdtextRaw));
     this.setState({
       mdtext: this.state.mdtextRaw
     });
@@ -129,33 +139,35 @@ export default class MdEditor extends React.Component<Props, State> {
 
   public render() {
     const { cursorHandTop } = this.state;
+    const { match } = this.props;
     return (
-      <div className={`center-content ${styles.editor}`}>
-        <h4 className={styles.title}>
-          编辑：<span>使用marked.js+highlight.js的编辑器</span>
+      <div className={`center-content ${style.editor}`}>
+        <h4 className={`border-1px-bottom title`}>
+          {match.path === '/note-add' ? '新增：' : '编辑：' }
+          <span>使用marked.js+highlight.js的编辑器</span>
         </h4>
         <textarea
           rows={20}
-          className={styles.textarea}
+          className={style.textarea}
           placeholder="输入内容，支持markdown语法"
           value={this.state.mdtext || ''}
           onClick={(e: React.MouseEvent) => this.textareaClick(e)}
           onChange={this.textareaChange}
           onBlur={this.textareaBlur}
         />
-        {cursorHandTop !== null && (
+        {cursorHandTop !== 0 && (
           <FontAwesomeIcon
             icon={faFeatherAlt}
-            className={styles.cursor}
+            className={style.cursor}
             style={{ top: cursorHandTop }}
           />
         )}
         {this.state.mdtext !== this.state.mdtextRaw && (
-          <button className={styles['cancel-edit']} onClick={this.cancelEdit}>
+          <button className={`btn ${style['cancel-edit']}`} onClick={this.cancelEdit}>
             退出编辑
           </button>
         )}
-        {this.state.mdtext && <MdPreview isEdit={true} mdtext={this.state.mdtext} />}
+        {this.state.mdtext && <MdPreview isEdit={true} mdtext={this.state.mdtext} onPreviewScroll={this.onPreviewScroll} />}
         <MdToolBar onToolbarClick={this.onToolbarClick} />
       </div>
     );

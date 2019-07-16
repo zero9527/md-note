@@ -24,12 +24,32 @@ function NoteList(props: Props) {
     list: [{ id: '', date: '', desc: '' }]}
   ];
   const [notelist, setNoteList] = useState(NoteType);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    import('./data.js').then(({ default: data }) => {
-      const templist:IMonthItem[] = data;
-      setNoteList(templist);
-    })
+    setTimeout(() => {
+      // 骨架屏
+      const skeletonlist:IMonthItem[] = [
+        {
+          month: '2019-01',
+          list: [
+            { id: 1, date: '2019-01-01', desc: 'lkklk89786876546' },
+            { id: 2, date: '2019-01-01', desc: 'lkklk89786876546lkklk89786876546lkklk89786876546' },
+            { id: 3, date: '2019-01-01', desc: 'lkklk89786876546' },
+            { id: 4, date: '2019-01-01', desc: 'lkklk89786876546' },
+            { id: 6, date: '2019-01-01', desc: 'lkklk89786876546' },
+            { id: 7, date: '2019-01-01', desc: 'lkklk89786876546' },
+            { id: 8, date: '2019-01-01', desc: 'lkklk89786876546' }
+          ]
+        }
+      ];
+      setNoteList(skeletonlist);
+      import('./data.js').then(({ default: data }) => {
+        const templist:IMonthItem[] = data;
+        setNoteList(templist);
+        setLoading(false);
+      })
+    }, 0);
   }, []);
 
   function toDetail(id: number|string) {
@@ -41,12 +61,12 @@ function NoteList(props: Props) {
 
   return (
     <div className={style['note-list']}>
-      <h4 className={style.title}>使用markdown语法的记事本</h4>
+      <h4 className={`border-1px-bottom title`}>使用markdown语法的记事本</h4>
       {notelist.map((monthitem, monthindex) => {
         return (
-          <section className={style['month-item']} key={monthindex}>
+          <section id={loading ? style.skeleton : ''} className={style['month-item']} key={monthindex}>
             <div className={style['item-month']}>
-              {monthitem.month.substring(2, monthitem.month.length)}
+              <span>{monthitem.month.substring(2, monthitem.month.length)}</span>
             </div>
             {monthitem.list.map((noteitem, noteindex) => {
               return (

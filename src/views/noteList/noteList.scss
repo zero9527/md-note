@@ -1,13 +1,6 @@
 .note-list {
   width: 100%;
   background: #fff;
-  .title {
-    padding: 10px 4px;
-    margin: 0;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    background: #fafafa;
-  }
   .add {
     width: 46px;
     height: 46px;
@@ -78,7 +71,30 @@
       }
     }
     .item-desc {
+      width: 100%;
       word-break: break-all;
     }
+  }
+}
+
+// 骨架屏
+$skeleton-bg: #eee;
+#skeleton {
+  .item-month>span,
+  .item-date,
+  .item-desc {
+    color: $skeleton-bg;
+    background: $skeleton-bg;
+    animation: loading .5s infinite alternate;
+  }
+}
+@keyframes loading {
+  from {
+    color: $skeleton-bg;
+    background: $skeleton-bg;
+  }
+  to {
+    color: #e9e9e9;
+    background: #e9e9e9;
   }
 }

@@ -13,12 +13,12 @@ import {
 import styles from './md-toolbar.scss';
 
 interface Props {
-  onToolbarClick(item: ToolItem): void
+  onToolbarClick(item: IToolItem): void
 }
 export interface State {
   [prop: string]: any
 }
-export interface ToolItem {
+export interface IToolItem {
   key: string,
   value: string,
   label: string,
@@ -33,12 +33,12 @@ export default class MdToolBar extends React.Component<Props, State> {
   }
 
   // 点击事件
-  public toolHandler = (item: ToolItem) => {
+  public toolHandler = (item: IToolItem) => {
     this.props.onToolbarClick(item);
   };
 
   public render() {
-    const toolbar:ToolItem[] = [
+    const toolbar:IToolItem[] = [
       {
         key: 'pic',
         value: '![图片加载失败显示的名称](图片地址)',
