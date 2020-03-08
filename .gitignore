@@ -10,9 +10,8 @@
 /build
 
 # 部署配置
-/scripts/deploy/config.json
-
-yarn.lock
+/scripts/deploy/deploy-config.json
+*.zip
 
 # misc
 .DS_Store

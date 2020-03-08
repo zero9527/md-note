@@ -44,6 +44,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
   }, []);
 
   useEffect(() => {
+    resize();
     function resize() {
       if (!btnShow && window.innerWidth >= 1100) {
         setBtnShow(true);
