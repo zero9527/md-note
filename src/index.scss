@@ -1,0 +1,105 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: #2b2b2b;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+h1 {
+  font-size: 1.5rem;
+}
+h2 {
+  padding-top: 10px;
+  font-size: 1.3rem;
+}
+h3 {
+  padding-top: 10px;
+  font-size: 1.1rem;
+}
+ul {
+  padding-left: 30px;
+}
+
+@media screen and (min-width: 800px) {
+  html,
+  body {
+    font-size: 15px;
+  }
+}
+
+:global {
+  #md-note {
+    height: 100%;
+  }
+
+  .link {
+    color: #2b2b2b;
+    text-decoration: none;
+  }
+
+  .btn {
+    padding: 4px 10px;
+    user-select: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fefefe;
+    cursor: pointer;
+    box-shadow: 1px 1px 6px -4px rgba(0, 0, 0, 0.8);
+
+    &:active {
+      outline: none;
+      background: #f1f1f1;
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .title {
+    margin: 0;
+    padding: 10px 12px;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    background: #fafafa;
+    white-space: nowrap;
+    z-index: 1;
+
+    > span {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .back {
+      padding: 0 4px;
+    }
+  }
+
+  .svg-inline--fa {
+    box-sizing: content-box;
+  }
+
+  .border-1px-bottom {
+    position: relative;
+    &::after {
+      content: '';
+      width: 100%;
+      height: 1px;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      background: #eee;
+      transform: scale(1, 0.5);
+    }
+  }
+
+  .center-content {
+    max-width: 1100px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
+}

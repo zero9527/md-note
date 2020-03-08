@@ -1,0 +1,48 @@
+.md-toolbar {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 0 10px;
+  color: #666;
+  font-weight: bold;
+  background: #fff;
+  border-top: 1px solid #eee;
+  user-select: none;
+  white-space: nowrap;
+  overflow-x: auto;
+  z-index: 10;
+
+  .tool-item {
+    position: relative;
+    display: inline-block;
+    padding: 12px 10px;
+    &:not(:last-of-type) {
+      margin-right: 10px;
+    }
+    &:hover {
+      color: #8bb9df;
+      cursor: pointer;
+    }
+    &:active {
+      color: #1272c0;
+      &::before {
+        content: attr(title);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        margin: auto 0;
+        color: #999;
+        font-size: 12px;
+        text-align: center;
+      }
+    }
+  }
+
+  .codebg {
+    padding: 0 4px;
+    border-radius: 2px;
+    background: #f1f1f1;
+  }
+}

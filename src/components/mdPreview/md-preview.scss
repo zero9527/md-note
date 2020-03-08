@@ -1,0 +1,185 @@
+.md-container {
+  .md-content {
+    position: relative;
+    padding: 10px 16px;
+    // color: #eee;
+    // background: #333;
+    background: #fefefe;
+    &::before {
+      content: attr(data-text);
+      position: absolute;
+      top: 2px;
+      left: 10px;
+      color: #ccc;
+      font-size: 12px;
+    }
+
+    // 代码段
+    li > code,
+    p > code {
+      padding: 0 2px;
+      color: $theme-color;
+      background: #f6f6f6;
+    }
+
+    pre {
+      position: relative;
+      padding: 18px 6px;
+      border-radius: 2px;
+      color: #555;
+      background: #f6f6f6;
+      // color: #abb2bf;
+      // background: #282c34;
+      overflow-x: auto;
+      transform: translatez(0);
+
+      code {
+        background: transparent;
+        &::before {
+          // 语言
+          content: attr(class);
+          width: 100%;
+          min-height: 18px;
+          display: block;
+          position: absolute;
+          left: 0;
+          margin-top: -18px;
+          padding: 0 8px;
+          text-align: left;
+          border-radius: 6px;
+          // color: #666;
+          color: #ccc;
+          background: #f6f6f6;
+          // background: #282c34;
+          font-size: 90%;
+        }
+      }
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      // max-height: 400px;
+    }
+
+    // 这段抄掘金的
+    blockquote {
+      color: #666;
+      padding: 1px 23px;
+      margin: 22px 0;
+      border-left: 4px solid #cbcbcb;
+      background-color: #f8f8f8;
+    }
+
+    table {
+      margin: 10px 0;
+      border-collapse: collapse;
+
+      thead {
+        background: #f1f1f1;
+      }
+
+      td,
+      th {
+        padding: 2px 4px;
+        border: 1px solid #ccc;
+      }
+    }
+  }
+}
+
+// 详情的样式
+.md-detail {
+  width: 100%;
+  min-height: 100%;
+  border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
+
+  .md-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    margin-top: -20px;
+  }
+}
+
+// 预览的样式
+.md-preview {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  font-size: 85%;
+  transform: translate3d(0, 0, 0);
+  will-change: contents;
+  z-index: 999;
+
+  .drag {
+    width: 36px;
+    height: 36px;
+    position: relative;
+    left: 50%;
+    margin-left: -18px;
+    border-radius: 50%;
+  }
+
+  .md-content {
+    width: 60vmin;
+    height: 60vh;
+    margin: 5px 0;
+    border-radius: 4px;
+    box-shadow: -1px 1px 4px rgba(150, 150, 150, 0.6);
+    overflow: auto;
+  }
+
+  :global {
+    .change-size {
+      padding: 0 8px;
+      position: absolute;
+      margin-left: -14px;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+
+      &::before {
+        content: '';
+        width: 3px;
+        height: 40px;
+        display: block;
+        background: #999;
+        box-shadow: 0 0 2px rgba(250, 250, 250, 0.8);
+      }
+    }
+
+    .change-size-bottom {
+      margin-left: 0;
+      margin-top: -9px;
+      top: calc(100% - 30px);
+      left: 50%;
+      padding: 8px 0;
+      transform: translateX(-50%);
+
+      &::before {
+        width: 40px;
+        height: 3px;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .md-detail {
+    max-width: 800px;
+  }
+
+  :global {
+    .title {
+      width: 800px;
+    }
+  }
+}
+
+@media screen and (max-width: 1099px) {
+  .md-detail {
+    max-width: 1100px;
+  }
+}
