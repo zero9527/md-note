@@ -22,19 +22,10 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
   const [isExportMd, setIsExportMd] = useState(false);
   const preview = useRef<HTMLDivElement | null>();
   const previewDefaultWidth = useRef<number>();
-  const maxCodeWidth = useRef<number>(0);
 
   useEffect(() => {
     // 显示的内容
     preview.current = document.querySelector<HTMLDivElement>('#md-content');
-    // 获取 code 部分的最大宽度，防止导出图片时，横向滚动条的部分截断
-    let codeContent = preview.current?.querySelectorAll('pre>code');
-    if (codeContent) {
-      let codeWidth = Array.from(codeContent).map(
-        (codeTag: any) => codeTag.offsetWidth
-      );
-      maxCodeWidth.current = Math.max(...codeWidth);
-    }
     previewDefaultWidth.current = preview.current!.offsetWidth;
 
     const fileName = mdtext.substring(0, mdtext.indexOf('\n')).split('# ')[1];
@@ -85,7 +76,16 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
     if (isExportImg) return;
     setIsExportImg(true);
 
-    const width = maxCodeWidth.current + 80;
+    let maxCodeWidth = 0;
+    // 获取 code 部分的最大宽度，防止导出图片时，横向滚动条的部分截断
+    let codeContent = preview.current?.querySelectorAll('pre>code');
+    if (codeContent) {
+      let codeWidth = Array.from(codeContent).map(
+        (codeTag: any) => codeTag.offsetWidth
+      );
+      maxCodeWidth = Math.max(...codeWidth);
+    }
+    const width = maxCodeWidth + 80;
     // 避免导出图片截断/大片空白等问题
     if (width > preview.current!.offsetWidth) {
       preview.current!.style.width = width + 'px';
@@ -99,8 +99,6 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         y: 0,
         width,
         height,
-        // 截取的window宽度，使得横向滚动条不出现，避免截取丢失滚动条之外的内容
-        windowWidth: width,
         useCORS: true // 图片跨域
       }).then(canvas => {
         let temppng: any = canvas.toDataURL('image/png');

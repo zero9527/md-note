@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import marked from 'marked';
-import hljs from 'highlight.js/lib/highlight';
-import javascript from 'highlight.js/lib/languages/javascript';
-import less from 'highlight.js/lib/languages/less';
-import xml from 'highlight.js/lib/languages/xml';
-// import 'highlight.js/styles/atom-one-dark.css';
-// import 'highlight.js/styles/googlecode.css';
-// import 'highlight.js/styles/github.css';
-import 'highlight.js/styles/darcula.css';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/atom-one-dark.css';
+// import 'highlight.js/styles/an-old-hope.css';
+// import 'highlight.js/styles/docco.css';
+// import 'highlight.js/styles/monokai.css';
 import MoveBtn, { PosParam } from './moveBtn';
 import styles from './md-preview.scss';
 
@@ -58,19 +55,17 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     // 设置图片，导出图片需要
     renderer.image = function(href: string, title: string, text: string) {
       return `<img src="${href}" title="${title ||
-        text}" alt="${text}" style="max-height: 700px; display: inherit; margin: auto;" />`;
-    };
-
-    const highlight = (code: string) => {
-      hljs.registerLanguage('javascript', javascript);
-      hljs.registerLanguage('less', less);
-      hljs.registerLanguage('xml', xml);
-      return hljs.highlightAuto(code).value;
+        text}" alt="${text}" style="max-width: 600px; display: inherit; margin: auto;" />`;
     };
 
     marked.setOptions({
       renderer,
-      highlight,
+      highlight: function(code: string, language: string) {
+        const validLanguage = hljs.getLanguage(language)
+          ? language
+          : 'plaintext';
+        return hljs.highlight(validLanguage, code, true).value;
+      },
       langPrefix: '',
       pedantic: false,
       gfm: true,

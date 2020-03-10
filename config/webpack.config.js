@@ -199,6 +199,15 @@ module.exports = function(webpackEnv) {
       // module chunks which are built will work in web workers as well.
       globalObject: 'this'
     },
+    externals: isEnvProduction
+      ? {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+          'react-router': 'ReactRouter',
+          marked: 'marked',
+          'hightlight.js': 'hljs'
+        }
+      : {},
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
@@ -267,7 +276,7 @@ module.exports = function(webpackEnv) {
       // https://twitter.com/wSokra/status/969633336732905474
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
-        chunks: 'all',
+        chunks: 'async',
         name: false
       },
       // Keep the runtime chunk separated to enable long term caching
@@ -440,7 +449,7 @@ module.exports = function(webpackEnv) {
             // By default we support CSS Modules with the extension .module.css
             {
               test: cssRegex,
-              exclude: /node_modules/,
+              exclude: cssModuleRegex,
               use: getStyleLoaders({
                 importLoaders: 1,
                 sourceMap: isEnvProduction && shouldUseSourceMap
@@ -456,7 +465,7 @@ module.exports = function(webpackEnv) {
             // extensions .module.scss or .module.sass
             {
               test: sassRegex,
-              exclude: /node_modules/,
+              exclude: sassModuleRegex,
               use: getStyleLoaders(
                 {
                   importLoaders: 3,
@@ -465,15 +474,7 @@ module.exports = function(webpackEnv) {
                     getLocalIdent: getCSSModuleLocalIdent
                   }
                 },
-                'sass-loader',
-                {
-                  loader: 'sass-resources-loader',
-                  options: {
-                    resources: [
-                      path.resolve(__dirname, './../src/utils/theme.scss')
-                    ]
-                  }
-                }
+                'sass-loader'
               ),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
@@ -510,7 +511,10 @@ module.exports = function(webpackEnv) {
           {},
           {
             inject: true,
-            template: paths.appHtml
+            template: paths.appHtml,
+            templateParameters: {
+              isEnvProduction
+            }
           },
           isEnvProduction
             ? {

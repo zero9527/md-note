@@ -12,7 +12,7 @@ const deploy = require('./deploy');
 
 /* =================== 0、获取配置 =================== */
 function getConfig() {
-  let config = fs.readFileSync(path.resolve(__dirname, './config.json'));
+  let config = fs.readFileSync(path.resolve(__dirname, './deploy-config.json'));
   if (config) config = JSON.parse(config);
   else {
     textError('config.json不存在或配置不正确！');
