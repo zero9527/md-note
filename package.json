@@ -8,6 +8,7 @@
     "test": "node scripts/test.js --env=jsdom",
     "deploy": "node scripts/deploy/index.js"
   },
+  "sideEffects": false,
   "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.17",
@@ -110,6 +111,7 @@
     "typescript": "^3.8.3",
     "url-loader": "2.3.0",
     "webpack": "4.41.5",
+    "webpack-bundle-analyzer": "^3.6.1",
     "webpack-dev-server": "3.10.2",
     "webpack-manifest-plugin": "2.2.0",
     "workbox-webpack-plugin": "4.3.1",

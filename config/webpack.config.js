@@ -24,6 +24,8 @@ const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
 const postcssNormalize = require('postcss-normalize');
 
@@ -201,11 +203,12 @@ module.exports = function(webpackEnv) {
     },
     externals: isEnvProduction
       ? {
+          lodash: 'lodash',
           react: 'React',
           'react-dom': 'ReactDOM',
           'react-router': 'ReactRouter',
           marked: 'marked',
-          'hightlight.js': 'hljs'
+          'highlight.js': 'hljs'
         }
       : {},
     optimization: {
@@ -277,7 +280,28 @@ module.exports = function(webpackEnv) {
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
         chunks: 'async',
-        name: false
+        minSize: 30000,
+        minChunks: 1,
+        maxAsyncRequests: 5,
+        maxInitialRequests: 3,
+        automaticNameDelimiter: '~',
+        name: true,
+        cacheGroups: {
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10
+          },
+          commons: {
+            name: 'commons',
+            chunks: 'all',
+            minChunks: 2
+          },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
+        }
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
@@ -505,6 +529,7 @@ module.exports = function(webpackEnv) {
       ]
     },
     plugins: [
+      // new BundleAnalyzerPlugin(),
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(

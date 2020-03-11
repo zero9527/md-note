@@ -1,9 +1,13 @@
 import React, { useState, useRef, useEffect, CSSProperties } from 'react';
-import html2canvas from 'html2canvas';
+import Loadable from '@loadable/component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThLarge, faTimes } from '@fortawesome/free-solid-svg-icons';
 import styles from './export.scss';
 // import { cacheUtil } from '@/utils';
+
+const html2canvas = Loadable(() =>
+  import(/* webpackChunkName: "html2canvas" */ 'html2canvas')
+);
 
 export interface ExportProps {
   id: string | number;
@@ -100,7 +104,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         width,
         height,
         useCORS: true // 图片跨域
-      }).then(canvas => {
+      }).then((canvas: any) => {
         let temppng: any = canvas.toDataURL('image/png');
         setImgUrl(temppng);
         temppng = null;

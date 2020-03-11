@@ -6,7 +6,7 @@ import {
   faExpand,
   faCompress
 } from '@fortawesome/free-solid-svg-icons';
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import Loadable from '@loadable/component';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/lib/codemirror.css';
 import useNoteModel from '@/model/useNoteModel';
@@ -14,6 +14,10 @@ import MdPreview from '../../components/mdPreview';
 import MdToolBar, { IToolItem } from '@/components/mdToolbar';
 // import fileApi from '@/api/file';
 import styles from './mdEditor.scss';
+
+const { UnControlled: CodeMirror } = Loadable(() =>
+  import(/* webpackChunkName: "codemirror" */ 'react-codemirror2')
+);
 
 // 编辑器
 function MdEditor() {
