@@ -72,7 +72,7 @@ export default class MdToolBar extends React.Component<Props, State> {
     ];
 
     return (
-      <div className={styles['md-toolbar']}>
+      <div className={`dark ${styles['md-toolbar']}`}>
         {toolbar.map(item => (
           <div
             key={item.key}

@@ -95,7 +95,7 @@ const NoteDetail: React.FC = () => {
 
   return (
     <div className={`center-content ${styles['note-detail']}`}>
-      <h4 className={`border-1px-bottom title`}>
+      <h4 className={`border-1px-bottom title dark`}>
         <span onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} className="back" />
           详情
@@ -112,7 +112,7 @@ const NoteDetail: React.FC = () => {
           >
             <Export id={id} position={toolsPositionStyle} mdtext={mdtext}>
               <a href={`./#/md-editor/${id}`} className="link">
-                <button className="btn">编辑</button>
+                <button className="btn dark">编辑</button>
               </a>
             </Export>
           </MdCatalog>

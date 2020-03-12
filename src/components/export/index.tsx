@@ -1,13 +1,9 @@
 import React, { useState, useRef, useEffect, CSSProperties } from 'react';
-import Loadable from '@loadable/component';
+import html2canvas from 'html2canvas';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThLarge, faTimes } from '@fortawesome/free-solid-svg-icons';
 import styles from './export.scss';
 // import { cacheUtil } from '@/utils';
-
-const html2canvas = Loadable(() =>
-  import(/* webpackChunkName: "html2canvas" */ 'html2canvas')
-);
 
 export interface ExportProps {
   id: string | number;
@@ -103,7 +99,8 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         y: 0,
         width,
         height,
-        useCORS: true // 图片跨域
+        useCORS: true, // 图片跨域
+        windowWidth: width
       }).then((canvas: any) => {
         let temppng: any = canvas.toDataURL('image/png');
         setImgUrl(temppng);
@@ -147,21 +144,27 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         download={exportName + '.png'}
         href={imgUrl}
       ></a>
-      <button className="btn" onClick={(e: React.MouseEvent) => exportMD(e)}>
+      {/* <button
+        className="btn dark"
+        onClick={(e: React.MouseEvent) => exportMD(e)}
+      >
         导出md文件
         {isExportMd ? '...' : ''}
       </button>
-      <button className="btn" onClick={(e: React.MouseEvent) => exportImg(e)}>
+      <button
+        className="btn dark"
+        onClick={(e: React.MouseEvent) => exportImg(e)}
+      >
         导出图片
         {isExportImg ? '...' : ''}
-      </button>
+      </button> */}
       {props.children}
     </div>
   );
 
   return (
     <div className={styles.export}>
-      <button className={`btn ${styles.toggle}`} onClick={onShowTools}>
+      <button className={`btn dark ${styles.toggle}`} onClick={onShowTools}>
         <FontAwesomeIcon icon={btnShow ? faTimes : faThLarge} />
       </button>
       {btnShow && renderTools()}

@@ -1,10 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, CSSProperties } from 'react';
+import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import useNoteModel from '@/model/useNoteModel';
 import styles from './homeTools.scss';
 
-const HomeTools: React.FC = () => {
+export interface HomeToolsProps {
+  style: CSSProperties | undefined;
+}
+
+const HomeTools: React.FC<HomeToolsProps> = ({ style }) => {
   const exportJsonRef = useRef<HTMLAnchorElement>(null);
   const importJsonRef = useRef<HTMLInputElement>(null);
   const [showContent, setShowContent] = useState(false);
@@ -33,6 +38,9 @@ const HomeTools: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (showContent) toggleBlur('add');
+    else toggleBlur('remove');
+
     const bodyClick = () => {
       setTimeout(() => setShowContent(false), 0);
       window.removeEventListener('click', bodyClick);
@@ -43,7 +51,11 @@ const HomeTools: React.FC = () => {
     } else {
       window.removeEventListener('click', bodyClick);
     }
-  }, []);
+  }, [showContent]);
+
+  const toggleBlur = (type: 'add' | 'remove') => {
+    document.querySelector('#md-note')?.classList[type]('blur');
+  };
 
   // 清缓存
   const onClearCache = (e: React.MouseEvent) => {
@@ -109,8 +121,8 @@ const HomeTools: React.FC = () => {
     showContent ? styles.show : ''
   }`;
 
-  return (
-    <div className={styles['home-tools']}>
+  return ReactDOM.createPortal(
+    <div className={styles['home-tools']} style={style}>
       <FontAwesomeIcon
         className={styles.setting}
         icon={faCog}
@@ -147,7 +159,8 @@ const HomeTools: React.FC = () => {
           </div>
         </section>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

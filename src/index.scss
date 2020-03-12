@@ -1,7 +1,9 @@
 body {
   margin: 0;
   padding: 0;
-  color: #2b2b2b;
+  color: $font-color-light;
+  // background: $bg-light;
+  background: $bg-dark;
   font-size: 14px;
   font-family: sans-serif;
 }
@@ -33,10 +35,20 @@ ul {
 :global {
   #md-note {
     height: 100%;
+
+    .dark {
+      border-color: $bg-dark-light;
+      color: $font-color-light;
+      background: $bg-dark;
+    }
+  }
+
+  .blur {
+    filter: blur(2px);
   }
 
   .link {
-    color: #2b2b2b;
+    color: $font-color-light;
     text-decoration: none;
   }
 
@@ -45,7 +57,7 @@ ul {
     user-select: none;
     border: 1px solid #ddd;
     border-radius: 4px;
-    background: #fefefe;
+    background: $bg-light;
     cursor: pointer;
     box-shadow: 1px 1px 6px -4px rgba(0, 0, 0, 0.8);
 
@@ -55,6 +67,15 @@ ul {
     }
     &:focus {
       outline: none;
+    }
+  }
+  .btn.dark {
+    color: #eee;
+    border-color: $grey-color-dark;
+    background: $bg-dark;
+
+    &:hover {
+      box-shadow: 1px 1px 6px -4px $bg-light;
     }
   }
 

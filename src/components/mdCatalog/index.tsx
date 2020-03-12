@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, CSSProperties } from 'react';
+import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListUl } from '@fortawesome/free-solid-svg-icons';
 import styles from './mdCatalog.scss';
@@ -53,6 +54,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         const width = window.innerWidth;
         if (width < 1100) document.body.style.overflowY = 'auto';
         setShowCate(false);
+        toggleBlur('remove');
       }
     }
 
@@ -128,7 +130,10 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     setTimeout(() => setShowCate(false), 0);
   };
 
-  const onCateListShow = () => setTimeout(() => setShowCate(true), 0);
+  const onCateListShow = () => {
+    toggleBlur('add');
+    setTimeout(() => setShowCate(true), 0);
+  };
 
   const removeBodyClick = () => window.removeEventListener('click', handler);
   const addBodyClick = () => window.addEventListener('click', handler);
@@ -136,6 +141,11 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   const handler = () => {
     setShowCate(false);
     removeBodyClick();
+    toggleBlur('remove');
+  };
+
+  const toggleBlur = (type: 'add' | 'remove') => {
+    document.querySelector('#md-note')?.classList[type]('blur');
   };
 
   const renderCateItem = (cateItem: CatalogItem) => {
@@ -166,10 +176,10 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     return showCate ? styles['cate-show'] : '';
   }, [showCate]);
 
-  return (
+  return ReactDOM.createPortal(
     <div className={styles.catalog} style={position}>
       <FontAwesomeIcon
-        className="btn"
+        className="btn dark"
         icon={faListUl}
         onClick={onCateListShow}
       />
@@ -177,7 +187,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         className={styles.bg}
         style={{ display: showCate ? 'block' : 'none' }}
       />
-      <div className={`btn ${styles.catelist} ${cateListTransition}`}>
+      <div className={`btn dark ${styles.catelist} ${cateListTransition}`}>
         <section className={styles.head}>目录: {title}</section>
         <section className={styles['cate-content']}>
           {cate.length > 0 ? (
@@ -197,7 +207,8 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         </section>
       </div>
       {props.children}
-    </div>
+    </div>,
+    document.body
   );
 };
 

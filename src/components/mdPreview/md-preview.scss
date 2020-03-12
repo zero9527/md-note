@@ -54,10 +54,13 @@
       }
     }
 
-    img {
-      max-width: 100%;
+    p > img {
       height: auto;
-      // max-height: 400px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 600px;
+      display: inherit;
+      margin: auto;
     }
 
     // 这段抄掘金的
@@ -84,14 +87,29 @@
       }
     }
   }
+  :global .dark {
+    color: $font-color-light;
+    background: $bg-dark;
+
+    blockquote {
+      background: $bg-dark-light;
+    }
+    li > code,
+    p > code {
+      background: $bg-dark-light;
+    }
+    a {
+      color: $theme-color;
+    }
+  }
 }
 
 // 详情的样式
 .md-detail {
   width: 100%;
   min-height: 100%;
-  border-left: 1px solid #eee;
-  border-right: 1px solid #eee;
+  border-left: 1px solid $bg-dark-light;
+  border-right: 1px solid $bg-dark-light;
 
   .md-content {
     width: 100%;

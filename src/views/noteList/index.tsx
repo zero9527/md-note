@@ -88,12 +88,12 @@ function NoteList({ show = true }: NoteListProps) {
 
   return (
     <div
-      className={`center-content ${styles['note-list']}`}
+      className={`center-content ${styles['note-list']} dark`}
       style={{ height, display: show ? 'block' : 'none' }}
     >
-      <div className={`border-1px-bottom title`}>
+      <div className={`border-1px-bottom title dark`}>
         <span>md-note</span>
-        <HomeTools />
+        {/* <HomeTools style={toolsPositionStyle} /> */}
       </div>
       <section
         id={loading ? styles.skeleton : ''}
@@ -155,7 +155,7 @@ function NoteList({ show = true }: NoteListProps) {
       })} */}
       <a
         href="./#/note-add"
-        className={`link btn ${styles.add}`}
+        className={`link btn dark ${styles.add}`}
         style={toolsPositionStyle}
       >
         +

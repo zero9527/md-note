@@ -128,7 +128,7 @@ module.exports = function(webpackEnv) {
         {
           loader: 'sass-resources-loader',
           options: {
-            resources: [path.resolve(__dirname, './../src/utils/theme.scss')]
+            resources: [path.resolve(__dirname, './../src/theme/index.scss')]
           }
         }
       );
@@ -208,7 +208,8 @@ module.exports = function(webpackEnv) {
           'react-dom': 'ReactDOM',
           'react-router': 'ReactRouter',
           marked: 'marked',
-          'highlight.js': 'hljs'
+          'highlight.js': 'hljs',
+          html2canvas: 'html2canvas'
         }
       : {},
     optimization: {

@@ -55,7 +55,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     // 设置图片，导出图片需要
     renderer.image = function(href: string, title: string, text: string) {
       return `<img src="${href}" title="${title ||
-        text}" alt="${text}" style="max-width: 600px; display: inherit; margin: auto;" />`;
+        text}" alt="${text}" style="width: 100%;max-width: 600px;max-height: 600px;display: inherit;margin: auto;" />`;
     };
 
     marked.setOptions({
@@ -115,7 +115,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
       {(!isEdit || previewVisible) && (
         <section
           data-text={isEdit && '预览'}
-          className={styles['md-content']}
+          className={`dark ${styles['md-content']}`}
           id="md-content"
           dangerouslySetInnerHTML={{
             __html: marked(mdtext, mdRendered())
@@ -127,7 +127,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
         <>
           {/* <div className="change-size change-size-left" /> */}
           <div style={{ textAlign: 'right' }}>
-            <button className="btn" onClick={previewHandler}>
+            <button className="btn dark" onClick={previewHandler}>
               {previewVisible ? '关闭预览' : '显示预览'}
             </button>
           </div>

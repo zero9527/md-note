@@ -1,6 +1,9 @@
 .home-tools {
-  position: relative;
+  position: fixed;
+  top: 10px;
+  right: 10px;
   display: inline-block;
+  z-index: 10;
 
   .setting {
     padding: 0 4px;
