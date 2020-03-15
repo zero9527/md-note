@@ -10,8 +10,8 @@ interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({ children }) => {
-  const { setIsMobile } = useGlobalModel();
   const { pathname } = useLocation();
+  const { setIsMobile } = useGlobalModel(modal => [modal.setIsMobile]);
 
   useEffect(() => {
     const isMobile = mobileReg.test(window.navigator.userAgent);

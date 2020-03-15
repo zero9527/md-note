@@ -16,7 +16,7 @@ const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
   return (
     <div
       style={position}
-      className={`btn dark ${styles.scroll2top}`}
+      className={`btn ${styles.scroll2top}`}
       onClick={onScroll2oTop}
     >
       <FontAwesomeIcon icon={faAngleDoubleUp} />

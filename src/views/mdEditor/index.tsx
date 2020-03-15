@@ -6,7 +6,6 @@ import {
   faExpand,
   faCompress
 } from '@fortawesome/free-solid-svg-icons';
-import Loadable from '@loadable/component';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/lib/codemirror.css';
@@ -15,8 +14,6 @@ import MdPreview from '../../components/mdPreview';
 import MdToolBar, { IToolItem } from '@/components/mdToolbar';
 // import fileApi from '@/api/file';
 import styles from './mdEditor.scss';
-
-const codeMirror = Loadable.lib(() => import('react-codemirror2'));
 
 // 编辑器
 function MdEditor() {
@@ -118,7 +115,7 @@ function MdEditor() {
 
   const renderHeader = useCallback(
     () => (
-      <h4 className={`border-1px-bottom title dark`}>
+      <h4 className={`border-1px-bottom title`}>
         <span onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} className="back" />
           {match.path === '/note-add' ? '新增' : '编辑'}
@@ -136,7 +133,6 @@ function MdEditor() {
         </span>
       </h4>
     ),
-    // eslint-disable-next-line
     [isFullscreen]
   );
 
@@ -145,7 +141,7 @@ function MdEditor() {
   const contentHeight = { height: `${window.innerHeight - 92}px` };
 
   return (
-    <div className={`dark ${styles.editor}`}>
+    <div className={`${styles.editor}`}>
       {renderHeader()}
       <section className={styles.content} style={contentHeight}>
         <CodeMirror

@@ -22,36 +22,41 @@
 
   .catelist {
     padding: 4px 0;
-    border-color: $bg-dark-light;
-    background: $bg-dark-light;
     -webkit-tap-highlight-color: transparent;
     z-index: 40;
-
-    &:active {
-      background: transparent;
+    @include themeify {
+      border-color: themed('border-color');
+      background: themed('bg-color');
     }
 
     .head {
       padding: 4px 10px;
       margin-bottom: 8px;
-      color: #999;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      @include themeify {
+        color: themed('gray-color');
+      }
     }
 
     .desc {
-      color: #ccc;
+      @include themeify {
+        color: themed('desc-color');
+      }
     }
 
     .cate-content {
       width: 100%;
       height: calc(100% - 36px);
       top: 40px;
-      color: $font-color-light;
       z-index: 10;
       overflow-x: hidden;
       overflow-y: auto;
+      @include themeify {
+        color: themed('desc-color');
+        background: themed('bg-color');
+      }
 
       ul {
         padding-left: 15px;
@@ -72,13 +77,22 @@
         cursor: pointer;
 
         &:hover {
-          color: #eee;
-          background: #424242;
+          @include themeify {
+            background: themed('bg-color-light');
+          }
+        }
+
+        &:active {
+          @include themeify {
+            background: themed('bg-color-heavy');
+          }
         }
       }
 
       .active {
-        color: $theme-color;
+        @include themeify {
+          color: themed('primary-color');
+        }
       }
     }
   }
@@ -132,7 +146,7 @@
       padding: 10px;
       border-radius: 0;
       border: transparent;
-      transition: 0.3s;
+      transition: 0.2s;
       transform: translateX(100%);
     }
 

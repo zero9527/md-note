@@ -1,10 +1,13 @@
 .note-list {
   width: 100%;
   height: 100%;
-  background: #fff;
   border-left: 1px solid #eee;
   border-right: 1px solid #eee;
   overflow: auto;
+  @include themeify {
+    border-color: themed('border-color');
+    background: themed('bg-color');
+  }
 
   :global {
     .title {
@@ -36,7 +39,9 @@
     position: relative;
     padding: 8px;
     font-size: 18px;
-    color: $theme-color;
+    @include themeify {
+      color: themed('primary-color');
+    }
 
     &::after {
       content: '';
@@ -47,6 +52,9 @@
       bottom: 0;
       border-bottom: 1px solid #eee;
       transform: scale(1, 0.5);
+      @include themeify {
+        border-color: themed('border-color');
+      }
     }
 
     .item-month-en {
@@ -64,13 +72,17 @@
     -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      color: $theme-color;
-      background: $bg-dark-light;
+      @include themeify {
+        color: themed('base-color');
+        background: themed('bg-color-light');
+      }
     }
 
     &:active {
-      color: $theme-color;
-      background: $bg-dark-heavy;
+      @include themeify {
+        color: thtmed('primary-color');
+        background: themed('bg-color-heavy');
+      }
     }
 
     .item-date {
@@ -88,8 +100,10 @@
         top: -10px;
         right: -10px;
         display: block;
-        background: #eee;
         transform: scale(0.5, 1);
+        @include themeify {
+          background: themed('border-color');
+        }
       }
 
       &::after {
@@ -101,17 +115,23 @@
         right: -13px;
         display: block;
         border-radius: 6px;
-        background: $theme-color-light;
+        @include themeify {
+          background: themed('primary-color-light');
+        }
       }
 
       .time {
-        color: #666;
         font-size: 14px;
+        @include themeify {
+          color: themed('desc-color');
+        }
       }
 
       .date {
-        color: #ccc;
         font-size: 12px;
+        @include themeify {
+          color: themed('gray-color');
+        }
       }
     }
 
@@ -130,23 +150,28 @@
 }
 
 // 骨架屏
-$skeleton-bg: #eee;
 #skeleton {
   .item-month > span,
   .item-date > div,
   .item-desc {
-    color: $skeleton-bg;
-    background: $skeleton-bg;
     animation: loading 0.5s infinite alternate;
+    @include themeify {
+      color: thtmed('bg-color-light');
+      background: themed('bg-color-light');
+    }
   }
 }
 @keyframes loading {
   from {
-    color: $skeleton-bg;
-    background: $skeleton-bg;
+    @include themeify {
+      color: thtmed('bg-color-light');
+      background: themed('bg-color-light');
+    }
   }
   to {
-    color: #e9e9e9;
-    background: #e9e9e9;
+    @include themeify {
+      color: thtmed('bg-color-heavy');
+      background: themed('bg-color-heavy');
+    }
   }
 }

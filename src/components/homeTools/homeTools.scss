@@ -1,35 +1,51 @@
 .home-tools {
-  position: fixed;
-  top: 10px;
-  right: 10px;
+  position: relative;
   display: inline-block;
-  z-index: 10;
+
+  .theme {
+    cursor: pointer;
+  }
 
   .setting {
     padding: 0 4px;
     cursor: pointer;
   }
+}
 
-  .wrapper {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: none;
-    background: rgba(100, 100, 100, 0.6);
-    overflow: hidden;
-    z-index: 11;
-  }
+.wrapper {
+  width: 100%;
+  height: 100%;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(100, 100, 100, 0.6);
+  overflow: hidden;
+  z-index: 11;
 
   .content {
-    width: 200px;
-    height: 100%;
+    width: 80vw;
+    max-width: 400px;
+    height: auto;
     position: absolute;
-    right: 0;
-    padding: 10px;
-    border-right: 1px solid #eee;
-    background: #fff;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    @include themeify {
+      color: themed('base-color');
+      background: themed('bg-color-heavy');
+    }
+    animation: show 0.3s forwards;
+
+    @keyframes show {
+      from {
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+      to {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
 
     .title {
       font-size: 20px;
@@ -37,34 +53,33 @@
       text-align: right;
 
       > span {
-        border-bottom: 2px solid $theme-color;
+        border-bottom: 2px solid #eee;
+        @include themeify {
+          border-color: themed('primary-color');
+        }
       }
     }
 
     .item {
       padding: 8px 0;
-      text-align: right;
+      text-align: center;
       border-bottom: 1px solid #eee;
       cursor: pointer;
+      @include themeify {
+        border-color: themed('border-color');
+      }
 
       &:hover,
       &:active {
-        color: $theme-color;
+        @include themeify {
+          color: themed('primary-color');
+        }
       }
     }
   }
 
   .show {
-    animation: move 0.3s forwards;
-
-    @keyframes move {
-      from {
-        transform: translateX(120%);
-      }
-      to {
-        transform: translateX(0);
-      }
-    }
+    display: block;
   }
 }
 

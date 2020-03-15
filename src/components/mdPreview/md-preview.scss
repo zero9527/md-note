@@ -2,9 +2,11 @@
   .md-content {
     position: relative;
     padding: 10px 16px;
-    // color: #eee;
-    // background: #333;
-    background: #fefefe;
+    @include themeify {
+      color: themed('base-color');
+      background: themed('bg-color');
+    }
+
     &::before {
       content: attr(data-text);
       position: absolute;
@@ -12,14 +14,19 @@
       left: 10px;
       color: #ccc;
       font-size: 12px;
+      @include themeify {
+        color: themed('gray-color');
+      }
     }
 
     // 代码段
     li > code,
     p > code {
       padding: 0 2px;
-      color: $theme-color;
-      background: #f6f6f6;
+      @include themeify {
+        color: themed('primary-color');
+        background: themed('bg-color-light');
+      }
     }
 
     pre {
@@ -32,7 +39,9 @@
       transform: translatez(0);
 
       code {
+        font-size: 94%;
         background: transparent;
+
         &::before {
           // 语言
           content: attr(class);
@@ -45,8 +54,6 @@
           padding: 0 8px;
           text-align: left;
           border-radius: 6px;
-          // color: #ccc;
-          // background: #f6f6f6;
           color: #666;
           background: #282c34;
           font-size: 90%;
@@ -55,9 +62,9 @@
     }
 
     p > img {
+      width: auto;
       height: auto;
-      width: 100%;
-      max-width: 600px;
+      max-width: 100%;
       max-height: 600px;
       display: inherit;
       margin: auto;
@@ -65,11 +72,14 @@
 
     // 这段抄掘金的
     blockquote {
-      color: #666;
       padding: 1px 23px;
       margin: 22px 0;
       border-left: 4px solid #cbcbcb;
-      background-color: #f8f8f8;
+      @include themeify {
+        color: themed('desc-color');
+        border-color: themed('border-color');
+        background: themed('bg-color-light');
+      }
     }
 
     table {
@@ -77,29 +87,19 @@
       border-collapse: collapse;
 
       thead {
-        background: #f1f1f1;
+        @include themeify {
+          background: themed('bg-color-heavy');
+        }
       }
 
       td,
       th {
         padding: 2px 4px;
         border: 1px solid #ccc;
+        @include themeify {
+          border-color: themed('border-color');
+        }
       }
-    }
-  }
-  :global .dark {
-    color: $font-color-light;
-    background: $bg-dark;
-
-    blockquote {
-      background: $bg-dark-light;
-    }
-    li > code,
-    p > code {
-      background: $bg-dark-light;
-    }
-    a {
-      color: $theme-color;
     }
   }
 }
@@ -108,8 +108,11 @@
 .md-detail {
   width: 100%;
   min-height: 100%;
-  border-left: 1px solid $bg-dark-light;
-  border-right: 1px solid $bg-dark-light;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  @include themeify {
+    border-color: themed('border-color');
+  }
 
   .md-content {
     width: 100%;

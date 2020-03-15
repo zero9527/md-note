@@ -121,3 +121,26 @@ export function NoticeU(): void {
 }
 
 export const isMobile = mobileReg.test(navigator.userAgent);
+
+export function getUrlParams(search = '', key = '') {
+  let _search = search;
+  if (!_search && !key) return {};
+  if (!_search || search.indexOf('?') === -1) return '';
+  _search = _search.slice(search.indexOf('?') + 1, search.length);
+
+  const paramsArr = _search.split('&');
+  const paramsObj = {};
+  paramsArr.forEach(param => {
+    const [_key, _value] = param.split('=');
+    paramsObj[_key] = _value;
+  });
+
+  if (key) {
+    if (paramsObj.hasOwnProperty(key)) {
+      return paramsObj[key];
+    } else {
+      console.warn(`url 没有 ${key} 这个参数！`);
+    }
+  }
+  return paramsObj;
+}

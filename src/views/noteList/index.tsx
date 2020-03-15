@@ -36,7 +36,10 @@ export interface NoteItem {
 // 笔记列表
 function NoteList({ show = true }: NoteListProps) {
   const nodeListElemRef = useRef<HTMLDivElement>();
-  const { height } = useGlobalModel();
+  const { height, theme } = useGlobalModel(modal => [
+    modal.theme,
+    modal.height
+  ]);
   const { loading, noteList } = useNoteModel();
   const [toolsPositionStyle, setToolsPositionStyle] = useState<CSSProperties>();
   const [sctollTop, setScrollTop] = useState(0);
@@ -88,12 +91,12 @@ function NoteList({ show = true }: NoteListProps) {
 
   return (
     <div
-      className={`center-content ${styles['note-list']} dark`}
+      className={`center-content ${styles['note-list']}`}
       style={{ height, display: show ? 'block' : 'none' }}
     >
-      <div className={`border-1px-bottom title dark`}>
+      <div className={`border-1px-bottom title`}>
         <span>md-note</span>
-        {/* <HomeTools style={toolsPositionStyle} /> */}
+        <HomeTools />
       </div>
       <section
         id={loading ? styles.skeleton : ''}
@@ -155,7 +158,7 @@ function NoteList({ show = true }: NoteListProps) {
       })} */}
       <a
         href="./#/note-add"
-        className={`link btn dark ${styles.add}`}
+        className={`link btn ${styles.add}`}
         style={toolsPositionStyle}
       >
         +

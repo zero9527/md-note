@@ -10,10 +10,16 @@ import MdCatalog from '@/components/mdCatalog';
 import Export from '@/components/export';
 // import { throttle } from '@/utils';
 import styles from './note-detail.scss';
+import useGlobalModel from '@/model/useGlobalModel';
 
 // 详情
 const NoteDetail: React.FC = () => {
-  const { getNoteById, updateNoteById, fetchNoteById } = useNoteModel();
+  const { theme } = useGlobalModel(modal => [modal.theme]);
+  const { getNoteById, updateNoteById, fetchNoteById } = useNoteModel(modal => [
+    modal.getNoteById,
+    modal.updateNoteById,
+    modal.fetchNoteById
+  ]);
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const location = useLocation();
@@ -68,9 +74,8 @@ const NoteDetail: React.FC = () => {
   };
 
   // 点击目录标题
-  const onCateClick = (headerId: string) => {
+  const onCateClick = (hash: string) => {
     const pathname = `/detail/${id}`;
-    const hash = headerId;
     history.replace({ pathname, hash });
   };
 
@@ -95,7 +100,7 @@ const NoteDetail: React.FC = () => {
 
   return (
     <div className={`center-content ${styles['note-detail']}`}>
-      <h4 className={`border-1px-bottom title dark`}>
+      <h4 className={`border-1px-bottom title`}>
         <span onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} className="back" />
           详情
@@ -112,7 +117,7 @@ const NoteDetail: React.FC = () => {
           >
             <Export id={id} position={toolsPositionStyle} mdtext={mdtext}>
               <a href={`./#/md-editor/${id}`} className="link">
-                <button className="btn dark">编辑</button>
+                <button className="btn">编辑</button>
               </a>
             </Export>
           </MdCatalog>

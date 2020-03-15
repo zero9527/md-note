@@ -4,14 +4,17 @@
   bottom: 0;
   left: 0;
   padding: 0 10px;
-  color: #666;
   font-weight: bold;
-  background: #fff;
   border-top: 1px solid #eee;
   user-select: none;
   white-space: nowrap;
   overflow-x: auto;
   z-index: 10;
+  @include themeify {
+    color: themed('base-color');
+    border-color: themed('border-color');
+    background: themed('bg-color');
+  }
 
   .tool-item {
     position: relative;
@@ -21,11 +24,15 @@
       margin-right: 10px;
     }
     &:hover {
-      color: #8bb9df;
       cursor: pointer;
+      @include themeify {
+        color: themed('primary-color');
+      }
     }
     &:active {
-      color: #1272c0;
+      @include themeify {
+        color: themed('primary-color');
+      }
       &::before {
         content: attr(title);
         position: absolute;
@@ -33,9 +40,11 @@
         left: 0;
         right: 0;
         margin: auto 0;
-        color: #999;
         font-size: 12px;
         text-align: center;
+        @include themeify {
+          color: themed('gray-color');
+        }
       }
     }
   }
@@ -43,6 +52,8 @@
   .codebg {
     padding: 0 4px;
     border-radius: 2px;
-    background: #f1f1f1;
+    @include themeify {
+      background: themed('bg-color-heavy');
+    }
   }
 }

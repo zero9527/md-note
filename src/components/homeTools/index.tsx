@@ -1,41 +1,21 @@
-import React, { useState, useEffect, useRef, CSSProperties } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import useNoteModel from '@/model/useNoteModel';
+import ChangeTheme from '../changeTheme';
 import styles from './homeTools.scss';
 
-export interface HomeToolsProps {
-  style: CSSProperties | undefined;
-}
-
-const HomeTools: React.FC<HomeToolsProps> = ({ style }) => {
+const HomeTools: React.FC = () => {
   const exportJsonRef = useRef<HTMLAnchorElement>(null);
   const importJsonRef = useRef<HTMLInputElement>(null);
   const [showContent, setShowContent] = useState(false);
   const [isExport, setIsExport] = useState(false);
-  const [leftPos, setLeftPos] = useState('0');
   const { clearCache, noteList, updateNoteList } = useNoteModel(modal => [
     modal.clearCache,
     modal.noteList,
     modal.updateNoteList
   ]);
-
-  useEffect(() => {
-    function resize() {
-      if (window.innerWidth >= 1100) {
-        setLeftPos(`${(window.innerWidth - 1100) / 2}px`);
-      } else {
-        setLeftPos('0');
-      }
-    }
-
-    window.addEventListener('resize', resize);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-    };
-  }, []);
 
   useEffect(() => {
     if (showContent) toggleBlur('add');
@@ -121,46 +101,49 @@ const HomeTools: React.FC<HomeToolsProps> = ({ style }) => {
     showContent ? styles.show : ''
   }`;
 
-  return ReactDOM.createPortal(
-    <div className={styles['home-tools']} style={style}>
+  return (
+    <div className={styles['home-tools']}>
+      <ChangeTheme />
       <FontAwesomeIcon
         className={styles.setting}
         icon={faCog}
         onClick={onShowSettingPanel}
       />
-      <div
-        className={styles.wrapper}
-        style={{ display: showContent ? 'block' : '', left: leftPos }}
-      >
-        <section className={contentClassName}>
-          <div className={styles.title}>
-            <span>设置</span>
-          </div>
-          <div className={styles.item} onClick={onClearCache}>
-            清缓存
-          </div>
-          <div className={styles.item} onClick={onExportJson}>
-            <a
-              ref={exportJsonRef}
-              href="href"
-              download="md-note备份.json"
-              hidden={true}
-            ></a>
-            导出到文件(*.josn) {isExport ? '...' : ''}
-          </div>
-          <div className={styles.item} onClick={onImportJson}>
-            <input
-              ref={importJsonRef}
-              type="file"
-              accept="application/json"
-              hidden={true}
-            />
-            从文件导入(*.json)
-          </div>
-        </section>
-      </div>
-    </div>,
-    document.body
+      {ReactDOM.createPortal(
+        <div
+          className={styles.wrapper}
+          style={{ display: showContent ? 'block' : '' }}
+        >
+          <section className={contentClassName}>
+            <div className={styles.title}>
+              <span>设置</span>
+            </div>
+            <div className={styles.item} onClick={onClearCache}>
+              清缓存
+            </div>
+            <div className={styles.item} onClick={onExportJson}>
+              <a
+                ref={exportJsonRef}
+                href="href"
+                download="md-note备份.json"
+                hidden={true}
+              ></a>
+              导出到文件(*.josn) {isExport ? '...' : ''}
+            </div>
+            <div className={styles.item} onClick={onImportJson}>
+              <input
+                ref={importJsonRef}
+                type="file"
+                accept="application/json"
+                hidden={true}
+              />
+              从文件导入(*.json)
+            </div>
+          </section>
+        </div>,
+        document.body
+      )}
+    </div>
   );
 };
 

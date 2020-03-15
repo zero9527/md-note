@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, CSSProperties } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListUl } from '@fortawesome/free-solid-svg-icons';
+import useGlobalModel from '@/model/useGlobalModel';
 import styles from './mdCatalog.scss';
 
 export interface CatalogItem {
@@ -26,6 +27,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   onCateClick,
   ...props
 }) => {
+  const { theme } = useGlobalModel(modal => [modal.theme]);
   const [showCate, setShowCate] = useState(false);
   const [cate, setCate] = useState<CatalogItem[]>([]);
   const [cateActive, setCateActive] = useState('');
@@ -74,7 +76,6 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     } else {
       document.body.style.overflowY = 'auto';
     }
-    // eslint-disable-next-line
   }, [showCate, defaultActive]);
 
   const generate = () => {
@@ -177,9 +178,9 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   }, [showCate]);
 
   return ReactDOM.createPortal(
-    <div className={styles.catalog} style={position}>
+    <div id="catalog" className={styles.catalog} style={position}>
       <FontAwesomeIcon
-        className="btn dark"
+        className="btn"
         icon={faListUl}
         onClick={onCateListShow}
       />
@@ -187,7 +188,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         className={styles.bg}
         style={{ display: showCate ? 'block' : 'none' }}
       />
-      <div className={`btn dark ${styles.catelist} ${cateListTransition}`}>
+      <div className={`btn ${styles.catelist} ${cateListTransition}`}>
         <section className={styles.head}>目录: {title}</section>
         <section className={styles['cate-content']}>
           {cate.length > 0 ? (

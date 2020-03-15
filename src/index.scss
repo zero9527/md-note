@@ -1,11 +1,12 @@
 body {
   margin: 0;
   padding: 0;
-  color: $font-color-light;
-  // background: $bg-light;
-  background: $bg-dark;
   font-size: 14px;
   font-family: sans-serif;
+  @include themeify {
+    color: themed('base-color');
+    background: themed('bg-color');
+  }
 }
 * {
   box-sizing: border-box;
@@ -24,6 +25,11 @@ h3 {
 ul {
   padding-left: 30px;
 }
+a {
+  @include themeify {
+    color: themed('primary-color');
+  }
+}
 
 @media screen and (min-width: 800px) {
   html,
@@ -35,11 +41,9 @@ ul {
 :global {
   #md-note {
     height: 100%;
-
-    .dark {
-      border-color: $bg-dark-light;
-      color: $font-color-light;
-      background: $bg-dark;
+    @include themeify {
+      color: themed('base-color');
+      background: themed('bg-color');
     }
   }
 
@@ -48,8 +52,10 @@ ul {
   }
 
   .link {
-    color: $font-color-light;
     text-decoration: none;
+    @include themeify {
+      color: themed('base-color');
+    }
   }
 
   .btn {
@@ -57,25 +63,22 @@ ul {
     user-select: none;
     border: 1px solid #ddd;
     border-radius: 4px;
-    background: $bg-light;
     cursor: pointer;
     box-shadow: 1px 1px 6px -4px rgba(0, 0, 0, 0.8);
+    @include themeify {
+      color: themed('base-color');
+      border-color: themed('border-color');
+      background: themed('bg-color');
+    }
 
     &:active {
       outline: none;
-      background: #f1f1f1;
+      @include themeify {
+        background: themed('bg-color-light');
+      }
     }
     &:focus {
       outline: none;
-    }
-  }
-  .btn.dark {
-    color: #eee;
-    border-color: $grey-color-dark;
-    background: $bg-dark;
-
-    &:hover {
-      box-shadow: 1px 1px 6px -4px $bg-light;
     }
   }
 
@@ -84,9 +87,13 @@ ul {
     padding: 10px 12px;
     border-left: 1px solid #eee;
     border-right: 1px solid #eee;
-    background: #fafafa;
     white-space: nowrap;
     z-index: 1;
+    @include themeify {
+      color: themed('base-color');
+      border-color: themed('border-color');
+      background: themed('bg-color');
+    }
 
     > span {
       display: inline-flex;
@@ -112,8 +119,10 @@ ul {
       position: absolute;
       left: 0;
       bottom: 0;
-      background: #eee;
       transform: scale(1, 0.5);
+      @include themeify {
+        background: themed('gray-color');
+      }
     }
   }
 
