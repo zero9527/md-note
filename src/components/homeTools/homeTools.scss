@@ -2,64 +2,23 @@
   position: relative;
   display: inline-block;
 
-  .theme {
+  .setting {
+    padding: 0 4px;
+    font-size: 16px;
     cursor: pointer;
   }
 
-  .setting {
-    padding: 0 4px;
-    cursor: pointer;
+  :global {
+    .svg-inline--fa {
+      padding: 0 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   }
 }
 
 .wrapper {
-  width: 100%;
-  height: 100%;
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: rgba(100, 100, 100, 0.6);
-  overflow: hidden;
-  z-index: 11;
-
   .content {
-    width: 80vw;
-    max-width: 400px;
-    height: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 30px;
-    @include themeify {
-      color: themed('base-color');
-      background: themed('bg-color-heavy');
-    }
-    animation: show 0.3s forwards;
-
-    @keyframes show {
-      from {
-        transform: translate(-50%, -50%) scale(0.5);
-      }
-      to {
-        transform: translate(-50%, -50%) scale(1);
-      }
-    }
-
-    .title {
-      font-size: 20px;
-      margin-bottom: 20px;
-      text-align: right;
-
-      > span {
-        border-bottom: 2px solid #eee;
-        @include themeify {
-          border-color: themed('primary-color');
-        }
-      }
-    }
-
     .item {
       padding: 8px 0;
       text-align: center;

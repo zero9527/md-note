@@ -54,7 +54,7 @@
       overflow-x: hidden;
       overflow-y: auto;
       @include themeify {
-        color: themed('desc-color');
+        color: themed('second-color');
         background: themed('bg-color');
       }
 

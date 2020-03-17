@@ -9,6 +9,7 @@ import {
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
 import useNoteModel from '@/model/useNoteModel';
 import MdPreview from '../../components/mdPreview';
 import MdToolBar, { IToolItem } from '@/components/mdToolbar';
@@ -136,7 +137,7 @@ function MdEditor() {
     [isFullscreen]
   );
 
-  const codeMirrorOption = { tabSize: 2 };
+  const codeMirrorOption = { tabSize: 2, theme: 'material' };
 
   const contentHeight = { height: `${window.innerHeight - 92}px` };
 

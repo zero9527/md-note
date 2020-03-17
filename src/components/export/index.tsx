@@ -5,6 +5,7 @@ import useGlobalModel from '@/model/useGlobalModel';
 import PicPreview from '../picPreview';
 // import { cacheUtil } from '@/utils';
 import styles from './export.scss';
+import Modal from '../Modal';
 
 export interface ExportProps {
   id: string | number;
@@ -20,6 +21,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
   const [mdUrl, setMdUrl] = useState('');
   const [exportName, setExportName] = useState('');
   const [btnShow, setBtnShow] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
   const [isExportImg, setIsExportImg] = useState(false);
   const [isExportMd, setIsExportMd] = useState(false);
 
@@ -33,8 +35,12 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
     function resize() {
       if (!btnShow && window.innerWidth >= 1100) {
         setBtnShow(true);
+        setIsCompact(false);
       }
-      if (window.innerWidth < 1100) setBtnShow(false);
+      if (window.innerWidth < 1100) {
+        setBtnShow(false);
+        setIsCompact(true);
+      }
     }
 
     window.addEventListener('resize', resize);
@@ -78,20 +84,19 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         (codeTag: any) => codeTag.offsetWidth
       );
       maxCodeWidth = Math.max(...codeWidth);
+      console.log('maxCodeWidth: ', maxCodeWidth);
       renderImg(mdContent, maxCodeWidth);
     }
   };
 
   const renderImg = (mdContent: HTMLDivElement, maxCodeWidth: number) => {
     const scale = 1;
-    const width = maxCodeWidth * scale;
+    // 32: md-content.padding
+    const width = maxCodeWidth * scale + 50;
     // 避免导出图片截断/大片空白等问题
-    if (width > mdContent!.offsetWidth || width > 600) {
-      mdContent!.style.width = width + 'px';
-    }
+    mdContent!.style.width = width + 'px';
     setTimeout(async () => {
-      const height = mdContent!.offsetHeight * scale;
-
+      // const height = mdContent!.offsetHeight * scale;
       const { default: html2canvas } = await import('html2canvas');
       html2canvas(mdContent!, {
         scale,
@@ -100,16 +105,16 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         scrollX: 0,
         scrollY: 0,
         width,
-        height,
+        // height,
         useCORS: true,
-        windowWidth: width,
-        windowHeight: height + 20,
-        backgroundColor: theme === 'dark' ? '#272727' : '#fff'
+        // windowWidth: width,
+        // windowHeight: height,
+        backgroundColor: theme === 'dark' ? '#181818' : '#fff'
       }).then((canvas: HTMLCanvasElement) => {
         setImgUrl(() => canvas.toDataURL('image/png'));
         mdContent!.style.width = 'auto';
       });
-    }, 0);
+    }, 100);
   };
 
   const onShowTools = () => {
@@ -131,7 +136,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
   };
 
   const renderTools = () => (
-    <div className={styles.tools}>
+    <>
       <button className="btn" onClick={(e: React.MouseEvent) => exportMD(e)}>
         导出md文件
         {isExportMd ? '...' : ''}
@@ -140,15 +145,21 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         导出图片
       </button>
       {props.children}
-    </div>
+    </>
   );
 
   return (
     <div className={styles.export}>
       <button className={`btn ${styles.toggle}`} onClick={onShowTools}>
-        <FontAwesomeIcon icon={btnShow ? faTimes : faThLarge} />
+        <FontAwesomeIcon icon={faThLarge} />
       </button>
-      {btnShow && renderTools()}
+      {isCompact ? (
+        <Modal title="" visible={btnShow} onClose={() => setBtnShow(false)}>
+          <div className={styles.tools}>{renderTools()}</div>
+        </Modal>
+      ) : (
+        <div className={styles.tools}>{renderTools()}</div>
+      )}
       <PicPreview
         show={isExportImg}
         src={imgUrl}

@@ -1,27 +1,29 @@
 $light: (
-  desc-color: #666,
   base-color: #3e3e3e,
+  desc-color: #666,
+  second-color: #999,
   primary-color: #5098e4,
   primary-color-light: #82bbf7,
   primary-color-heavy: #00438a,
   gray-color: #cccccc,
-  border-color: #eee,
+  border-color: #e9e9e9,
   bg-color: #fefefe,
   bg-color-light: #f6f6f6,
   bg-color-heavy: #f1f1f1
 );
 
 $dark: (
-  desc-color: #666,
   base-color: #ccc,
+  desc-color: #666,
+  second-color: #999,
   primary-color: #5098e4,
   primary-color-light: #82bbf7,
   primary-color-heavy: #00438a,
   gray-color: #464444,
-  border-color: #464444,
-  bg-color: #272727,
-  bg-color-light: #3a3a3a,
-  bg-color-heavy: #181818
+  border-color: #232323,
+  bg-color: #181818,
+  bg-color-light: #222,
+  bg-color-heavy: #151515
 );
 
 $themes: (

@@ -62,10 +62,10 @@ function NoteList({ show = true }: NoteListProps) {
       setScrollTop(e.target.scrollTop || sctollTop);
     }
 
-    nodeListElemRef.current?.addEventListener('scroll', onScroll);
+    document.body.addEventListener('scroll', onScroll);
 
     return () => {
-      nodeListElemRef.current?.removeEventListener('scroll', onScroll);
+      document.body.removeEventListener('scroll', onScroll);
     };
   }, []);
 
@@ -95,7 +95,7 @@ function NoteList({ show = true }: NoteListProps) {
       style={{ height, display: show ? 'block' : 'none' }}
     >
       <div className={`border-1px-bottom title`}>
-        <span>md-note</span>
+        <span>MD-NOTE</span>
         <HomeTools />
       </div>
       <section

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 import useNoteModel from '@/model/useNoteModel';
 import ChangeTheme from '../changeTheme';
+import Modal from '@/components/Modal';
 import styles from './homeTools.scss';
 
 const HomeTools: React.FC = () => {
@@ -16,26 +16,6 @@ const HomeTools: React.FC = () => {
     modal.noteList,
     modal.updateNoteList
   ]);
-
-  useEffect(() => {
-    if (showContent) toggleBlur('add');
-    else toggleBlur('remove');
-
-    const bodyClick = () => {
-      setTimeout(() => setShowContent(false), 0);
-      window.removeEventListener('click', bodyClick);
-    };
-
-    if (showContent) {
-      window.addEventListener('click', bodyClick);
-    } else {
-      window.removeEventListener('click', bodyClick);
-    }
-  }, [showContent]);
-
-  const toggleBlur = (type: 'add' | 'remove') => {
-    document.querySelector('#md-note')?.classList[type]('blur');
-  };
 
   // 清缓存
   const onClearCache = (e: React.MouseEvent) => {
@@ -97,10 +77,6 @@ const HomeTools: React.FC = () => {
     setShowContent(true);
   };
 
-  const contentClassName = `${styles.content} ${
-    showContent ? styles.show : ''
-  }`;
-
   return (
     <div className={styles['home-tools']}>
       <ChangeTheme />
@@ -109,40 +85,36 @@ const HomeTools: React.FC = () => {
         icon={faCog}
         onClick={onShowSettingPanel}
       />
-      {ReactDOM.createPortal(
-        <div
-          className={styles.wrapper}
-          style={{ display: showContent ? 'block' : '' }}
-        >
-          <section className={contentClassName}>
-            <div className={styles.title}>
-              <span>设置</span>
-            </div>
-            <div className={styles.item} onClick={onClearCache}>
-              清缓存
-            </div>
-            <div className={styles.item} onClick={onExportJson}>
-              <a
-                ref={exportJsonRef}
-                href="href"
-                download="md-note备份.json"
-                hidden={true}
-              ></a>
-              导出到文件(*.josn) {isExport ? '...' : ''}
-            </div>
-            <div className={styles.item} onClick={onImportJson}>
-              <input
-                ref={importJsonRef}
-                type="file"
-                accept="application/json"
-                hidden={true}
-              />
-              从文件导入(*.json)
-            </div>
-          </section>
-        </div>,
-        document.body
-      )}
+      <Modal
+        visible={showContent}
+        title="设置"
+        wrapperClassName={styles.wrapper}
+        onClose={() => setShowContent(false)}
+      >
+        <section className={styles.content}>
+          <div className={styles.item} onClick={onClearCache}>
+            清缓存
+          </div>
+          <div className={styles.item} onClick={onExportJson}>
+            <a
+              ref={exportJsonRef}
+              href="href"
+              download="md-note备份.json"
+              hidden={true}
+            ></a>
+            导出到文件(*.josn) {isExport ? '...' : ''}
+          </div>
+          <div className={styles.item} onClick={onImportJson}>
+            <input
+              ref={importJsonRef}
+              type="file"
+              accept="application/json"
+              hidden={true}
+            />
+            从文件导入(*.json)
+          </div>
+        </section>
+      </Modal>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect, CSSProperties } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import useGlobalModel from '@/model/useGlobalModel';
 import Loading from '@/components/loading';
 import Scroll2Top from '@/components/Scroll2Top';
 import useNoteModel from '@/model/useNoteModel';
@@ -10,7 +11,6 @@ import MdCatalog from '@/components/mdCatalog';
 import Export from '@/components/export';
 // import { throttle } from '@/utils';
 import styles from './note-detail.scss';
-import useGlobalModel from '@/model/useGlobalModel';
 
 // 详情
 const NoteDetail: React.FC = () => {

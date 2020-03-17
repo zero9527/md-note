@@ -15,7 +15,7 @@ const ChangeTheme = () => {
   };
 
   return (
-    <span style={{ cursor: 'pointer' }} onClick={onThemeChange}>
+    <span onClick={onThemeChange}>
       {theme === 'light' ? (
         <FontAwesomeIcon icon={faSun} />
       ) : (
