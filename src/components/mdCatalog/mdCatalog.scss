@@ -1,5 +1,4 @@
 .catalog {
-  // height: 100%;
   position: fixed;
   top: 8px;
   right: 0;
@@ -16,21 +15,22 @@
     position: fixed;
     top: 0;
     left: 0;
-    background: rgba(50, 50, 50, 0.8);
+    background: $mask-bg;
     z-index: 30;
   }
 
   .catelist {
     padding: 4px 0;
+    margin-top: 35px;
     -webkit-tap-highlight-color: transparent;
     z-index: 40;
     @include themeify {
-      border-color: themed('border-color');
-      background: themed('bg-color');
+      background: themed('bg-color-light');
     }
 
     .head {
-      padding: 4px 10px;
+      padding: 4px;
+      padding-left: 20px;
       margin-bottom: 8px;
       white-space: nowrap;
       overflow: hidden;
@@ -50,12 +50,11 @@
       width: 100%;
       height: calc(100% - 36px);
       top: 40px;
-      z-index: 10;
       overflow-x: hidden;
       overflow-y: auto;
+      z-index: 10;
       @include themeify {
-        color: themed('second-color');
-        background: themed('bg-color');
+        color: themed('base-color');
       }
 
       ul {
@@ -74,16 +73,18 @@
 
       .cate-item {
         padding: 4px 10px;
+        padding-left: 20px;
         cursor: pointer;
 
         &:hover {
           @include themeify {
-            background: themed('bg-color-light');
+            background: themed('bg-color-heavy');
           }
         }
 
         &:active {
           @include themeify {
+            color: themed('primary-color');
             background: themed('bg-color-heavy');
           }
         }
@@ -116,7 +117,7 @@
 
       .cate-content {
         width: 100%;
-        max-height: calc(100vh - 190px);
+        max-height: calc(100vh - 226px);
       }
     }
 
@@ -143,10 +144,10 @@
       right: 0;
       margin-top: -8px;
       margin-right: -12px;
-      padding: 10px;
+      padding: 10px 0;
       border-radius: 0;
       border: transparent;
-      transition: 0.2s;
+      transition: 0.3s;
       transform: translateX(100%);
     }
 

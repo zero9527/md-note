@@ -10,7 +10,7 @@ export interface Scroll2TopProps {
 const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
   const onScroll2oTop = () => {
     const content = document.querySelector('#md-note');
-    content?.scrollIntoView(/* { behavior: 'smooth' } */);
+    content?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (

@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: $mask-bg;
   overflow: hidden;
   z-index: 11;
 
@@ -20,7 +20,7 @@
     margin: auto;
     padding: 10px;
     animation: show 0.3s forwards;
-    box-shadow: 1px 1px 13px -3px rgba(0, 0, 0, 0.3);
+    box-shadow: $box-shadow;
     @include themeify {
       color: themed('base-color');
       background: themed('bg-color-heavy');

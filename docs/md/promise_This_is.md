@@ -43,7 +43,9 @@ Note that the [es5-shim](https://github.com/es-shims/es5-shim) must be loaded be
 
 ## Usage
 
-The example below shows how you can load the promise library (in a way that works on both client and server using node or browserify).  It then demonstrates creating a promise from scratch.  You simply call `new Promise(fn)`.  There is a complete specification for what is returned by this method in [Promises/A+](http://promises-aplus.github.com/promises-spec/).
+The example below shows how you can load the promise library (in a way that works on both client and server using node or browserify).  
+It then demonstrates creating a promise from scratch.  You simply call `new Promise(fn)`.  
+There is a complete specification for what is returned by this method in [Promises/A+](http://promises-aplus.github.com/promises-spec/).
 
 ```javascript
 var Promise = require('promise');

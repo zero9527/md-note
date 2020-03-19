@@ -56,7 +56,10 @@ const Modal: React.FC<Modal> = ({
 
   const Content = () => (
     <div className={styles.modal}>
-      <div className={`${styles.wrapper} ${wrapperClassName || ''}`}>
+      <div
+        className={`${styles.wrapper} ${wrapperClassName || ''}`}
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
+      >
         <section className={styles.title}>
           <span>{title}</span>
           <FontAwesomeIcon

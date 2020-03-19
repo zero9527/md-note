@@ -19,10 +19,15 @@
       }
     }
 
+    p {
+      word-break: break-word;
+    }
+
     // 代码段
     li > code,
     p > code {
       padding: 0 2px;
+      word-break: break-word;
       @include themeify {
         color: themed('primary-color');
         background: themed('bg-color-light');
@@ -108,11 +113,6 @@
 .md-detail {
   width: 100%;
   min-height: 100%;
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
-  @include themeify {
-    border-color: themed('border-color');
-  }
 
   .md-content {
     width: 100%;

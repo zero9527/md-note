@@ -64,7 +64,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
     setMdUrl(url.createObjectURL(tempmd));
 
     setTimeout(() => {
-      (document.querySelector('.export-md') as HTMLElement)!.click();
+      (document.querySelector('.export-md') as HTMLElement)?.click();
       setIsExportMd(false);
     }, 0);
   };
@@ -73,6 +73,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
   const exportImg = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isExportImg) return;
+    setBtnShow(false);
     setIsExportImg(true);
 
     let mdContent = document.getElementById('md-content') as HTMLDivElement;
@@ -90,27 +91,25 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
   };
 
   const renderImg = (mdContent: HTMLDivElement, maxCodeWidth: number) => {
-    const scale = 1;
-    // 32: md-content.padding
-    const width = maxCodeWidth * scale + 50;
+    // 50: 一些padding
+    const width = maxCodeWidth + 50;
     // 避免导出图片截断/大片空白等问题
     mdContent!.style.width = width + 'px';
     setTimeout(async () => {
-      // const height = mdContent!.offsetHeight * scale;
-      const { default: html2canvas } = await import('html2canvas');
-      html2canvas(mdContent!, {
-        scale,
+      const config = {
+        scale: 1,
         x: 0,
         y: 0,
         scrollX: 0,
         scrollY: 0,
         width,
-        // height,
         useCORS: true,
-        // windowWidth: width,
-        // windowHeight: height,
-        backgroundColor: theme === 'dark' ? '#181818' : '#fff'
-      }).then((canvas: HTMLCanvasElement) => {
+        backgroundColor: theme === 'dark' ? '#232426' : '#fff'
+      };
+      if (!isCompact) config['windowWidth'] = width;
+
+      const { default: html2canvas } = await import('html2canvas');
+      html2canvas(mdContent!, config).then((canvas: HTMLCanvasElement) => {
         setImgUrl(() => canvas.toDataURL('image/png'));
         mdContent!.style.width = 'auto';
       });
@@ -137,6 +136,14 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
 
   const renderTools = () => (
     <>
+      <a
+        href={mdUrl}
+        className="export-md"
+        download={`${exportName}.md`}
+        hidden
+      >
+        导出md文件
+      </a>
       <button className="btn" onClick={(e: React.MouseEvent) => exportMD(e)}>
         导出md文件
         {isExportMd ? '...' : ''}

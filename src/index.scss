@@ -64,7 +64,7 @@ a {
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-    box-shadow: 1px 1px 6px -4px rgba(0, 0, 0, 0.8);
+    box-shadow: $box-shadow;
     @include themeify {
       color: themed('base-color');
       border-color: themed('border-color');
@@ -85,14 +85,10 @@ a {
   .title {
     margin: 0;
     padding: 10px 12px;
-    border-left: 1px solid #eee;
-    border-right: 1px solid #eee;
     white-space: nowrap;
     z-index: 1;
     @include themeify {
       color: themed('base-color');
-      border-color: themed('border-color');
-      background: themed('bg-color');
     }
 
     > span {

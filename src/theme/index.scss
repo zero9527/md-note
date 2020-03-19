@@ -1,3 +1,6 @@
+$mask-bg: rgba(50, 50, 50, 0.6);
+$box-shadow: 0px 1px 1px -2px rgba(0, 0, 0, 0.8);
+
 $light: (
   base-color: #3e3e3e,
   desc-color: #666,
@@ -20,10 +23,10 @@ $dark: (
   primary-color-light: #82bbf7,
   primary-color-heavy: #00438a,
   gray-color: #464444,
-  border-color: #232323,
-  bg-color: #181818,
-  bg-color-light: #222,
-  bg-color-heavy: #151515
+  border-color: #2e2e2e,
+  bg-color: #232426,
+  bg-color-light: #292b2d,
+  bg-color-heavy: #1e1f21
 );
 
 $themes: (
