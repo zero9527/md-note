@@ -41,17 +41,7 @@ function NoteList({ show = true }: NoteListProps) {
     modal.height
   ]);
   const { loading, noteList } = useNoteModel();
-  const [toolsPositionStyle, setToolsPositionStyle] = useState<CSSProperties>();
   const [sctollTop, setScrollTop] = useState(0);
-
-  useEffect(() => {
-    resizeFn();
-    window.addEventListener('resize', resizeFn);
-
-    return () => {
-      window.removeEventListener('resize', resizeFn);
-    };
-  }, []);
 
   useEffect(() => {
     nodeListElemRef.current = document.querySelector(
@@ -76,18 +66,6 @@ function NoteList({ show = true }: NoteListProps) {
 
   // 按月份分组数据
   // function formateNoteList() {}
-
-  // 新增按钮
-  function resizeFn(): void {
-    const bodyWidth = document.body.clientWidth;
-    const MAX_VIEW_WIDTH = 1100;
-    const CONTENT_WIDTH = 1100;
-    const style =
-      bodyWidth > MAX_VIEW_WIDTH
-        ? { left: `${(bodyWidth - MAX_VIEW_WIDTH) / 2 + CONTENT_WIDTH - 60}px` }
-        : { right: '12px' };
-    setToolsPositionStyle(style);
-  }
 
   return (
     <div
@@ -156,13 +134,11 @@ function NoteList({ show = true }: NoteListProps) {
           </section>
         );
       })} */}
-      <a
-        href="./#/note-add"
-        className={`link btn ${styles.add}`}
-        style={toolsPositionStyle}
-      >
-        +
-      </a>
+      <div className="gitter">
+        <a href="./#/note-add" className={`link btn ${styles.add}`}>
+          +
+        </a>
+      </div>
     </div>
   );
 }

@@ -10,16 +10,18 @@ export interface Scroll2TopProps {
 const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
   const onScroll2oTop = () => {
     const content = document.querySelector('#md-note');
-    content?.scrollIntoView({ behavior: 'smooth' });
+    content?.scrollIntoView();
   };
 
   return (
-    <div
-      style={position}
-      className={`btn ${styles.scroll2top}`}
-      onClick={onScroll2oTop}
-    >
-      <FontAwesomeIcon icon={faAngleDoubleUp} />
+    <div className="gitter">
+      <div
+        style={position}
+        className={`btn ${styles.scroll2top}`}
+        onClick={onScroll2oTop}
+      >
+        <FontAwesomeIcon icon={faAngleDoubleUp} />
+      </div>
     </div>
   );
 };

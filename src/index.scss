@@ -1,3 +1,8 @@
+html[data-theme='dark'] {
+  color: #ccc;
+  background: #232426;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -58,6 +63,18 @@ a {
     }
   }
 
+  .gitter {
+    float: right;
+
+    &::after {
+      content: '';
+      display: block;
+      opacity: 0;
+      visibility: hidden;
+      clear: both;
+    }
+  }
+
   .btn {
     padding: 4px 10px;
     user-select: none;
@@ -71,6 +88,9 @@ a {
       background: themed('bg-color');
     }
 
+    &:hover {
+      box-shadow: 0 1px 2px -1px rgba(100, 100, 100, 0.3);
+    }
     &:active {
       outline: none;
       @include themeify {
