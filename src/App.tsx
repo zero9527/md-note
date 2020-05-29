@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router';
+import React, { useEffect, Suspense, lazy } from 'react';
+import { useLocation, Route } from 'react-router';
 import { mobileReg } from '@/utils/regx';
+import KeepAlive from 'keep-alive-comp';
+import { Link } from 'react-router-dom';
+import Loading from './components/loading';
 import useGlobalModel from '@/model/useGlobalModel';
-import NoteList from '@/views/noteList';
 import PageTitle from './components/pageTitle';
 
-interface AppProps {
-  children: string | React.ReactNode;
-}
+const NoteList = lazy(() => import('@/views/noteList'));
 
-const App: React.FC<AppProps> = ({ children }) => {
+const App: React.FC = () => {
   const { pathname } = useLocation();
-  const { setIsMobile } = useGlobalModel(modal => [modal.setIsMobile]);
+  const { setIsMobile } = useGlobalModel((modal) => [modal.setIsMobile]);
 
   useEffect(() => {
     const isMobile = mobileReg.test(window.navigator.userAgent);
@@ -20,8 +20,9 @@ const App: React.FC<AppProps> = ({ children }) => {
 
   return (
     <PageTitle pathname={pathname}>
-      {children}
-      <NoteList show={pathname === '/'} />
+      <Suspense fallback={<Loading />}>
+        <KeepAlive name="list">{(props) => <NoteList {...props} />}</KeepAlive>
+      </Suspense>
     </PageTitle>
   );
 };

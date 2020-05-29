@@ -14,13 +14,17 @@ import styles from './note-detail.scss';
 
 // 详情
 const NoteDetail: React.FC = () => {
-  const { theme } = useGlobalModel(modal => [modal.theme]);
-  const { getNoteById, updateNoteById, fetchNoteById } = useNoteModel(modal => [
+  const { theme } = useGlobalModel((modal) => [modal.theme]);
+  const {
+    getNoteById,
+    updateNoteById,
+    fetchNoteById,
+  } = useNoteModel((modal) => [
     modal.getNoteById,
     modal.updateNoteById,
-    modal.fetchNoteById
+    modal.fetchNoteById,
   ]);
-  const { id } = useParams<{ id: string }>();
+  const { tag, tid } = useParams<{ tag: string; tid: string }>();
   const history = useHistory();
   const location = useLocation();
   const [mdtext, setMdtext] = useState('');
@@ -42,18 +46,26 @@ const NoteDetail: React.FC = () => {
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', onScroll);
 
-    const cache = getNoteById(id);
+    const cache = getNoteById(tid);
     if (cache?.data) {
       setMdtext(cache.data);
       return;
     }
 
-    // 请求数据
-    const res: any = await fetchNoteById(id);
-    if (res) {
-      if (res.substring(0, 20).includes('<!DOCTYPE html>')) return;
-      updateNoteById(id, res);
-      setMdtext(res);
+    try {
+      // 请求数据
+      const res: any = await fetchNoteById(tag, tid);
+      console.log(res);
+      if (res?.code === 0) {
+        if (res.data.substring(0, 20).includes('<!DOCTYPE html>')) return;
+        updateNoteById(tid, res.data);
+        setMdtext(res.data);
+      } else {
+        console.log('数据没有了！');
+        setMdtext('');
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -75,8 +87,7 @@ const NoteDetail: React.FC = () => {
 
   // 点击目录标题
   const onCateClick = (hash: string) => {
-    const pathname = `/detail/${id}`;
-    history.replace({ pathname, hash });
+    history.replace({ pathname: location.pathname, hash });
   };
 
   // markdown 渲染好了
@@ -94,39 +105,41 @@ const NoteDetail: React.FC = () => {
   };
 
   const onScroll = () => {
-    const top = document.documentElement.scrollTop;
+    const top = document.body.scrollTop || document.documentElement.scrollTop;
     setShowScroll2Top(() => top > window.innerHeight);
   };
 
   return (
-    <div className={`center-content ${styles['note-detail']}`}>
-      <h4 className={`border-1px-bottom title`}>
-        <span onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} className="back" />
-          详情
-        </span>
-      </h4>
-      {mdtext ? (
-        <>
-          <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
-          <MdCatalog
-            mdtext={mdtext}
-            defaultActive={defaultCateActive}
-            position={toolsPositionStyle}
-            onCateClick={onCateClick}
-          >
-            <Export id={id} position={toolsPositionStyle} mdtext={mdtext}>
-              <a href={`./#/md-editor/${id}`} className="link">
-                <button className="btn">编辑</button>
-              </a>
-            </Export>
-          </MdCatalog>
-        </>
-      ) : (
-        <Loading />
-      )}
-      {showScroll2Top && <Scroll2Top position={toolsPositionStyle} />}
-    </div>
+    <>
+      <header className={`border-1px-bottom header`}>
+        <div className="center-content back" onClick={onBack}>
+          <FontAwesomeIcon icon={faArrowLeft} />
+          &nbsp;首页
+        </div>
+      </header>
+      <main className={`center-content ${styles['note-detail']}`}>
+        {mdtext ? (
+          <>
+            <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
+            <MdCatalog
+              mdtext={mdtext}
+              defaultActive={defaultCateActive}
+              position={toolsPositionStyle}
+              onCateClick={onCateClick}
+            >
+              <Export id={tid} position={toolsPositionStyle} mdtext={mdtext}>
+                <a href={`./#/md-editor/${tag}/${tid}`} className="link">
+                  <button className="btn">编辑</button>
+                </a>
+              </Export>
+            </MdCatalog>
+          </>
+        ) : (
+          <Loading />
+        )}
+        {showScroll2Top && <Scroll2Top position={toolsPositionStyle} />}
+      </main>
+    </>
   );
 };
 

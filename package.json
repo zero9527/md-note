@@ -23,6 +23,7 @@
     "hox": "^1.0.2",
     "html2canvas": "^1.0.0-rc.5",
     "immer": "^6.0.1",
+    "keep-alive-comp": "^0.0.6",
     "lodash": "^4.17.15",
     "marked": "^0.8.0",
     "react": "^16.13.0",
@@ -30,7 +31,8 @@
     "react-codemirror2": "^6.0.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "use-immer": "^0.3.5"
+    "use-immer": "^0.3.5",
+    "vconsole": "^3.3.4"
   },
   "devDependencies": {
     "@babel/core": "7.8.4",

@@ -6695,6 +6695,11 @@ jszip@^2.5.0:
   dependencies:
     pako "~1.0.2"
 
+keep-alive-comp@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.npm.taobao.org/keep-alive-comp/download/keep-alive-comp-0.0.6.tgz#a6ff412d79cf6baba5a487162b5ecd110d8796d9"
+  integrity sha1-pv9BLXnPa6ulpIcWK17NEQ2Hltk=
+
 killable@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/killable/download/killable-1.0.1.tgz#4c8ce441187a061c7474fb87ca08e2a638194892"
@@ -11070,6 +11075,11 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/vary/download/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
+
+vconsole@^3.3.4:
+  version "3.3.4"
+  resolved "https://registry.npm.taobao.org/vconsole/download/vconsole-3.3.4.tgz#a7dacd8887b3d3e902e8d18425cda56c34e77f51"
+  integrity sha1-p9rNiIez0+kC6NGEJc2lbDTnf1E=
 
 vendors@^1.0.0:
   version "1.0.4"

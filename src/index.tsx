@@ -4,7 +4,10 @@ import registerServiceWorker from './registerServiceWorker';
 import AxiosConfig from './api';
 import Router from './router';
 import Loading from '@/components/loading';
+import VConsole from 'vconsole';
 import './index.scss';
+
+// new VConsole();
 
 AxiosConfig(); // 初始化 axios
 

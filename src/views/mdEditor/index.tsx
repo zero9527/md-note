@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowLeft,
   faExpand,
-  faCompress
+  faCompress,
 } from '@fortawesome/free-solid-svg-icons';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/javascript/javascript';
@@ -18,7 +18,7 @@ import styles from './mdEditor.scss';
 
 // 编辑器
 function MdEditor() {
-  const match = useRouteMatch<{ id: string }>();
+  const { path, params } = useRouteMatch<{ tag: string; id: string }>();
   const history = useHistory();
   const { getNoteById, updateNoteById, fetchNoteById } = useNoteModel();
   const codeMirrorEditor = useRef<CodeMirror.Editor>();
@@ -29,16 +29,16 @@ function MdEditor() {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
-    if (match.path.includes('/md-editor/')) init();
+    if (path.includes('/md-editor/')) init();
   }, []);
 
   const init = async () => {
-    const cache = getNoteById(match.params.id);
+    const cache = getNoteById(params.id);
     if (cache) {
       setMdtextRaw(cache.data);
       setMdtext(cache.data);
     } else {
-      const res: any = await fetchNoteById(match.params.id);
+      const res: any = await fetchNoteById(params.tag, params.id);
       if (res) {
         if (res.substring(0, 20).includes('<!DOCTYPE html>')) return;
         setMdtextRaw(res);
@@ -64,8 +64,8 @@ function MdEditor() {
 
   const onBack = () => {
     let path = '';
-    const id = match.params.id || codeMirrorEditor.current;
-    if (!match.params.id) path = '/';
+    const id = params.id || codeMirrorEditor.current;
+    if (!params.id) path = '/';
     else path = `/detail/${id}`;
     history.push(path);
   };
@@ -101,8 +101,8 @@ function MdEditor() {
   ) => {
     // console.log('editor: ', editor);
     if (!codeMirrorEditor.current) codeMirrorEditor.current = editor;
-    if (!match.params.id && !noteAdd.current) noteAdd.current = `${Date.now()}`;
-    updateNoteById(match.params.id || noteAdd.current, value);
+    if (!params.id && !noteAdd.current) noteAdd.current = `${Date.now()}`;
+    updateNoteById(params.id || noteAdd.current, value);
     setMdtext(value);
   };
 
@@ -119,7 +119,7 @@ function MdEditor() {
       <h4 className={`border-1px-bottom title`}>
         <span onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} className="back" />
-          {match.path === '/note-add' ? '新增' : '编辑'}
+          {path === '/note-add' ? '新增' : '编辑'}
         </span>
         <span
           className={styles.fullscreen}

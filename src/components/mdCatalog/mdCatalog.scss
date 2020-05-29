@@ -1,6 +1,7 @@
 .catalog {
+  width: fit-content;
   position: fixed;
-  top: 8px;
+  top: 10px;
   right: 0;
   z-index: 10;
 
@@ -25,12 +26,11 @@
     -webkit-tap-highlight-color: transparent;
     z-index: 40;
     @include themeify {
-      background: themed('bg-color-light');
+      background: themed('bg-color');
     }
 
     .head {
-      padding: 4px;
-      padding-left: 20px;
+      padding: 4px 20px;
       margin-bottom: 8px;
       white-space: nowrap;
       overflow: hidden;
@@ -41,6 +41,7 @@
     }
 
     .desc {
+      padding: 4px 10px;
       @include themeify {
         color: themed('desc-color');
       }
@@ -78,7 +79,7 @@
 
         &:hover {
           @include themeify {
-            background: themed('bg-color-heavy');
+            background: themed('bg-color-light');
           }
         }
 

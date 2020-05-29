@@ -1,146 +1,94 @@
-import React, { useEffect, useState, useRef, CSSProperties } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { KeepAliveAssist } from 'keep-alive-comp';
 import useNoteModel from '@/model/useNoteModel';
-import HomeTools from '@/components/homeTools';
-import useGlobalModel from '@/model/useGlobalModel';
+import Tools from '@/components/Tools';
 import styles from './noteList.scss';
 
-interface NoteListProps {
-  show?: boolean;
-}
+interface NoteListProps extends KeepAliveAssist {}
 
-// export interface IMonthItem {
-//   month: string;
-//   list: INoteItem[];
-// }
-export interface NoteItem {
-  id: string | number;
-  date: string;
-  desc: string;
-}
-
-// const monthList = [
-//   'Jan',
-//   'Feb',
-//   'Mar',
-//   'Apr',
-//   'May',
-//   'Jun',
-//   'Jul',
-//   'Aug',
-//   'Sep',
-//   'Oct',
-//   'Nov',
-//   'Dec'
-// ];
-
-// 笔记列表
-function NoteList({ show = true }: NoteListProps) {
-  const nodeListElemRef = useRef<HTMLDivElement>();
-  const { height, theme } = useGlobalModel(modal => [
-    modal.theme,
-    modal.height
-  ]);
+// 列表
+const NoteList: React.FC<NoteListProps> = (props) => {
   const { loading, noteList } = useNoteModel();
-  const [sctollTop, setScrollTop] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
 
   useEffect(() => {
-    nodeListElemRef.current = document.querySelector(
-      `.${styles['note-list']}`
-    ) as HTMLDivElement;
-
-    function onScroll(e: any) {
-      setScrollTop(e.target.scrollTop || sctollTop);
-    }
-
-    document.body.addEventListener('scroll', onScroll);
-
-    return () => {
-      document.body.removeEventListener('scroll', onScroll);
-    };
+    restore();
   }, []);
 
   useEffect(() => {
-    if (show && nodeListElemRef.current)
-      nodeListElemRef.current!.scrollTop = sctollTop;
-  }, [show]);
+    window.addEventListener('scroll', onScroll, false);
+    return () => {
+      window.removeEventListener('scroll', onScroll, false);
+    };
+  }, []);
 
-  // 按月份分组数据
-  // function formateNoteList() {}
+  const restore = () => {
+    const scTop = props.scrollRestore!();
+    setTimeout(() => {
+      document.body.scrollTop = scTop || 0;
+      document.documentElement.scrollTop = scTop || 0;
+    }, 0);
+  };
+
+  const onScroll = (e: any) => {
+    // 移动端 body.scrollTop, PC端 documentElement.scrollTop
+    const scTop = e.target.body.scrollTop || e.target.documentElement.scrollTop;
+    setScrollTop(scTop || 0);
+  };
+
+  const toDetailClick = () => {
+    props.beforeRouteLeave!(scrollTop, {});
+  };
 
   return (
-    <div
-      className={`center-content ${styles['note-list']}`}
-      style={{ height, display: show ? 'block' : 'none' }}
-    >
-      <div className={`border-1px-bottom title`}>
-        <span>MD-NOTE</span>
-        <HomeTools />
-      </div>
-      <section
-        id={loading ? styles.skeleton : ''}
-        className={styles['month-item']}
-      >
-        {noteList?.length > 0 ? (
-          noteList?.map?.((noteitem, noteindex) => {
-            return (
-              <a
-                className={`link ${styles['note-item']}`}
-                key={noteindex}
-                href={`./#/detail/${noteitem.id}`}
-              >
-                <div className={styles['item-date']}>
-                  <div className={styles.time}>
-                    {noteitem.date.substr(11, 5)}
-                  </div>
-                  <div className={styles.date}>
-                    {noteitem.date.substr(5, 5)}
-                  </div>
-                </div>
-                <div className={styles['item-desc']}>{noteitem.desc}</div>
-              </a>
-            );
-          })
-        ) : (
-          <div>没有数据</div>
-        )}
-      </section>
-      {/* {notelist.map((monthitem, monthindex) => {
-        return (
-          <section
-            id={loading ? styles.skeleton : ''}
-            className={styles['month-item']}
-            key={monthindex}
-          >
-            <div className={styles['item-month']}>
-              <span>{monthitem.month}</span>
-              <span className={styles['item-month-en']}>
-                {monthList[+monthitem.month.split('-')[1] - 1]}
-              </span>
-            </div>
-            {monthitem.list.map((noteitem, noteindex) => {
+    <>
+      <header className={`border-1px-bottom header`}>
+        <div className="center-content content">
+          <span>MD-NOTE</span>
+          <Tools />
+        </div>
+      </header>
+      <main className={`center-content ${styles['note-list']}`}>
+        <section
+          id={loading ? styles.skeleton : ''}
+          className={styles.container}
+        >
+          {noteList?.length > 0 ? (
+            noteList?.map?.((noteitem, noteindex) => {
               return (
-                <div
-                  className={styles['note-item']}
-                  key={noteindex}
-                  onClick={() => toDetail(noteitem.id)}
+                <a
+                  className={`link ${styles['note-item']}`}
+                  key={`${noteitem.tag}-${noteitem.tid}`}
+                  href={`./#/detail/${noteitem.tag}/${noteitem.tid}`}
+                  onClick={toDetailClick}
                 >
                   <div className={styles['item-date']}>
-                    {noteitem.date.substring(8, noteitem.date.length)}
+                    <div className={styles.time}>
+                      {noteitem.date.substr(11, 5)}
+                    </div>
+                    <div className={styles.date}>
+                      {noteitem.date.substr(5, 5)}
+                    </div>
                   </div>
-                  <div className={styles['item-desc']}>{noteitem.desc}</div>
-                </div>
+                  <div className={styles['item-desc']}>
+                    <span className={styles.tag}>{noteitem.tag}</span>
+                    {noteitem.desc}
+                  </div>
+                </a>
               );
-            })}
-          </section>
-        );
-      })} */}
-      <div className="gitter">
-        <a href="./#/note-add" className={`link btn ${styles.add}`}>
-          +
-        </a>
-      </div>
-    </div>
+            })
+          ) : (
+            <div>没有数据</div>
+          )}
+        </section>
+        <div className="gitter">
+          <a href="./#/note-add" className={`link btn ${styles.add}`}>
+            +
+          </a>
+        </div>
+      </main>
+    </>
   );
-}
+};
 
 export default NoteList;
