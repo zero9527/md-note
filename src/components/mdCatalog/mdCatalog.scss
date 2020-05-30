@@ -1,10 +1,4 @@
 .catalog {
-  width: fit-content;
-  position: fixed;
-  top: 10px;
-  right: 0;
-  z-index: 10;
-
   > svg {
     font-size: 15px;
   }
@@ -27,6 +21,34 @@
     z-index: 40;
     @include themeify {
       background: themed('bg-color');
+    }
+
+    .close {
+      display: none;
+      width: 30px;
+      height: 100px;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      margin-top: -50px;
+      margin-left: -30px;
+      justify-content: center;
+      align-items: center;
+      border-top-left-radius: 2px;
+      border-bottom-left-radius: 2px;
+      z-index: 20;
+      cursor: pointer;
+      @include themeify {
+        color: themed('base-color');
+        background: themed('bg-color-heavy');
+      }
+
+      &:hover,
+      &:active {
+        @include themeify {
+          background: themed('bg-color');
+        }
+      }
     }
 
     .head {
@@ -150,6 +172,10 @@
       border: transparent;
       transition: 0.3s;
       transform: translateX(100%);
+
+      .close {
+        display: flex;
+      }
     }
 
     :global {

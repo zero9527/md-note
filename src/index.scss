@@ -103,29 +103,6 @@ a {
     }
   }
 
-  .header {
-    margin: 0;
-    padding: 12px;
-    white-space: nowrap;
-    z-index: 1;
-    @include themeify {
-      color: themed('base-color');
-    }
-
-    :global {
-      .content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-    }
-
-    .back {
-      padding: 0 4px;
-      cursor: pointer;
-    }
-  }
-
   .svg-inline--fa {
     box-sizing: content-box;
   }

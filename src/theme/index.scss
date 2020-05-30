@@ -12,7 +12,8 @@ $light: (
   border-color: #e9e9e9,
   bg-color: #fefefe,
   bg-color-light: #f6f6f6,
-  bg-color-heavy: #f1f1f1
+  bg-color-heavy: #f1f1f1,
+  mask-opacity: 0,
 );
 
 $dark: (
@@ -26,12 +27,13 @@ $dark: (
   border-color: #2e2e2e,
   bg-color: #232426,
   bg-color-light: #292b2d,
-  bg-color-heavy: #1e1f21
+  bg-color-heavy: #1e1f21,
+  mask-opacity: 0.3,
 );
 
 $themes: (
   light: $light,
-  dark: $dark
+  dark: $dark,
 );
 
 @mixin themeify {

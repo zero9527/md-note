@@ -1,11 +1,25 @@
+$padding-edge: 16px;
+
 .md-container {
   .md-content {
     position: relative;
-    padding: 10px 16px;
+    padding: 10px 0;
     @include themeify {
       color: themed('base-color');
       background: themed('bg-color');
-      // background-image: url('~@/assets/bg.png');
+    }
+
+    > p,
+    > h1,
+    > h2,
+    > h3,
+    > h4,
+    > h5 {
+      padding: 0 $padding-edge;
+    }
+
+    ul {
+      padding-right: $padding-edge;
     }
 
     &::before {
@@ -37,8 +51,7 @@
 
     pre {
       position: relative;
-      padding: 18px 6px;
-      border-radius: 2px;
+      padding: 20px $padding-edge;
       color: #abb2bf;
       background: #282c34;
       overflow-x: auto;
@@ -46,7 +59,8 @@
 
       code {
         font-size: 94%;
-        font-family: sans-serif;
+        font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
+          monospace;
         background: transparent;
 
         &::before {
@@ -58,11 +72,9 @@
           position: absolute;
           left: 0;
           margin-top: -18px;
-          padding: 0 8px;
+          padding: 0 16px;
           text-align: left;
-          border-radius: 6px;
           color: #666;
-          background: #282c34;
           font-size: 90%;
           box-sizing: border-box;
         }

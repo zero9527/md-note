@@ -22,7 +22,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
   mdtext,
   className,
   scrollTopRate,
-  onMdRendered
+  onMdRendered,
 }) => {
   const mdContent = useRef<HTMLElement>();
   const [previewVisible, setPreviewVisible] = useState(true);
@@ -69,7 +69,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
       sanitize: false,
       smartLists: true,
       smartypants: false,
-      xhtml: false
+      xhtml: false,
     });
   };
 
@@ -113,7 +113,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
           className={styles['md-content']}
           id="md-content"
           dangerouslySetInnerHTML={{
-            __html: marked(mdtext, mdRendered())
+            __html: marked(mdtext, mdRendered()),
           }}
         />
       )}
@@ -137,7 +137,7 @@ export default React.memo(MdPreview, (prevProps, nextProps) => {
   if (!nextProps.isEdit) return true;
 
   const areEqual = !Object.keys(nextProps).some(
-    prop => nextProps[prop] !== prevProps[prop]
+    (prop) => nextProps[prop] !== prevProps[prop]
   );
 
   return areEqual;

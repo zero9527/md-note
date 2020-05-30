@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo, CSSProperties } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useEffect, useState, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListUl } from '@fortawesome/free-solid-svg-icons';
+import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import styles from './mdCatalog.scss';
+import useScroll from '@/utils/useScroll';
 
 export interface CatalogItem {
   id: string; // 标题的id
@@ -13,32 +13,40 @@ export interface CatalogItem {
 
 export interface MdCatalogProps {
   mdtext: string;
-  position?: CSSProperties;
   defaultActive?: string;
   onCateClick?: (id: string) => void;
+  onGetTitle?: (title: string) => void;
 }
 
 // 根据 markdown 字符串生成 二级标题/三级标题目录
 const MdCatalog: React.FC<MdCatalogProps> = ({
   mdtext,
-  position,
   defaultActive,
   onCateClick,
+  onGetTitle,
   ...props
 }) => {
+  const { scrollTop } = useScroll();
   const [showCate, setShowCate] = useState(false);
   const [cate, setCate] = useState<CatalogItem[]>([]);
   const [cateActive, setCateActive] = useState('');
   const [title, setTitle] = useState('');
-  // const [allcate, setAllcate] = useState<string[]>([]);
+  const [allcate, setAllcate] = useState<CatalogItem[]>([]);
 
   useEffect(() => {
-    if (title) document.title += `|${title}`;
+    if (title) {
+      document.title += `|${title}`;
+      onGetTitle?.(title);
+    }
   }, [title]);
 
   useEffect(() => {
     if (defaultActive) setCateActive(defaultActive);
-  }, [defaultActive]);
+  }, []);
+
+  useEffect(() => {
+    scroll2Item();
+  }, [cateActive]);
 
   useEffect(() => {
     generate();
@@ -49,54 +57,68 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   }, []);
 
   useEffect(() => {
-    function resize() {
-      if (showCate) {
-        const width = window.innerWidth;
-        if (width < 1100) document.body.style.overflowY = 'auto';
-        setShowCate(false);
-        toggleBlur('remove');
-      }
-    }
-
-    window.addEventListener('resize', resize);
-
-    return () => {
-      window.removeEventListener('resize', resize);
-    };
-  }, [showCate]);
-
-  useEffect(() => {
     if (showCate) {
       document.body.style.overflowY = 'hidden';
-      scroll2Item();
       addBodyClick();
+      scroll2Item();
     } else {
       document.body.style.overflowY = 'auto';
     }
-    if (defaultActive) scroll2Item();
-  }, [showCate, defaultActive]);
+  }, [showCate]);
+
+  useEffect(() => {
+    // 铺平数据，用于 scrollHandler
+    function flat(arr: any[]) {
+      const list: any[] = [];
+      arr.forEach((item) => {
+        if (item?.child?.length) list.push(item, ...flat(item.child));
+        else list.push(item);
+      });
+      return list;
+    }
+    setAllcate(flat(cate));
+  }, [cate]);
+
+  useEffect(() => {
+    scrollHandler();
+  }, [scrollTop]);
+
+  // 滚动时，显示高亮对应区域的标题
+  const scrollHandler = () => {
+    try {
+      allcate.forEach((item: CatalogItem) => {
+        const el = document.getElementById(item.id) as HTMLElement;
+        const bcr = el.getBoundingClientRect();
+        if (bcr.top < 0) {
+          setCateActive(item.id);
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const generate = () => {
     let allcateArr: string[] = [];
     const cateList: CatalogItem[] = [];
     const content = mdtext.slice(mdtext.indexOf('\n'), mdtext.length);
-    setTitle(mdtext.slice(0, mdtext.indexOf('\n')));
+    setTitle(mdtext.slice(1, mdtext.indexOf('\n')));
     const cate2Arr = content.split('\n## ');
 
-    cate2Arr.forEach(cate2 => {
+    cate2Arr.forEach((cate2) => {
       // 二级目录
       const tempcate2 = cate2.substring(0, cate2.indexOf('\n')).trim();
       const cat3Arr = cate2.split('\n### ');
       cat3Arr.shift();
       const cat2Child: CatalogItem[] = [];
 
-      cat3Arr.forEach(cate3 => {
+      cat3Arr.forEach((cate3) => {
         // 三级目录
         const tempcate3 = cate3.substring(0, cate3.indexOf('\n')).trim();
         cat2Child.push({
           id: tempcate3,
           header: `catelog-${tempcate3}`,
-          label: tempcate3
+          label: tempcate3,
         });
       });
 
@@ -104,31 +126,33 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         id: tempcate2,
         header: `catelog-${tempcate2}`,
         label: tempcate2,
-        child: []
+        child: [],
       };
 
       allcateArr.push(tempcate2);
       if (cat2Child.length > 0) {
         cate2Item.child = cat2Child;
-        allcateArr = allcateArr.concat(cat2Child.map(i => i.id));
+        allcateArr = allcateArr.concat(cat2Child.map((i) => i.id));
       }
 
       cateList.push(cate2Item);
     });
 
-    setCate(() => cateList.filter(item => Boolean(item.id)));
+    setCate(() => cateList.filter((item) => Boolean(item.id)));
     // setAllcate(allcateArr);
   };
 
   const scroll2Item = () => {
-    const catelogItem = document.getElementById(`catelog-${defaultActive}`);
+    const catelogItem = document.getElementById(`catelog-${cateActive}`);
     catelogItem?.scrollIntoView();
+    onCateClick?.(cateActive);
   };
 
   const cateClick = (cateItem: CatalogItem) => {
     const header = document.getElementById(cateItem.id) as HTMLElement;
     header?.scrollIntoView();
 
+    toggleBlur('remove');
     setCateActive(cateItem.id);
     onCateClick?.(cateItem.id);
     setTimeout(() => setShowCate(false), 0);
@@ -139,10 +163,10 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     setTimeout(() => setShowCate(true), 0);
   };
 
-  const removeBodyClick = () => window.removeEventListener('click', handler);
-  const addBodyClick = () => window.addEventListener('click', handler);
+  const removeBodyClick = () => window.removeEventListener('click', bcHandler);
+  const addBodyClick = () => window.addEventListener('click', bcHandler);
 
-  const handler = () => {
+  const bcHandler = () => {
     setShowCate(false);
     removeBodyClick();
     toggleBlur('remove');
@@ -180,8 +204,8 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     return showCate ? styles['cate-show'] : '';
   }, [showCate]);
 
-  return ReactDOM.createPortal(
-    <div id="catalog" className={styles.catalog} style={position}>
+  return (
+    <div id="catalog" className={styles.catalog}>
       <FontAwesomeIcon
         className="btn"
         icon={faListUl}
@@ -191,7 +215,15 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         className={styles.bg}
         style={{ display: showCate ? 'block' : 'none' }}
       />
-      <div className={`${styles.catelist} ${cateListTransition}`}>
+      <div
+        className={`${styles.catelist} ${cateListTransition}`}
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+      >
+        {showCate && (
+          <span className={styles.close} onClick={bcHandler}>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </span>
+        )}
         <section className={styles.head} title={title}>
           目录: {title}
         </section>
@@ -213,8 +245,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         </section>
       </div>
       {props.children}
-    </div>,
-    document.body
+    </div>
   );
 };
 

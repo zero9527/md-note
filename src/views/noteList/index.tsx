@@ -1,6 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { KeepAliveAssist } from 'keep-alive-comp';
 import useNoteModel from '@/model/useNoteModel';
+import StickyRight from '@/components/stickyRight';
+import useScroll from '@/utils/useScroll';
+import Header from '@/components/header';
 import Tools from '@/components/Tools';
 import styles from './noteList.scss';
 
@@ -9,17 +12,10 @@ interface NoteListProps extends KeepAliveAssist {}
 // 列表
 const NoteList: React.FC<NoteListProps> = (props) => {
   const { loading, noteList } = useNoteModel();
-  const [scrollTop, setScrollTop] = useState(0);
+  const { scrollTop } = useScroll();
 
   useEffect(() => {
     restore();
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll, false);
-    return () => {
-      window.removeEventListener('scroll', onScroll, false);
-    };
   }, []);
 
   const restore = () => {
@@ -30,24 +26,18 @@ const NoteList: React.FC<NoteListProps> = (props) => {
     }, 0);
   };
 
-  const onScroll = (e: any) => {
-    // 移动端 body.scrollTop, PC端 documentElement.scrollTop
-    const scTop = e.target.body.scrollTop || e.target.documentElement.scrollTop;
-    setScrollTop(scTop || 0);
-  };
-
   const toDetailClick = () => {
     props.beforeRouteLeave!(scrollTop, {});
   };
 
   return (
     <>
-      <header className={`border-1px-bottom header`}>
+      <Header className={styles.header}>
         <div className="center-content content">
           <span>MD-NOTE</span>
           <Tools />
         </div>
-      </header>
+      </Header>
       <main className={`center-content ${styles['note-list']}`}>
         <section
           id={loading ? styles.skeleton : ''}
@@ -81,11 +71,18 @@ const NoteList: React.FC<NoteListProps> = (props) => {
             <div>没有数据</div>
           )}
         </section>
-        <div className="gitter">
+        <StickyRight className={styles.iframe}>
+          <iframe
+            src="https://zero9527.github.io/vue-calendar"
+            className={styles.calendar}
+          />
+          <div className={styles.mask} />
+        </StickyRight>
+        {/* <div className="gitter">
           <a href="./#/note-add" className={`link btn ${styles.add}`}>
             +
           </a>
-        </div>
+        </div> */}
       </main>
     </>
   );

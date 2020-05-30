@@ -1,5 +1,21 @@
 .note-detail {
   height: 100%;
   position: relative;
+  padding-top: 44px;
   overflow-x: hidden;
+}
+
+.header {
+  :global {
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .back {
+    padding: 0 4px;
+    cursor: pointer;
+  }
 }

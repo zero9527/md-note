@@ -1,11 +1,14 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import useGlobalModel from '@/model/useGlobalModel';
 import Loading from '@/components/loading';
 import Scroll2Top from '@/components/Scroll2Top';
 import useNoteModel from '@/model/useNoteModel';
+import StickyRight from '@/components/stickyRight';
+import Header from '@/components/header';
+import useScroll from '@/utils/useScroll';
 import MdPreview from '@/components/mdPreview';
 import MdCatalog from '@/components/mdCatalog';
 import Export from '@/components/export';
@@ -27,6 +30,8 @@ const NoteDetail: React.FC = () => {
   const { tag, tid } = useParams<{ tag: string; tid: string }>();
   const history = useHistory();
   const location = useLocation();
+  const { scrollTop } = useScroll();
+  const [title, setTitle] = useState('');
   const [mdtext, setMdtext] = useState('');
   const [showScroll2Top, setShowScroll2Top] = useState(false);
   const [toolsPositionStyle, setToolsPositionStyle] = useState<CSSProperties>();
@@ -34,18 +39,13 @@ const NoteDetail: React.FC = () => {
 
   useEffect(() => {
     init();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('scroll', onScroll);
-    };
   }, []);
 
-  const init = async () => {
-    resize();
-    window.addEventListener('resize', resize);
-    window.addEventListener('scroll', onScroll);
+  useEffect(() => {
+    onScroll();
+  }, [scrollTop]);
 
+  const init = async () => {
     const cache = getNoteById(tid);
     if (cache?.data) {
       setMdtext(cache.data);
@@ -55,7 +55,6 @@ const NoteDetail: React.FC = () => {
     try {
       // 请求数据
       const res: any = await fetchNoteById(tag, tid);
-      console.log(res);
       if (res?.code === 0) {
         if (res.data.substring(0, 20).includes('<!DOCTYPE html>')) return;
         updateNoteById(tid, res.data);
@@ -69,20 +68,12 @@ const NoteDetail: React.FC = () => {
     }
   };
 
-  const resize = () => {
-    const bodyWidth = document.body.clientWidth;
-    const MAX_VIEW_WIDTH = 1100;
-    const CONTENT_WIDTH = 800;
-    const style =
-      bodyWidth > MAX_VIEW_WIDTH
-        ? { left: `${(bodyWidth - MAX_VIEW_WIDTH) / 2 + CONTENT_WIDTH + 20}px` }
-        : { right: '12px' };
-    setToolsPositionStyle(style);
-    // throttle(() => {});
-  };
-
   const onBack = () => {
     history.push('/');
+  };
+
+  const onGetTitle = (_title: string) => {
+    setTitle(_title);
   };
 
   // 点击目录标题
@@ -105,34 +96,44 @@ const NoteDetail: React.FC = () => {
   };
 
   const onScroll = () => {
-    const top = document.body.scrollTop || document.documentElement.scrollTop;
-    setShowScroll2Top(() => top > window.innerHeight);
+    setShowScroll2Top(() => scrollTop > window.innerHeight);
+  };
+
+  const onResize = (position: CSSProperties) => {
+    setToolsPositionStyle(position);
   };
 
   return (
     <>
-      <header className={`border-1px-bottom header`}>
-        <div className="center-content back" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-          &nbsp;首页
+      <Header className={styles.header}>
+        <div className="center-content">
+          <FontAwesomeIcon
+            icon={faChevronLeft}
+            className={styles.back}
+            title="返回首页"
+            onClick={onBack}
+          />
+          <span title="文章标题">&nbsp;{title}</span>
         </div>
-      </header>
+      </Header>
       <main className={`center-content ${styles['note-detail']}`}>
         {mdtext ? (
           <>
             <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
-            <MdCatalog
-              mdtext={mdtext}
-              defaultActive={defaultCateActive}
-              position={toolsPositionStyle}
-              onCateClick={onCateClick}
-            >
-              <Export id={tid} position={toolsPositionStyle} mdtext={mdtext}>
-                <a href={`./#/md-editor/${tag}/${tid}`} className="link">
-                  <button className="btn">编辑</button>
-                </a>
-              </Export>
-            </MdCatalog>
+            <StickyRight onResize={onResize}>
+              <MdCatalog
+                mdtext={mdtext}
+                defaultActive={defaultCateActive}
+                onCateClick={onCateClick}
+                onGetTitle={onGetTitle}
+              >
+                <Export id={tid} position={toolsPositionStyle} mdtext={mdtext}>
+                  <a href={`./#/md-editor/${tag}/${tid}`} className="link">
+                    <button className="btn">编辑</button>
+                  </a>
+                </Export>
+              </MdCatalog>
+            </StickyRight>
           </>
         ) : (
           <Loading />

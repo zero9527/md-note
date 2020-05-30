@@ -7,6 +7,7 @@ export interface Scroll2TopProps {
   position?: CSSProperties;
 }
 
+// 回到顶部
 const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
   const onScroll2oTop = () => {
     const content = document.querySelector('#md-note');

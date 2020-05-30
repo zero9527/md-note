@@ -1,11 +1,8 @@
 .note-list {
   width: 100%;
   height: 100%;
+  padding-top: 44px;
   overflow: auto;
-  transition: color, background 0.3s;
-  @include themeify {
-    background: themed('bg-color');
-  }
 
   .add {
     width: 46px;
@@ -21,8 +18,19 @@
   }
 }
 
+.header {
+  :global .content {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
 .container {
   padding-bottom: 20px;
+  transition: color, background 0.3s;
+  @include themeify {
+    background: themed('bg-color');
+  }
 
   .note-item {
     position: relative;
@@ -146,5 +154,42 @@
       color: themed('bg-color-heavy');
       background: themed('bg-color-heavy');
     }
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .container {
+    max-width: 800px;
+  }
+
+  .iframe {
+    .calendar {
+      height: 500px;
+      margin-top: 40px;
+      border: none;
+    }
+
+    .mask {
+      width: 100%;
+      height: 100%;
+      display: block;
+      position: absolute;
+      top: 0;
+      pointer-events: none;
+      @include themeify {
+        background: themed('bg-color-heavy');
+        opacity: themed('mask-opacity');
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1099px) {
+  .iframe {
+    max-width: 1100px;
+  }
+
+  .calendar {
+    display: none;
   }
 }
