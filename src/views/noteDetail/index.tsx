@@ -131,11 +131,11 @@ const NoteDetail: React.FC = () => {
                 onCateClick={onCateClick}
                 onGetTitle={onGetTitle}
               >
-                <Export id={tid} position={stickyRightStyle} mdtext={mdtext}>
+                {/* <Export id={tid} position={stickyRightStyle} mdtext={mdtext}>
                   <a href={`./#/md-editor/${tag}/${tid}`} className="link">
                     <button className="btn">编辑</button>
                   </a>
-                </Export>
+                </Export> */}
               </MdCatalog>
             </StickyRight>
           </>

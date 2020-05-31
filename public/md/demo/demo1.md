@@ -7,17 +7,139 @@
 * markdown 渲染使用 [marked.js](https://marked.js.org)，语法高亮使用 [highlight.js](https://highlightjs.org/) 
 * 图片导出使用 [html2canvas](http://html2canvas.hertzen.com/)，纯前端操作（导出markdown同）
 * 编辑器使用 [codemirror.js](https://codemirror.net/)
+* 黑色模式
 
 > **！注意：**<br>
 > 不提供数据存储服务，仅使用浏览器缓存
 
+## 一些预览图
+![首页](https://s1.ax1x.com/2020/05/31/t1fO56.png)
+
+详情`PC布局`
+
+![详情PC布局](https://s1.ax1x.com/2020/05/31/t1R4oV.png)
+![详情移动端布局](https://s1.ax1x.com/2020/05/31/t1f7r9.png)
+
+<!-- 编辑器`PC布局`
+
+![编辑器PC布局](./images/editor-pc.png) -->
+
+<!-- 编辑器`移动端布局`
+
+![编辑器移动端布局](https://s1.ax1x.com/2020/05/31/t1RXe1.png) -->
+<!-- ![详情移动端布局](./images/detail-mobile.png)
+![编辑器移动端布局](./images/editor-mobile.png) -->
+
 
 ## 1、首页
+滚动位置恢复用 [这个库](https://www.npmjs.com/package/keep-alive-comp)，之前自己写的，已发布 `npm`;
+配合 `useScroll` 很简单
 
-* 列表显示
-  * 月份分组
-* 新增
+```jsx
+import React, { useEffect, useMemo } from 'react';
+import { KeepAliveAssist } from 'keep-alive-comp';
+import useNoteModel from '@/model/useNoteModel';
+import StickyRight from '@/components/stickyRight';
+import useScroll from '@/utils/useScroll';
+import Header from '@/components/header';
+import Tools from '@/components/Tools';
+import Scroll2Top from '@/components/Scroll2Top';
+import useGlobalModel from '@/model/useGlobalModel';
+import { isMobile } from '@/utils';
+import styles from './noteList.scss';
 
+interface NoteListProps extends KeepAliveAssist {}
+
+// 列表
+const NoteList: React.FC<NoteListProps> = (props) => {
+  const { loading, noteList } = useNoteModel();
+  const { scrollTop } = useScroll();
+  const { stickyRightStyle } = useGlobalModel((modal) => [
+    modal.stickyRightStyle,
+  ]);
+
+  useEffect(() => {
+    restore();
+  }, []);
+
+  const restore = () => {
+    const scTop = props.scrollRestore!();
+    setTimeout(() => {
+      document.body.scrollTop = scTop || 0;
+      document.documentElement.scrollTop = scTop || 0;
+    }, 0);
+  };
+
+  const toDetailClick = () => {
+    props.beforeRouteLeave!(scrollTop, {});
+  };
+
+  const showScroll2Top = useMemo(() => {
+    return scrollTop > window.innerHeight;
+  }, [scrollTop]);
+
+  return (
+    <>
+      <Header className={styles.header}>
+        <div className="center-content content">
+          <span>MD-NOTE</span>
+          <Tools />
+        </div>
+      </Header>
+      <main className={`center-content ${styles['note-list']}`}>
+        <section
+          id={loading ? styles.skeleton : ''}
+          className={styles.container}
+        >
+          {noteList?.length > 0 ? (
+            noteList?.map?.((noteitem) => {
+              return (
+                <a
+                  className={`link ${styles.item}`}
+                  key={`${noteitem.tag}-${noteitem.name}`}
+                  href={`./#/detail/${noteitem.tag}/${noteitem.name}`}
+                  onClick={toDetailClick}
+                >
+                  <div className={styles.title}>{noteitem.title}</div>
+                  <div className={styles.desc}>
+                    <span className={styles.tag}>
+                      标签：<span>{noteitem.tag}</span>
+                    </span>
+                    <span className={styles.time}>
+                      创建时间：{noteitem.create_time}
+                    </span>
+                  </div>
+                </a>
+              );
+            })
+          ) : (
+            <div>没有数据</div>
+          )}
+        </section>
+        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
+        <StickyRight className={styles.iframe}>
+          {!isMobile && (
+            <>
+              <iframe
+                src="https://zero9527.github.io/vue-calendar"
+                className={styles.calendar}
+              />
+              <div className={styles.mask} />
+            </>
+          )}
+        </StickyRight>
+        {/* <div className="gitter">
+          <a href="./#/note-add" className={`link btn ${styles.add}`}>
+            +
+          </a>
+        </div> */}
+      </main>
+    </>
+  );
+};
+
+export default NoteList;
+```
 
 ## 2、详情页面
 
@@ -70,20 +192,6 @@ renderer.image = function(href: string, title: string, text: string) {
 * [highlight.js](https://highlightjs.org/) 代码高亮
 * 编辑器使用 [codemirror.js](https://codemirror.net/)
 * 编辑撤销/重做
-
-详情`PC布局`
-
-![详情PC布局](./images/detail-pc.png)
-
-编辑器`PC布局`
-
-![编辑器PC布局](./images/editor-pc.png)
-
-详情`移动端布局`、编辑器`移动端布局`
-
-![详情、编辑器移动端布局](./images/detail-editor-mobile.png)
-<!-- ![详情移动端布局](./images/detail-mobile.png)
-![编辑器移动端布局](./images/editor-mobile.png) -->
 
 ### 3.2 预览效果
 

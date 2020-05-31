@@ -5,10 +5,10 @@ import StickyRight from '@/components/stickyRight';
 import useScroll from '@/utils/useScroll';
 import Header from '@/components/header';
 import Tools from '@/components/Tools';
-import styles from './noteList.scss';
-import { isMobile } from '@/utils';
 import Scroll2Top from '@/components/Scroll2Top';
 import useGlobalModel from '@/model/useGlobalModel';
+import { isMobile } from '@/utils';
+import styles from './noteList.scss';
 
 interface NoteListProps extends KeepAliveAssist {}
 
