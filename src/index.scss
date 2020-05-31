@@ -17,6 +17,7 @@ body {
 }
 * {
   box-sizing: border-box;
+  transition: color, background 0.8s;
 }
 h1 {
   font-size: 1.5rem;
@@ -50,7 +51,6 @@ a {
 
 :global {
   #md-note {
-    transition: color, background 0.3s;
     @include themeify {
       color: themed('base-color');
       background: themed('bg-color-heavy');

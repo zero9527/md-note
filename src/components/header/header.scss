@@ -17,7 +17,6 @@
 
 .visible {
   visibility: visible;
-  // transition: 0.3s ease;
   transform: translateY(-100%);
   animation: show 0.3s forwards;
 

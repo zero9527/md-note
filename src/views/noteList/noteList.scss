@@ -19,6 +19,12 @@
 }
 
 .header {
+  .desc {
+    font-size: 85%;
+    @include themeify {
+      color: themed('desc-color');
+    }
+  }
   :global .content {
     display: flex;
     justify-content: space-between;
@@ -27,7 +33,6 @@
 
 .container {
   padding-bottom: 12px;
-  transition: color, background 0.3s;
 
   .item {
     position: relative;
@@ -87,6 +92,14 @@
       }
     }
   }
+
+  .reach-bottom {
+    margin-top: 10px;
+    text-align: center;
+    @include themeify {
+      color: themed('gray-color');
+    }
+  }
 }
 
 // 骨架屏
@@ -99,6 +112,27 @@
     @include themeify {
       color: themed('bg-color-light');
       background: themed('bg-color-light');
+    }
+  }
+}
+
+.beian {
+  padding: 20px 0;
+  @include themeify {
+    color: themed('gray-color');
+  }
+
+  a {
+    text-decoration: none;
+    font-size: 14px;
+    @include themeify {
+      color: themed('gray-color');
+    }
+
+    &:hover {
+      @include themeify {
+        color: themed('primary-color');
+      }
     }
   }
 }
@@ -125,7 +159,7 @@
 
   .iframe {
     .calendar {
-      height: 500px;
+      height: 440px;
       margin-top: 40px;
       border: none;
     }
@@ -154,7 +188,8 @@
     max-width: 1100px;
   }
 
-  .calendar {
+  .calendar,
+  .beian {
     display: none;
   }
 }

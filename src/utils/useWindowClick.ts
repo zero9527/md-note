@@ -1,12 +1,16 @@
 import { useEffect, useRef } from 'react';
 
-// 添加全局点击事件，底层元素阻止冒泡则不会触发
+/**
+ * 添加全局点击事件，底层元素阻止冒泡则不会触发
+ * @param callback
+ * @example const { addListener, removeListener } = useWindowClick(onWindowClick);
+ */
 function useWindowClick(callback: () => void) {
   const isReady = useRef(false);
 
   useEffect(() => {
     return () => {
-      window.removeEventListener('click', onWindowClick, false);
+      removeListener();
     };
   }, []);
 
