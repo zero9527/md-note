@@ -22,7 +22,7 @@ async function runCommand(cmd, cwd) {
     cwd,
     onStderr(chunk) {
       textError(`${cmd}, stderrChunk, ${chunk.toString('utf8')}`);
-    }
+    },
   });
 }
 
@@ -44,7 +44,7 @@ async function deploy(LOCAL_CONFIG, SERVER_CONFIG, next) {
   try {
     // 上传压缩的项目文件
     await SSH.putFile(
-      path.resolve(__dirname, LOCAL_CONFIG.distZip),
+      path.resolve(process.cwd(), LOCAL_CONFIG.distZip),
       `${distDir}/${distZipName}.zip`
     );
 

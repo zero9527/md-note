@@ -7,17 +7,139 @@
 * markdown 渲染使用 [marked.js](https://marked.js.org)，语法高亮使用 [highlight.js](https://highlightjs.org/) 
 * 图片导出使用 [html2canvas](http://html2canvas.hertzen.com/)，纯前端操作（导出markdown同）
 * 编辑器使用 [codemirror.js](https://codemirror.net/)
+* 黑色模式
 
 > **！注意：**<br>
 > 不提供数据存储服务，仅使用浏览器缓存
 
+## 一些预览图
+![首页](https://s1.ax1x.com/2020/05/31/t1fO56.png)
+
+详情`PC布局`
+
+![详情PC布局](https://s1.ax1x.com/2020/05/31/t1R4oV.png)
+![详情移动端布局](https://s1.ax1x.com/2020/05/31/t1f7r9.png)
+
+<!-- 编辑器`PC布局`
+
+![编辑器PC布局](./images/editor-pc.png) -->
+
+<!-- 编辑器`移动端布局`
+
+![编辑器移动端布局](https://s1.ax1x.com/2020/05/31/t1RXe1.png) -->
+<!-- ![详情移动端布局](./images/detail-mobile.png)
+![编辑器移动端布局](./images/editor-mobile.png) -->
+
 
 ## 1、首页
+滚动位置恢复用 [这个库](https://www.npmjs.com/package/keep-alive-comp)，之前自己写的，已发布 `npm`;
+配合 `useScroll` 很简单
 
-* 列表显示
-  * 月份分组
-* 新增
+```jsx
+import React, { useEffect, useMemo } from 'react';
+import { KeepAliveAssist } from 'keep-alive-comp';
+import useNoteModel from '@/model/useNoteModel';
+import StickyRight from '@/components/stickyRight';
+import useScroll from '@/utils/useScroll';
+import Header from '@/components/header';
+import Tools from '@/components/Tools';
+import Scroll2Top from '@/components/Scroll2Top';
+import useGlobalModel from '@/model/useGlobalModel';
+import { isMobile } from '@/utils';
+import styles from './noteList.scss';
 
+interface NoteListProps extends KeepAliveAssist {}
+
+// 列表
+const NoteList: React.FC<NoteListProps> = (props) => {
+  const { loading, noteList } = useNoteModel();
+  const { scrollTop } = useScroll();
+  const { stickyRightStyle } = useGlobalModel((modal) => [
+    modal.stickyRightStyle,
+  ]);
+
+  useEffect(() => {
+    restore();
+  }, []);
+
+  const restore = () => {
+    const scTop = props.scrollRestore!();
+    setTimeout(() => {
+      document.body.scrollTop = scTop || 0;
+      document.documentElement.scrollTop = scTop || 0;
+    }, 0);
+  };
+
+  const toDetailClick = () => {
+    props.beforeRouteLeave!(scrollTop, {});
+  };
+
+  const showScroll2Top = useMemo(() => {
+    return scrollTop > window.innerHeight;
+  }, [scrollTop]);
+
+  return (
+    <>
+      <Header className={styles.header}>
+        <div className="center-content content">
+          <span>MD-NOTE</span>
+          <Tools />
+        </div>
+      </Header>
+      <main className={`center-content ${styles['note-list']}`}>
+        <section
+          id={loading ? styles.skeleton : ''}
+          className={styles.container}
+        >
+          {noteList?.length > 0 ? (
+            noteList?.map?.((noteitem) => {
+              return (
+                <a
+                  className={`link ${styles.item}`}
+                  key={`${noteitem.tag}-${noteitem.name}`}
+                  href={`./#/detail/${noteitem.tag}/${noteitem.name}`}
+                  onClick={toDetailClick}
+                >
+                  <div className={styles.title}>{noteitem.title}</div>
+                  <div className={styles.desc}>
+                    <span className={styles.tag}>
+                      标签：<span>{noteitem.tag}</span>
+                    </span>
+                    <span className={styles.time}>
+                      创建时间：{noteitem.create_time}
+                    </span>
+                  </div>
+                </a>
+              );
+            })
+          ) : (
+            <div>没有数据</div>
+          )}
+        </section>
+        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
+        <StickyRight className={styles.iframe}>
+          {!isMobile && (
+            <>
+              <iframe
+                src="https://zero9527.github.io/vue-calendar"
+                className={styles.calendar}
+              />
+              <div className={styles.mask} />
+            </>
+          )}
+        </StickyRight>
+        {/* <div className="gitter">
+          <a href="./#/note-add" className={`link btn ${styles.add}`}>
+            +
+          </a>
+        </div> */}
+      </main>
+    </>
+  );
+};
+
+export default NoteList;
+```
 
 ## 2、详情页面
 
@@ -61,23 +183,6 @@ renderer.image = function(href: string, title: string, text: string) {
 使用 [html2canvas](http://html2canvas.hertzen.com/)，导出前设置视图宽度为`代码块（pre>code）最大宽度`（防止导出图片截断/大片空白等问题），完成后恢复
 > 使用时，有些样式是识别不了的，这个时候可以考虑，样式直接放到标签上面设置试试
 
-操作按钮显示的状态下，点击任意外部收起
-```typescript
-// click outside
-const onShowTools = () => {
-  setBtnShow(!btnShow);
-  setTimeout(() => {
-    if (!btnShow) window.addEventListener('click', bodyClick);
-    else window.removeEventListener('click', bodyClick);
-  }, 0);
-};
-
-const bodyClick = () => {
-  setTimeout(() => setBtnShow(false), 0);
-  window.removeEventListener('click', bodyClick);
-};
-
-```
 
 ## 3、编辑页面
 
@@ -88,20 +193,6 @@ const bodyClick = () => {
 * 编辑器使用 [codemirror.js](https://codemirror.net/)
 * 编辑撤销/重做
 
-详情`PC布局`
-
-![详情PC布局](./docs/images/detail-pc.png)
-
-编辑器`PC布局`
-
-![编辑器PC布局](./docs/images/editor-pc.png)
-
-详情`移动端布局`、编辑器`移动端布局`
-
-![详情、编辑器移动端布局](./docs/images/detail-editor-mobile.png)
-<!-- ![详情移动端布局](./images/detail-mobile.png)
-![编辑器移动端布局](./images/editor-mobile.png) -->
-
 ### 3.2 预览效果
 
 * 窗口拖动(移动端小窗口)
@@ -110,155 +201,460 @@ const bodyClick = () => {
 
 ## 4、代码示例
 
-### 目录生成
-```typescript
-// src/components/mdCategary/index.tsx
-import React, { useEffect, useState, useMemo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListUl } from '@fortawesome/free-solid-svg-icons';
-import styles from './mdCategary.scss';
+### usePrevState
+```ts
+// src/utils/usePrevState.ts
+import { useRef, useEffect, useState } from 'react';
 
-export interface CateListItem {
-  id: string;
-  label: string;
-  child?: CateListItem[];
+function usePrevState<T>(state: T) {
+  const countRef = useRef<any>(null);
+  const [_state, setState] = useState<T>(state);
+
+  useEffect(() => {
+    countRef.current = _state;
+    setState(state);
+  }, [state]);
+
+  // prevState
+  return countRef.current;
 }
 
-export interface MdCateGaryProps {
+export default usePrevState;
+```
+
+### useScroll
+使用：见 `src/components/header/index.tsx`
+
+```ts
+// src/utils/useScroll.ts
+import { useEffect, useState } from 'react';
+import usePrevState from './usePrevState';
+
+// 监听window滚动
+const useScroll = () => {
+  const [scrollTop, setScrollTop] = useState(0);
+  const prevScrollTop = usePrevState(scrollTop);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll, false);
+    return () => {
+      window.removeEventListener('scroll', onScroll, false);
+    };
+  }, []);
+
+  const onScroll = (e: any) => {
+    // 移动端 body.scrollTop, PC端 documentElement.scrollTop
+    const scTop = e.target.body.scrollTop || e.target.documentElement.scrollTop;
+    setScrollTop(scTop || 0);
+  };
+
+  return {
+    prevScrollTop,
+    scrollTop,
+  };
+};
+
+export default useScroll;
+```
+
+### useWindowClick
+使用：见 `src/components/Scroll2Top/index.tsx`
+
+```ts
+import { useEffect, useRef } from 'react';
+
+// 添加全局点击事件，底层元素阻止冒泡则不会触发
+function useWindowClick(callback: () => void) {
+  const isReady = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('click', onWindowClick, false);
+    };
+  }, []);
+
+  const addListener = () => {
+    isReady.current = true;
+    window.addEventListener('click', onWindowClick, false);
+  };
+
+  const removeListener = () => {
+    isReady.current = false;
+    window.removeEventListener('click', onWindowClick, false);
+  };
+
+  const onWindowClick = () => {
+    if (typeof callback !== 'function') {
+      return console.warn('callback 不是函数！');
+    }
+    if (callback && isReady) {
+      callback();
+      removeListener();
+    }
+  };
+
+  return {
+    addListener,
+    removeListener,
+  };
+}
+
+export default useWindowClick;
+```
+
+
+### 目录生成
+```typescript
+// src/components/mdCatalog/index.tsx
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import styles from './mdCatalog.scss';
+import useScroll from '@/utils/useScroll';
+
+export interface CatalogItem {
+  id: string; // 标题的id
+  header: string; // 本身的id
+  label: string; // 文本
+  child?: CatalogItem[];
+}
+
+export interface MdCatalogProps {
   mdtext: string;
-  btnPCSpace: string;
+  defaultActive?: string;
   onCateClick?: (id: string) => void;
+  onGetTitle?: (title: string) => void;
 }
 
 // 根据 markdown 字符串生成 二级标题/三级标题目录
-const MdCateGary: React.FC<MdCateGaryProps> = ({
+const MdCatalog: React.FC<MdCatalogProps> = ({
   mdtext,
-  btnPCSpace,
+  defaultActive,
   onCateClick,
+  onGetTitle,
   ...props
 }) => {
+  const { scrollTop } = useScroll();
+  const useScrollTop = useRef(false);
   const [showCate, setShowCate] = useState(false);
-  const [cate, setCate] = useState<CateListItem[]>([]);
+  const [cate, setCate] = useState<CatalogItem[]>([]);
   const [cateActive, setCateActive] = useState('');
-  const [allcate, setAllcate] = useState<string[]>([]);
+  const [title, setTitle] = useState('');
+  const [allcate, setAllcate] = useState<CatalogItem[]>([]);
+
+  useEffect(() => {
+    if (title) {
+      document.title += `|${title}`;
+      onGetTitle?.(title);
+    }
+  }, [title]);
+
+  useEffect(() => {
+    if (defaultActive) setCateActive(defaultActive);
+  }, []);
+
+  useEffect(() => {
+    scroll2Item();
+  }, [cateActive]);
 
   useEffect(() => {
     generate();
   }, []);
 
   useEffect(() => {
-    // console.log('allcate: ', allcate);
-    // allcate.forEach(cateId => {
-    //   const el = document.getElementById(cateId) as HTMLElement;
-    //   console.log('el: ', el);
-    // });
-  }, [allcate]);
+    if (showCate) {
+      document.body.style.overflowY = 'hidden';
+    } else {
+      document.body.style.overflowY = 'auto';
+    }
+  }, [showCate]);
+
+  useEffect(() => {
+    // 铺平数据，用于 scrollHandler
+    function flat(arr: any[]) {
+      const list: any[] = [];
+      arr.forEach((item) => {
+        if (item?.child?.length) list.push(item, ...flat(item.child));
+        else list.push(item);
+      });
+      return list;
+    }
+    setAllcate(flat(cate));
+  }, [cate]);
+
+  useEffect(() => {
+    if (useScrollTop.current) scrollHandler();
+  }, [scrollTop]);
+
+  // 滚动时，显示高亮对应区域的标题
+  const scrollHandler = () => {
+    try {
+      allcate.forEach((item: CatalogItem) => {
+        const el = document.getElementById(item.id) as HTMLElement;
+        if (el) {
+          const bcr = el.getBoundingClientRect();
+          if (bcr.top < 0) {
+            setCateActive(item.id);
+          }
+        } else {
+          console.log('没有元素id为： ', item.id, item);
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const generate = () => {
     let allcateArr: string[] = [];
-    const cateList: CateListItem[] = [];
-    const cate2Arr = mdtext.split('\n## ');
-    cate2Arr.shift();
+    const cateList: CatalogItem[] = [];
+    const content = mdtext.slice(mdtext.indexOf('\n'), mdtext.length);
+    setTitle(mdtext.slice(1, mdtext.indexOf('\n')));
+    const cate2Arr = content.split('\n## ');
 
-    cate2Arr.forEach(cate2 => {
+    cate2Arr.forEach((cate2) => {
       // 二级目录
-      const tempcate2 = cate2.substring(0, cate2.indexOf('\n'));
+      const tempcate2 = cate2.substring(0, cate2.indexOf('\n')).trim();
       const cat3Arr = cate2.split('\n### ');
       cat3Arr.shift();
-      const cat2Child: CateListItem[] = [];
+      const cat2Child: CatalogItem[] = [];
 
-      cat3Arr.forEach(cate3 => {
+      cat3Arr.forEach((cate3) => {
         // 三级目录
-        const tempcate3 = cate3.substring(0, cate3.indexOf('\n'));
+        const tempcate3 = cate3.substring(0, cate3.indexOf('\n')).trim();
         cat2Child.push({
           id: tempcate3,
-          label: tempcate3
+          header: `catelog-${tempcate3}`,
+          label: tempcate3,
         });
       });
 
-      const cate2Item: CateListItem = {
+      const cate2Item: CatalogItem = {
         id: tempcate2,
+        header: `catelog-${tempcate2}`,
         label: tempcate2,
-        child: []
+        child: [],
       };
 
       allcateArr.push(tempcate2);
       if (cat2Child.length > 0) {
         cate2Item.child = cat2Child;
-        allcateArr = allcateArr.concat(cat2Child.map(i => i.id));
+        allcateArr = allcateArr.concat(cat2Child.map((i) => i.id));
       }
 
       cateList.push(cate2Item);
     });
-    setCate(cateList);
-    setAllcate(allcateArr);
+
+    setCate(() => cateList.filter((item) => Boolean(item.id)));
   };
 
-  const cateClick = (e: React.MouseEvent, cateItem: CateListItem) => {
-    e.stopPropagation();
-    // console.log('realId: ', realId);
+  const scroll2Item = () => {
+    const catelogItem = document.getElementById(`catelog-${cateActive}`);
+    catelogItem?.scrollIntoView();
+    onCateClick?.(cateActive);
+  };
+
+  const cateClick = (cateItem: CatalogItem) => {
     const header = document.getElementById(cateItem.id) as HTMLElement;
     header?.scrollIntoView();
 
+    useScrollTop.current = false;
+    toggleBlur('remove');
     setCateActive(cateItem.id);
-    if (onCateClick) onCateClick(cateItem.id);
-    setTimeout(() => setShowCate(false), 0);
+    onCateClick?.(cateItem.id);
+    setTimeout(() => {
+      setShowCate(false);
+      useScrollTop.current = true;
+    }, 0);
   };
 
-  const renderCateItem = (cateItem: CateListItem) => {
-    const className = `${styles['cate-item']} ${
-      cateActive === cateItem.id ? styles.active : ''
-    }`;
-    return (
-      <div
-        title={cateItem.label}
-        data-id={cateItem.id}
-        className={className}
-        onClick={(e: React.MouseEvent) => cateClick(e, cateItem)}
-      >
-        {cateItem.label}
-      </div>
-    );
+  const onCateListShow = () => {
+    toggleBlur('add');
+    setTimeout(() => setShowCate(true), 0);
   };
 
-  const onCateListShow = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowCate(!showCate);
+  const onHiddenCatalog = () => {
+    setShowCate(false);
+    toggleBlur('remove');
   };
+
+  const toggleBlur = (type: 'add' | 'remove') => {
+    document.querySelector('#md-note')?.classList[type]('blur');
+  };
+
+  const renderCateItem = useCallback(
+    (cateItem: CatalogItem) => {
+      const className = `${styles['cate-item']} ${
+        cateActive === cateItem.id ? styles.active : ''
+      }`;
+      return (
+        <div
+          data-id={cateItem.id}
+          id={cateItem.header}
+          className={className}
+          onClick={() => cateClick(cateItem)}
+        >
+          {cateItem.label}
+        </div>
+      );
+    },
+    [cateActive]
+  );
+
+  const NoCate = () => (
+    <div className={styles.desc}>
+      <p>一级标题'#'为文章名，</p>
+      <p>二级标题'##'为一级目录，</p>
+      <p>三级标题'###'为三级目录</p>
+    </div>
+  );
 
   const cateListTransition = useMemo(() => {
     return showCate ? styles['cate-show'] : '';
   }, [showCate]);
 
-  const catestyle = { right: btnPCSpace };
-
   return (
-    <div className={styles.categary} style={catestyle}>
+    <div id="catalog" className={styles.catalog}>
       <FontAwesomeIcon
         className="btn"
         icon={faListUl}
-        onClick={(e: React.MouseEvent) => onCateListShow(e)}
+        onClick={onCateListShow}
       />
-      <div className={`btn ${styles.catelist} ${cateListTransition}`}>
-        <div className={styles.head}>目录</div>
-        <div className={styles['cate-content']}>
-          {cate.length > 0 &&
-            cate.map((cate2: CateListItem) => (
+      <div
+        className={styles.bg}
+        style={{ display: showCate ? 'block' : 'none' }}
+      />
+      <div
+        className={`${styles.catelist} ${cateListTransition}`}
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+      >
+        {showCate && (
+          <span className={styles.close} onClick={onHiddenCatalog}>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </span>
+        )}
+        <section className={styles.head} title={title}>
+          目录: {title}
+        </section>
+        <section className={styles['cate-content']}>
+          {cate.length > 0 ? (
+            cate.map((cate2: CatalogItem) => (
               <ul key={cate2.id}>
                 {renderCateItem(cate2)}
                 {cate2.child &&
                   cate2.child?.length > 0 &&
-                  cate2.child?.map((cate3: CateListItem) => (
+                  cate2.child?.map((cate3: CatalogItem) => (
                     <ul key={cate3.id}>{renderCateItem(cate3)}</ul>
                   ))}
               </ul>
-            ))}
-        </div>
+            ))
+          ) : (
+            <NoCate />
+          )}
+        </section>
       </div>
       {props.children}
     </div>
   );
 };
 
-export default MdCateGary;
+export default MdCatalog;
+```
+
+### useFetchData
+
+这个是之前看一位大佬的 [文章](https://juejin.im/post/5e03fe81f265da33cd03c0fd) 05，里面分享的另一篇国外的 [文章](https://www.robinwieruch.de/react-hooks-fetch-data)，然后自己根据实际使用改的
+
+项目使用的是 [UmiJS](https://umijs.org/zh/) 框架，自带的 request，
+
+> 使用 axios 的话也是差不多的，把 fetchFn 类型改为 <br />`fetchFn: () => Promise<AxiosResponse>;` 然后，请求函数改为 axios 相应的写法就可以了
+
+说明：
+
+* fetchFn: 请求函数
+* deps: 更新依赖，重新执行 fetchFn
+* isReady: fetchFn 执行条件
+
+```typescript
+import { useState, useEffect } from 'react';
+import { RequestResponse } from 'umi-request';
+import $message from './$message';
+
+export interface UseFetchDataProps {
+  fetchFn: () => Promise<RequestResponse>;
+  deps?: any[];
+  isReady?: boolean;
+}
+
+export type ResponseType = {
+  code: number;
+  data: any;
+  msg: string;
+}
+
+/**
+ * 自定义 Hook: 获取数据
+ * @example 使用时最好这样: useFetchData<{}>，方便给 resData 提供类型
+ * @type <S>：在 返回数据格式 基础上扩展的字段，如总数字段等
+ * @param fetchFn {*} 使用 request 封装的请求函数
+ * @param deps {*} 更新依赖，重新执行
+ * @param isReady {*} 可以获取数据标志，默认直接获取数据
+ *
+ * @returns isLoading: 是否正在请求
+ * @returns resData: 请求返回的数据
+ * @returns fetchData: 请求函数，供外部调用手动请求数据
+ */
+export default function useFetchData<S = ResponseType>({
+  fetchFn,
+  deps = [],
+  isReady,
+}: UseFetchDataProps) {
+  let isDestroyed = false;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [resData, setResData] = useState<ResponseType>();
+
+  useEffect(() => {
+    // 默认(undefined)直接获取数据
+    // 有条件时 isReady === true 再获取
+    if (isReady === undefined || isReady) {
+      fetchData();
+    } else {
+      setIsLoading(false);
+    }
+
+    return () => {
+      isDestroyed = true;
+    };
+  }, deps);
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const res: any = await fetchFn();
+      if (res?.code !== 0) {
+        $message.warning(res?.msg || '请求出错！');
+        setIsLoading(false);
+        return;
+      }
+      if (!isDestroyed) {
+        setResData(res);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return {
+    isLoading,
+    resData,
+    fetchData,
+  };
+}
 ```

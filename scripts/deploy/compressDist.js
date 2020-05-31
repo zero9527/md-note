@@ -15,9 +15,9 @@ function compressDist(LOCAL_CONFIG, next) {
     const { distDir, distZip } = LOCAL_CONFIG;
 
     zipper.sync
-      .zip(path.resolve(__dirname, distDir))
+      .zip(path.resolve(process.cwd(), distDir))
       .compress()
-      .save(path.resolve(__dirname, distZip));
+      .save(path.resolve(process.cwd(), distZip));
 
     spinner.succeed(chalk.green('压缩完成！\n'));
     if (next) next();
