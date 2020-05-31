@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { KeepAliveAssist } from 'keep-alive-comp';
 import useNoteModel from '@/model/useNoteModel';
 import StickyRight from '@/components/stickyRight';
@@ -6,6 +6,9 @@ import useScroll from '@/utils/useScroll';
 import Header from '@/components/header';
 import Tools from '@/components/Tools';
 import styles from './noteList.scss';
+import { isMobile } from '@/utils';
+import Scroll2Top from '@/components/Scroll2Top';
+import useGlobalModel from '@/model/useGlobalModel';
 
 interface NoteListProps extends KeepAliveAssist {}
 
@@ -13,6 +16,9 @@ interface NoteListProps extends KeepAliveAssist {}
 const NoteList: React.FC<NoteListProps> = (props) => {
   const { loading, noteList } = useNoteModel();
   const { scrollTop } = useScroll();
+  const { stickyRightStyle } = useGlobalModel((modal) => [
+    modal.stickyRightStyle,
+  ]);
 
   useEffect(() => {
     restore();
@@ -30,6 +36,10 @@ const NoteList: React.FC<NoteListProps> = (props) => {
     props.beforeRouteLeave!(scrollTop, {});
   };
 
+  const showScroll2Top = useMemo(() => {
+    return scrollTop > window.innerHeight;
+  }, [scrollTop]);
+
   return (
     <>
       <Header className={styles.header}>
@@ -44,25 +54,22 @@ const NoteList: React.FC<NoteListProps> = (props) => {
           className={styles.container}
         >
           {noteList?.length > 0 ? (
-            noteList?.map?.((noteitem, noteindex) => {
+            noteList?.map?.((noteitem) => {
               return (
                 <a
-                  className={`link ${styles['note-item']}`}
-                  key={`${noteitem.tag}-${noteitem.tid}`}
-                  href={`./#/detail/${noteitem.tag}/${noteitem.tid}`}
+                  className={`link ${styles.item}`}
+                  key={`${noteitem.tag}-${noteitem.name}`}
+                  href={`./#/detail/${noteitem.tag}/${noteitem.name}`}
                   onClick={toDetailClick}
                 >
-                  <div className={styles['item-date']}>
-                    <div className={styles.time}>
-                      {noteitem.date.substr(11, 5)}
-                    </div>
-                    <div className={styles.date}>
-                      {noteitem.date.substr(5, 5)}
-                    </div>
-                  </div>
-                  <div className={styles['item-desc']}>
-                    <span className={styles.tag}>{noteitem.tag}</span>
-                    {noteitem.desc}
+                  <div className={styles.title}>{noteitem.title}</div>
+                  <div className={styles.desc}>
+                    <span className={styles.tag}>
+                      标签：<span>{noteitem.tag}</span>
+                    </span>
+                    <span className={styles.time}>
+                      创建时间：{noteitem.create_time}
+                    </span>
                   </div>
                 </a>
               );
@@ -71,12 +78,17 @@ const NoteList: React.FC<NoteListProps> = (props) => {
             <div>没有数据</div>
           )}
         </section>
+        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
         <StickyRight className={styles.iframe}>
-          <iframe
-            src="https://zero9527.github.io/vue-calendar"
-            className={styles.calendar}
-          />
-          <div className={styles.mask} />
+          {!isMobile && (
+            <>
+              <iframe
+                src="https://zero9527.github.io/vue-calendar"
+                className={styles.calendar}
+              />
+              <div className={styles.mask} />
+            </>
+          )}
         </StickyRight>
         {/* <div className="gitter">
           <a href="./#/note-add" className={`link btn ${styles.add}`}>

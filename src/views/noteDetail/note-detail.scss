@@ -3,6 +3,13 @@
   position: relative;
   padding-top: 44px;
   overflow-x: hidden;
+
+  .article-404 {
+    display: flex;
+    justify-content: center;
+    padding-top: 30px;
+    color: #999;
+  }
 }
 
 .header {

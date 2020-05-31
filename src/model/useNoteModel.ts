@@ -2,9 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 // import { useImmer } from 'use-immer';
 import { createModel } from 'hox';
 import { cacheUtil, CacheUtil } from '@/utils/cacheUtil';
-import fileApi from '@/api/file';
+import fileApi, { getNoteListConfig } from '@/api/file';
 import { dateFormate } from '@/utils';
-import { NoteItem } from './data';
 
 // 标签
 export type NoteTag =
@@ -16,6 +15,15 @@ export type NoteTag =
   | 'mini-program'
   | 'others';
 
+export type NoteItem = {
+  tag: string;
+  name: string;
+  title: string;
+  create_time: string;
+  desc: string;
+  data: string;
+};
+
 const maxAgeConfig = {
   '0': 0,
   '24h': 24 * 60 * 60 * 1000,
@@ -24,7 +32,7 @@ const maxAgeConfig = {
 type MaxAge = keyof typeof maxAgeConfig;
 
 const NoteSkeleton: NoteItem[] = [
-  { id: '', date: '', tag: '', tid: '', desc: '', data: '' },
+  { create_time: '', tag: '', name: '', desc: '', data: '', title: '' },
 ];
 
 // 管理 NoteList
@@ -41,14 +49,18 @@ const useNoteModel = () => {
   useEffect(() => {
     checkVersion();
 
-    if (noteList[0]?.id === '') {
+    if (noteList[0]?.name === '') {
       setLoading(true);
-      import('./data').then(({ default: data }) => {
-        const templist: NoteItem[] = data;
-
-        updateNoteList(templist);
+      getNoteListConfig().then((res) => {
+        updateNoteList(res);
         setLoading(false);
       });
+      // import('./data').then(({ default: data }) => {
+      //   const templist: NoteItem[] = data;
+
+      //   updateNoteList(templist);
+      //   setLoading(false);
+      // });
     }
   }, []);
 
@@ -62,62 +74,22 @@ const useNoteModel = () => {
     const all = [...noteList, ...arr];
     const newArr: NoteItem[] = [];
     all.forEach((item) => {
-      if (item.id && !newArr.some((i) => i.id === item.id)) {
+      if (item.name && !newArr.some((i) => i.name === item.name)) {
         newArr.push(item);
       }
     });
     return newArr;
   }
 
-  // 请求数据 tag: 标签；tid：tagId
-  const fetchNoteById = async (tag: NoteTag | string, tid: string) => {
-    // 默认显示为md文件
-    // 这里文件名不能下划线'_'开头，不然本地可以获取到，但是github page上面会404
-    const config = {
-      demo: {
-        '0': 'demo1.md',
-        '1': 'promise_This_is.md',
-      },
-      js: {
-        '0': 'amd-cmd.md',
-        '1': 'evt.md',
-        '2': 'js-review.md',
-        '3': 'promise.md',
-        '4': 'scroll-load.md',
-      },
-      'mini-program': {
-        '0': 'movie-db.md',
-      },
-      'node.js': {
-        '0': 'cmd-line.md',
-        '1': 'directory-2.md',
-      },
-      react: {
-        '0': 'movie-db-web.md',
-        '1': 'next-js.md',
-        '2': 'React-Hook.md',
-        '3': 'react-keep-alive.md',
-        '4': 'react-ts-template.md',
-      },
-      vue: {
-        '0': 'uni-app.md',
-        '1': 'json-util.md',
-        '2': 'vue-calendar.md',
-      },
-      others: {
-        '0': 'web-component.md',
-      },
-    };
-    if (!config[tag][tid]) {
-      return { code: -1, data: null, msg: '数据不见了。。。' };
-    }
+  // 请求数据 tag: 标签；name：名称
+  const fetchNoteById = async (tag: NoteTag | string, name: string) => {
     try {
-      const res: any = await fileApi[tag][config[tag][tid]]();
+      const res: any = await fileApi(`/${tag}/${name}`);
       return { code: 0, data: res, msg: 'ok' };
     } catch (err) {
       console.error('fetch error: ', err);
     }
-    return { code: -1, data: null, msg: 'error' };
+    return { code: -2, data: null, msg: 'error' };
   };
 
   // 检查缓存版本
@@ -134,20 +106,20 @@ const useNoteModel = () => {
   };
 
   // 获取数据
-  const getNoteById = (id: string) => {
+  const getNoteById = (name: string) => {
     checkVersion();
-    const item = noteList?.find((note) => note.id === id);
+    const item = noteList?.find((note) => note.name === name);
     if (item) return item;
     return null;
   };
 
   // 更新某条数据
-  const updateNoteById = (id: string, data: any) => {
+  const updateNoteById = (name: string, data: any) => {
     // 新增
-    if (!id) id = `${Date.now()}`;
+    if (!name) name = `${Date.now()}`;
 
     setNoteList((list: NoteItem[]) => {
-      const itemIndex = list.findIndex((note: NoteItem) => note.id === id);
+      const itemIndex = list.findIndex((note: NoteItem) => note.name === name);
       const date = dateFormate({ timeStamp: Date.now(), splitChar: '/' });
 
       // if (itemIndex < 0) {
@@ -175,8 +147,8 @@ const useNoteModel = () => {
     const right: NoteItem[] = [];
 
     arr.forEach((item: NoteItem) => {
-      const midTime = new Date(mid.date).getTime();
-      const itemTime = new Date(item.date).getTime();
+      const midTime = new Date(mid.create_time).getTime();
+      const itemTime = new Date(item.create_time).getTime();
       if (itemTime <= midTime) left.push(item);
       else right.push(item);
     });

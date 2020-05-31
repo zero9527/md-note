@@ -1,6 +1,7 @@
 import React, { useState, CSSProperties, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './stickyRight.scss';
+import useGlobalModel from '@/model/useGlobalModel';
 
 interface StickyRightProps {
   className?: React.HTMLAttributes<HTMLDivElement>;
@@ -16,7 +17,10 @@ const StickyRight: React.FC<StickyRightProps> = ({
   onResize,
   ...props
 }) => {
-  const [positionStyle, setPositionStyle] = useState<CSSProperties>();
+  const { stickyRightStyle, setStickyRightStyle } = useGlobalModel((modal) => [
+    modal.stickyRightStyle,
+    modal.setStickyRightStyle,
+  ]);
 
   useEffect(() => {
     resize();
@@ -35,7 +39,7 @@ const StickyRight: React.FC<StickyRightProps> = ({
       bodyWidth > MAX_VIEW_WIDTH
         ? { left: `${(bodyWidth - MAX_VIEW_WIDTH) / 2 + CONTENT_WIDTH + 20}px` }
         : { right: '12px' };
-    setPositionStyle(style);
+    setStickyRightStyle(style);
     if (onResize) onResize(style);
     // throttle(() => {});
   };
@@ -43,7 +47,7 @@ const StickyRight: React.FC<StickyRightProps> = ({
   return ReactDOM.createPortal(
     <div
       className={`${styles['sticky-right']} ${className || ''}`}
-      style={{ ...positionStyle, ...style }}
+      style={{ ...stickyRightStyle, ...style }}
       {...props}
     >
       {props.children}

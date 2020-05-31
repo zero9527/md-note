@@ -108,7 +108,7 @@ pages/home/home.scss
 > * `pages/` 下 不能是文件夹（正常来说还有个 css，但是使用文件夹的话，开发阶段正常，build 时 会报 scss 文件不是 React 组件。。。所以在外面新建 `styles` 文件夹，放各自路由组件的 scss 文件）
 > * 其他文件夹如 `components` 不会报错，可以使用第二种写法，样式跟组件在一个文件夹
 
-### 4.1 `<link>`组件：
+### 4.1 Link 组件：
 * href: 路由，如 `href="about"` ，则会渲染 `page/about.tsx` 的内容
 * as: 将 `href` 重命名然后浏览器地址显示的是这个URL；   
 href的路由必须正确，需要有一个实际上在 page 目录中存在的文件
@@ -150,10 +150,13 @@ import Link from 'next/link';
   });
 ```
 
-#### prefetch（来自[文档](https://nextjs.org/docs#prefetching-pages)）：
+#### prefetch
+来自[文档](https://nextjs.org/docs#prefetching-pages)
+
 有些操作可能需要延迟，但可以使用 prefetch 预取数据
 
 * Link 组件
+
 ```jsx
 <Link href="/about" prefetch={true}>
   <a>About</a>
@@ -161,7 +164,8 @@ import Link from 'next/link';
 ```
 
 * 命令式
-```js
+
+```jsx
 import { withRouter } from 'next/router';
 
 function MyLink({ router }) {
@@ -181,7 +185,8 @@ export default withRouter(MyLink);
 
 #### push/replace
 * 对象
-```js
+
+```jsx
 import Router from 'next/router'
 
 const handler = () => {

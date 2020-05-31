@@ -179,7 +179,7 @@ evt.emit('go', 'go');
 console.log('after go'); // 没有 try/catch 的话，不会执行
 ```
 
-### <u>*全部代码 EvtEmit_callback.js：*</u>
+### 全部代码 EvtEmit_callback.js
 ```js
 // EvtEmit_callback.js
 // 发布订阅，回调函数版本

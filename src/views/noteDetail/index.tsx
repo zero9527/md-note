@@ -31,10 +31,13 @@ const NoteDetail: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
   const { scrollTop } = useScroll();
+  const { stickyRightStyle } = useGlobalModel((modal) => [
+    modal.stickyRightStyle,
+  ]);
+  const [is404, setIs404] = useState(false);
   const [title, setTitle] = useState('');
-  const [mdtext, setMdtext] = useState('');
+  const [mdtext, setMdtext] = useState<string | undefined>();
   const [showScroll2Top, setShowScroll2Top] = useState(false);
-  const [toolsPositionStyle, setToolsPositionStyle] = useState<CSSProperties>();
   const [defaultCateActive, setDefaultCateActive] = useState<string>();
 
   useEffect(() => {
@@ -62,6 +65,7 @@ const NoteDetail: React.FC = () => {
       } else {
         console.log('数据没有了！');
         setMdtext('');
+        setIs404(true);
       }
     } catch (err) {
       console.error(err);
@@ -99,9 +103,9 @@ const NoteDetail: React.FC = () => {
     setShowScroll2Top(() => scrollTop > window.innerHeight);
   };
 
-  const onResize = (position: CSSProperties) => {
-    setToolsPositionStyle(position);
-  };
+  const Nomatch = () => (
+    <div className={styles['article-404']}>文章不见了。。。</div>
+  );
 
   return (
     <>
@@ -120,14 +124,14 @@ const NoteDetail: React.FC = () => {
         {mdtext ? (
           <>
             <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
-            <StickyRight onResize={onResize}>
+            <StickyRight>
               <MdCatalog
                 mdtext={mdtext}
                 defaultActive={defaultCateActive}
                 onCateClick={onCateClick}
                 onGetTitle={onGetTitle}
               >
-                <Export id={tid} position={toolsPositionStyle} mdtext={mdtext}>
+                <Export id={tid} position={stickyRightStyle} mdtext={mdtext}>
                   <a href={`./#/md-editor/${tag}/${tid}`} className="link">
                     <button className="btn">编辑</button>
                   </a>
@@ -136,9 +140,10 @@ const NoteDetail: React.FC = () => {
             </StickyRight>
           </>
         ) : (
-          <Loading />
+          !is404 && <Loading />
         )}
-        {showScroll2Top && <Scroll2Top position={toolsPositionStyle} />}
+        {is404 && <Nomatch />}
+        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
       </main>
     </>
   );

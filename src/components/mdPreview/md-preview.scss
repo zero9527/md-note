@@ -92,7 +92,9 @@ $padding-edge: 16px;
 
     // 这段抄掘金的
     blockquote {
-      padding: 1px 23px;
+      width: 100%;
+      display: inline-block;
+      padding: 0 $padding-edge;
       margin: 22px 0;
       border-left: 4px solid #cbcbcb;
       @include themeify {

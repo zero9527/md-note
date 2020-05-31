@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, CSSProperties } from 'react';
 import { createModel } from 'hox';
 import { getUrlParams } from '@/utils';
 
@@ -6,6 +6,7 @@ const useGlobalModel = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [height, setHeight] = useState(0);
   const [theme, updateTheme] = useState('light');
+  const [stickyRightStyle, setStickyRightStyle] = useState<CSSProperties>();
 
   useEffect(() => {
     setHeight(window.innerHeight);
@@ -28,7 +29,9 @@ const useGlobalModel = () => {
     setTheme,
     isMobile,
     setIsMobile,
-    height
+    height,
+    stickyRightStyle,
+    setStickyRightStyle,
   };
 };
 

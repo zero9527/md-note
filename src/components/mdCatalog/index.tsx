@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import styles from './mdCatalog.scss';
@@ -27,6 +33,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   ...props
 }) => {
   const { scrollTop } = useScroll();
+  const useScrollTop = useRef(true);
   const [showCate, setShowCate] = useState(false);
   const [cate, setCate] = useState<CatalogItem[]>([]);
   const [cateActive, setCateActive] = useState('');
@@ -50,17 +57,11 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
 
   useEffect(() => {
     generate();
-
-    return () => {
-      removeBodyClick();
-    };
   }, []);
 
   useEffect(() => {
     if (showCate) {
       document.body.style.overflowY = 'hidden';
-      addBodyClick();
-      scroll2Item();
     } else {
       document.body.style.overflowY = 'auto';
     }
@@ -80,7 +81,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   }, [cate]);
 
   useEffect(() => {
-    scrollHandler();
+    if (useScrollTop.current) scrollHandler();
   }, [scrollTop]);
 
   // 滚动时，显示高亮对应区域的标题
@@ -88,9 +89,13 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     try {
       allcate.forEach((item: CatalogItem) => {
         const el = document.getElementById(item.id) as HTMLElement;
-        const bcr = el.getBoundingClientRect();
-        if (bcr.top < 0) {
-          setCateActive(item.id);
+        if (el) {
+          const bcr = el.getBoundingClientRect();
+          if (bcr.top < 0) {
+            setCateActive(item.id);
+          }
+        } else {
+          // console.log('没有元素id为： ', item.id, item);
         }
       });
     } catch (err) {
@@ -139,7 +144,6 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     });
 
     setCate(() => cateList.filter((item) => Boolean(item.id)));
-    // setAllcate(allcateArr);
   };
 
   const scroll2Item = () => {
@@ -152,10 +156,14 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     const header = document.getElementById(cateItem.id) as HTMLElement;
     header?.scrollIntoView();
 
+    useScrollTop.current = false;
     toggleBlur('remove');
     setCateActive(cateItem.id);
     onCateClick?.(cateItem.id);
-    setTimeout(() => setShowCate(false), 0);
+    setTimeout(() => {
+      setShowCate(false);
+      useScrollTop.current = true;
+    }, 0);
   };
 
   const onCateListShow = () => {
@@ -163,12 +171,8 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     setTimeout(() => setShowCate(true), 0);
   };
 
-  const removeBodyClick = () => window.removeEventListener('click', bcHandler);
-  const addBodyClick = () => window.addEventListener('click', bcHandler);
-
-  const bcHandler = () => {
+  const onHiddenCatalog = () => {
     setShowCate(false);
-    removeBodyClick();
     toggleBlur('remove');
   };
 
@@ -176,21 +180,24 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     document.querySelector('#md-note')?.classList[type]('blur');
   };
 
-  const renderCateItem = (cateItem: CatalogItem) => {
-    const className = `${styles['cate-item']} ${
-      cateActive === cateItem.id ? styles.active : ''
-    }`;
-    return (
-      <div
-        data-id={cateItem.id}
-        id={cateItem.header}
-        className={className}
-        onClick={() => cateClick(cateItem)}
-      >
-        {cateItem.label}
-      </div>
-    );
-  };
+  const renderCateItem = useCallback(
+    (cateItem: CatalogItem) => {
+      const className = `${styles['cate-item']} ${
+        cateActive === cateItem.id ? styles.active : ''
+      }`;
+      return (
+        <div
+          data-id={cateItem.id}
+          id={cateItem.header}
+          className={className}
+          onClick={() => cateClick(cateItem)}
+        >
+          {cateItem.label}
+        </div>
+      );
+    },
+    [cateActive]
+  );
 
   const NoCate = () => (
     <div className={styles.desc}>
@@ -220,7 +227,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >
         {showCate && (
-          <span className={styles.close} onClick={bcHandler}>
+          <span className={styles.close} onClick={onHiddenCatalog}>
             <FontAwesomeIcon icon={faChevronRight} />
           </span>
         )}

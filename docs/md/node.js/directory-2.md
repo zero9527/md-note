@@ -23,6 +23,7 @@
 
 ## 一、输出的内容
 * #### components-dir-tree.json
+
 ```json
 {
     "dir": "D:\\node-test\\components",
@@ -68,7 +69,8 @@
 ```js
 "output": "D:\\node-test\n└─ components\n    ├─ components-dir-tree1.json\n    ├─ file.2.js\n    ├─ file.bakeup.js\n    ├─ file.js\n    ├─ index.js\n    ├─ log.js\n    ├─ node-test-dir-tree.json\n    ├─ run-sh.js\n    ├─ test\n      └─ aa\n        ├─ bb.js\n        └─ cc\n    └─ timeFormat.js\n"
 ```
-```js
+
+```cmd
  D:\node-test
 ├─ components
     ├─ components-dir-tree1.json
@@ -180,7 +182,8 @@ function getDirTree(dir) {
 
 
 ## 三、工具函数 
-* #### 目录过滤：
+### 目录过滤
+
 ```js
 // 根据正则过滤文件、文件夹
 function filesFilter(files) {
@@ -199,7 +202,9 @@ function filesFilter(files) {
 
 ```
 
-* #### 其他`readDir`/`isFile`/`getDirName`等
+### 其他
+
+`readDir`/`isFile`/`getDirName`等
 ```js
 // 读取路径下的文件、文件夹
 function readDir(dir) {

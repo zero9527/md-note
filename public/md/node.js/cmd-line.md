@@ -336,6 +336,7 @@ module.exports = {
 ```
 
 * 执行脚本 components/run-sh.js
+
 ```js
 // exec 执行shell命令
 const { exec } = require('child_process');
@@ -377,6 +378,7 @@ exec(buildFE('/code/react-t1', 'npm run build'), (err, stdout, stderr) => {
 ```
 
 * 命令行打印：
+
 ```cmd
 $ npm run sh
 

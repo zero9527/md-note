@@ -1,10 +1,10 @@
 # 原生js手写实现promise
 
-### 用原生js手写实现promise，看了网上很多实现，最终写出自己的简易版promise，记录一下
+## 用原生js手写实现promise，看了网上很多实现，最终写出自己的简易版promise，记录一下
 
 > 前言：使用及调用同原生Promise方法，只实现了then(resolve),catch(reject),finally()三个方法，不涉及Promise.race(),Promise.all();
 
-- #### 构造函数：
+## 构造函数
 ```js
 let that; // 存储 mPromise
 /**
@@ -28,7 +28,8 @@ function mPromise(callback) {
   callback(that.resolve, that.reject);
 }
 ```
-- #### 原型：
+
+## 原型
 ```js
 mPromise.prototype = {
   constructor: mPromise,
@@ -75,7 +76,8 @@ mPromise.prototype = {
   }
 };
 ```
-- #### 使用方式同原生Promise：
+
+## 使用方式同原生Promise
 
 ```js
 let f1 = function(num) {
@@ -85,7 +87,8 @@ let f1 = function(num) {
   });
 };
 ```
-- #### 然后调用：
+
+## 调用
 ```js
 f1(6)
   .then(res => {
@@ -120,13 +123,13 @@ f1(12)
   });
 ```
 
-#### 结果：
+## 结果
 > then里面不报错：
 
-![](../static/images/js-promise-1.png)
+![](../../images/js-promise-1.png)
 
 > then里面有报错：
 
-![](../static/images/js-promise-2.png)
+![](../../images/js-promise-2.png)
 
 到此，结束！

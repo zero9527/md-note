@@ -25,7 +25,7 @@
     "immer": "^6.0.1",
     "keep-alive-comp": "^0.0.6",
     "lodash": "^4.17.15",
-    "marked": "^0.8.0",
+    "marked": "^1.1.0",
     "react": "^16.13.0",
     "react-app-polyfill": "^1.0.6",
     "react-codemirror2": "^6.0.0",

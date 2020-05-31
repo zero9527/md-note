@@ -243,6 +243,7 @@ yarn add @loadable/component
 
 ### 路由管理
 * 路由统一管理
+
 ```js
 // src/routes/index.tsx
 import login from './login-register';
@@ -256,7 +257,9 @@ export default [
   ...home
 ]
 ```
+
 * 路由模块
+
 ```js
 // src/routes/home.tsx
 import AuthRoute from '@/routes/auth-route';
@@ -636,6 +639,7 @@ export {
 
 ### 组件中使用
 * **普通的 `connect + mapState + mapDispatch` 写法**
+
 ```js
 // src/views/home/index.tsx
 import * as React from 'react';
@@ -682,7 +686,8 @@ const mapDispatch = (dispatch: Dispatch) => {
 export default connect(mapState, mapDispatch)(Home);
 ```
 
-* **`react-redux` 新增Hooks: `useSelector, useDispatch` 写法**
+- **`react-redux` 新增Hooks: `useSelector, useDispatch` 写法**
+
 ```js
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
