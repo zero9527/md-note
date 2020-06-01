@@ -13,12 +13,12 @@
 > 不提供数据存储服务，仅使用浏览器缓存
 
 ## 一些预览图
-![首页](https://s1.ax1x.com/2020/05/31/t1fO56.png)
+![首页](https://s1.ax1x.com/2020/05/31/t1fO56.md.png)
 
 详情`PC布局`
 
-![详情PC布局](https://s1.ax1x.com/2020/05/31/t1R4oV.png)
-![详情移动端布局](https://s1.ax1x.com/2020/05/31/t1f7r9.png)
+![详情PC布局](https://s1.ax1x.com/2020/05/31/t1R4oV.md.png)
+![详情移动端布局](https://s1.ax1x.com/2020/05/31/t1f7r9.md.png)
 
 <!-- 编辑器`PC布局`
 

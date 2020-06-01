@@ -11,6 +11,15 @@
 > * 更新：[2019-09-09]: 第三方资源使用 CDN （看 13、构建）
 > * 更新：[2019-11-08]: 状态管理 由 redux+rematch 换为 mobx，资源预加载 prefetch 等
 
+<br/>
+<br/>
+
+> **注意！**<br/>
+> * 这个项目是之前的旧项目改造升级的，<br>
+> * 注定有一些未知问题（比如构建工具版本问题，或者出现新的东西、解决了新的bug，再来更新它旧没意义了），
+> 在搭建、升级的过程中学到了很多；<br>
+> * 后续开始新项目还是基于新的 `create-react-app` 再搭一次较好
+
 ## 1、创建项目
 > **这里没有使用antd官方的demo**，而是在普通 react+typescript 项目增加 antd 然后改造的
 
@@ -43,7 +52,7 @@ src结构：
 
 ## 2、typescript
 ### tsconfig.json:
-```
+```json
 {
   "compilerOptions": {
     "baseUrl": "src",
@@ -124,22 +133,22 @@ webpack.config.prod.js中添加`mode`字段：`mode: 'production'`<br>
 
 3. 打包后报错 Chunk Loading failed
     
-    config/paths.js:
-    ```
-    function getServedPath(appPackageJson) {
-      const publicUrl = getPublicUrl(appPackageJson);
-      const servedUrl = envPublicUrl ||
-        (publicUrl ? url.parse(publicUrl).pathname : '/');
-      return ensureSlash(servedUrl, true);
-    }
-    ```
-    将其中的`'/'`改为`'./'`即可
+    config/paths.js: 将其中的`'/'`改为`'./'`即可
+
+```js
+function getServedPath(appPackageJson) {
+  const publicUrl = getPublicUrl(appPackageJson);
+  const servedUrl = envPublicUrl ||
+    (publicUrl ? url.parse(publicUrl).pathname : '/');
+  return ensureSlash(servedUrl, true);
+}
+```
 
 4. 报@types/tapable @types/html-minifier @types/webpack不存在
     
-    ```    
-    yarn add @types/tapable @types/html-minifier @types/webpack
-    ```
+```cmd
+yarn add @types/tapable @types/html-minifier @types/webpack
+```
 
 
 ## 4、antd
@@ -189,6 +198,7 @@ yarn add @loadable/component
 
 ### 路由
 * App之下的路由
+
 > 通过以下，实现类似Vue中将路由嵌套在 App 内部的写法，App 中的 `props.children` 相当于 Vue 中的  `router-view` ，然后 `Header` 等全局组件只会挂载一次
 
 ```js
@@ -207,7 +217,9 @@ yarn add @loadable/component
 ...
 ```
 * 独立在App之外的路由
+
 > aloneComp
+
 ```js
 // src/router.tsx
 <Switch>
@@ -284,6 +296,7 @@ export default [
 ```
 
 * 路由入口 router.tsx
+
 > 分为App之下的路由，和独立在App之外的路由；视情况而定，如果所有页面都有一个一样的 App 外壳，就不需要这么分开
 
 ```js
@@ -540,7 +553,8 @@ Api.testApi(params).then((res: any) => {...});
 
 ## -7、状态管理使用rematch (已换为 mobx )
 由于 `redux v7.1.0` 新增了 `useSelector`, `useDispatch` 等Hooks，更新 `react-redux` 版本即可使用，下面将增加使用 `useSelector, useDispatch` 的版本
-```
+
+```cmd
 yarn add @rematch/core react-redux
 ```
 
@@ -738,19 +752,24 @@ export default Home;
 
 **其他的配置：**
 * 下载插件
-  ```
-  yarn add babel-plugin-transform-decorators-legacy -D
-  ```
+
+```
+yarn add babel-plugin-transform-decorators-legacy -D
+```
+
 * 然后在 .babelrc: 使用装饰器
-  ```
-  "plugins": ["transform-decorators-legacy"]
-  ```
+
+```
+"plugins": ["transform-decorators-legacy"]
+```
+
 * tsconfig.json: 使用装饰器
-  ```
-  "compilerOptions": {
-    "experimentalDecorators": true,
-  }
-  ```
+
+```
+"compilerOptions": {
+  "experimentalDecorators": true,
+}
+```
 
 ### 7.1 项目入口
 使用 `Provider` 包括项目
@@ -880,7 +899,7 @@ class Home extends React.Component<IProps> {
 
 ## 8、跨域代理
 使用 `http-proxy-middleware` 插件
-```
+```cmd
 yarn add http-proxy-middleware
 ```
 
@@ -900,13 +919,14 @@ module.exports = function(app) {
 
 ### 在script/start.js中使用：
 在
-```
+
+```js
 const devServer = new WebpackDevServer(compiler, serverConfig);
 ```
 
 之后，添加以下代码(如果可以代理下面就不用加了)
 
-```
+```js
 require('../src/setupProxy')(devServer);
 ```
 
@@ -918,7 +938,7 @@ class 输出配置: `[local]__[hash:base64:6]`，输出形如：`content__1f1Aqs
 sass全局变量使用这个 loader `sass-resources-loader`，<br>
 配置一下 loader，然后在这个文件里面 `src/utils/variable.scss` 写变量，然后就可以愉快的使用了
 
-```
+```cmd
 yarn add sass-resources-loader
 ```
 
@@ -1031,7 +1051,8 @@ export default withRouter(App);
 ```
 
 ### Context.Consumer 包装
-也可以使用 useContext 替代，就不需要下面Consumer包装了
+也可以使用 `useContext` 替代，就不需要下面 `Consumer` 包装了
+
 ```js
 // src/components/withAppContext/index.tsx
 import * as React from 'react';
@@ -1059,11 +1080,8 @@ export default withAppContext;
 
 ### 组件使用
 > **注意:** 
-
-> 1、`withRouter` 不会传递除 `history/location/match` 之外的 `props`，
-所以这里与组件本身的 `props` 类型分开；
-
->2、使用 `withAppContext` 传递的泛型是组件本身的 props：即 IProps
+> * `withRouter` 不会传递除 `history/location/match` 之外的 `props`，所以这里与组件本身的 `props` 类型分开；
+> * 使用 `withAppContext` 传递的泛型是组件本身的 props：即 IProps
 
 ```js
 // src/components/header/index.tsx
@@ -1105,7 +1123,7 @@ export default withAppContext<IProps>(withRouter(Header));
 
 ## 12、国际化
 使用 react-intl
-```
+```cmd
 yarn add react-intl @types/react-intl
 ```
 
@@ -1166,7 +1184,9 @@ export default {
 ```
 
 #### messages 具体语言
+
 > 原本是想像 `Vue` 里面用的 `i18n` 那样，语言模块多一层，但是插件结构貌似不允许（可能需要设置），所以只能扁平展开  模块，然后在下面 **messages 模块** 里面的键名做处理了
+
 ```js
 // src/lang/zh_CN/index.ts
 import home from './home';
@@ -1180,6 +1200,7 @@ export default {
 
 #### messages 模块
 注意键名，暂使用这种方式实现按模块的多语言
+
 ```js
 // src/lang/zh_CN/home.ts
 const home = {
@@ -1247,16 +1268,19 @@ function Header(props: IPropsWithRoute) {
 ## 13、构建
 
 ### 输出
+
 > 使用 `chunkhash` 的话每次构建都会生成一个hash，导致内容不变但是还是文件名却变了；所以修改为  `contenthash` 根据内容生成 hash ，则 hash 值与内容相关，更好的缓存，但是不可避免的会导致构建时间增加，不过还是值得的
 
 * 文件名：修改 output 中文件名 `chunkhash` -> `contenthash`，如：
-```
+
+```js
 filename: 'static/js/[name].[contenthash:8].js',
 chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
 ```
 
 * 代码分割
-```
+
+```js
   optimization: {
     splitChunks: {
       chunks: 'all'
@@ -1267,7 +1291,7 @@ chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
 ### tree-shaking
 webpack 文档有说明要设置 `mode: 'production'`，但是我这里 build 之后的文件，打开 `webpack module` 会报错；但是设置 `mode: 'development'` 之后就可以正常访问，只是文件比用 `production` 要大一点，，，这样就没意义了，所以这部分 **暂时不搞** 了。。。
 
-```
+```cmd
 TypeError: Cannot read property 'call' of undefined
 ```
 
@@ -1275,6 +1299,7 @@ TypeError: Cannot read property 'call' of undefined
 添加 `"sideEffects": false,`
 
 #### webpack.prod.js 中
+
 ```js
   optimization: {
     ...
@@ -1293,6 +1318,7 @@ TypeError: Cannot read property 'call' of undefined
 格式： `包名: 导出变量名`
 
 * webpack 使用 externals: 
+
 ```js
   externals: {
     'axios': 'axios',
@@ -1310,7 +1336,8 @@ TypeError: Cannot read property 'call' of undefined
 ```
 
 * public/index.html 中添加 第三方资源的 CDN 链接
-```js
+
+```html
 <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
 <script src="https://cdn.bootcss.com/react/16.8.6/umd/react.production.min.js"></script>
 <script src="https://cdn.bootcss.com/react-dom/16.8.6/umd/react-dom.production.min.js"></script>
@@ -1319,9 +1346,6 @@ TypeError: Cannot read property 'call' of undefined
 <script src="https://cdn.bootcss.com/react-redux/7.1.1/react-redux.min.js"></script>
 <script src="https://cdn.bootcss.com/lodash.js/4.17.15/lodash.core.min.js"></script>
 ```
-
-## 14、单元测试
-暂时没有。。。
 
 
 ## 最后

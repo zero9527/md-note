@@ -94,10 +94,40 @@
   }
 
   .reach-bottom {
+    display: flex;
+    justify-content: center;
     margin-top: 10px;
-    text-align: center;
+    font-size: 90%;
     @include themeify {
       color: themed('gray-color');
+    }
+
+    span {
+      position: relative;
+
+      &::before,
+      &::after {
+        content: '';
+        width: 60px;
+        height: 1px;
+        position: absolute;
+        top: 50%;
+        margin-top: -0.5px;
+        opacity: 0.6;
+        @include themeify {
+          background-color: themed('gray-color');
+        }
+      }
+
+      &::before {
+        left: 0;
+        margin-left: -70px;
+      }
+
+      &::after {
+        right: 0;
+        margin-right: -70px;
+      }
     }
   }
 }

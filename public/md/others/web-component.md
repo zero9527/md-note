@@ -71,6 +71,7 @@ constructor() {
 ```
 
 * #### 事件函数：与constructor同级，位于组件类的根
+
 ```js
   // -
   decrease() {

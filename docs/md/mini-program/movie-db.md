@@ -9,13 +9,11 @@
 
 > 侵删，请跟我说一下。。。
 
-> PS: 可能过段时间会把 网页版、App版（Flutter）搞一下
-
 > **更新：**
 > 2019.10.30，网页版 (React+Typescript) ，[源码](https://github.com/zero9527/Movie-DB_web)， [预览](https://zero9527.github.io/Movie-DB_web)
 
 **可以在线体验（已发布）:**
-![](../static/images/mini-movie-db-1.png)
+![MovieDob](https://s1.ax1x.com/2020/06/01/tJRBWV.jpg)
 
 **源码戳👇[这里](https://github.com/zero9527/Movie-DB)**
 
@@ -50,8 +48,9 @@
 └── sitemap.json
 ```
 
-**一些页面截图：**<br />
-![](../static/images/mini-movie-db-2.png)
+**一些页面截图：**
+
+![MovieDob](https://s1.ax1x.com/2020/06/01/tJWn6U.md.png)
 
 
 ## API管理
@@ -263,7 +262,7 @@ App({
 ## 分享
 可以手动触发(使用button open-type)，也可以默认触发（点击右上角三个点）
 
-![](../static/images/mini-movie-db-3.png)
+![MovieDob](https://s1.ax1x.com/2020/06/01/tJW07d.md.png)
 
 ```js
 // pages/movie-detail/movie-detail.js

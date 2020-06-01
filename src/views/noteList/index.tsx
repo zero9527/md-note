@@ -40,7 +40,9 @@ const NoteList: React.FC<NoteListProps> = (props) => {
   }, [scrollTop]);
 
   const ReachBottom = () => (
-    <div className={styles['reach-bottom']}>---- 到底了 ----</div>
+    <div className={styles['reach-bottom']}>
+      <span>到底了</span>
+    </div>
   );
 
   return (
