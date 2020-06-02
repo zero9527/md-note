@@ -52,6 +52,9 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     renderer.link = function(href: string, title: string, text: string) {
       return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
     };
+    renderer.image = function(src: string, alt: string) {
+      return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
+    };
 
     marked.setOptions({
       renderer,
@@ -73,6 +76,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     });
   };
 
+  // markdown渲染好了
   const mdRendered = () => {
     markedHighlight();
     onMdRendered?.();

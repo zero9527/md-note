@@ -14,6 +14,7 @@ import MdCatalog from '@/components/mdCatalog';
 import Export from '@/components/export';
 // import { throttle } from '@/utils';
 import styles from './note-detail.scss';
+import PicPreview from '@/components/picPreview';
 
 // 详情
 const NoteDetail: React.FC = () => {
@@ -39,6 +40,17 @@ const NoteDetail: React.FC = () => {
   const [mdtext, setMdtext] = useState<string | undefined>();
   const [showScroll2Top, setShowScroll2Top] = useState(false);
   const [defaultCateActive, setDefaultCateActive] = useState<string>();
+
+  const onClosePicPreview = () => {
+    updatePicPreview((pre) => ({ ...pre, show: false }));
+  };
+
+  const [picPreview, updatePicPreview] = useState({
+    show: false,
+    src: '',
+    alt: '',
+    onClose: onClosePicPreview,
+  });
 
   useEffect(() => {
     init();
@@ -88,7 +100,26 @@ const NoteDetail: React.FC = () => {
   // markdown 渲染好了
   const onMdRendered = () => {
     const hash = location.hash.substr(1, location.hash.length);
-    setTimeout(() => scrollToView(decodeURI(hash)), 0);
+    setTimeout(() => {
+      scrollToView(decodeURI(hash));
+      addImgHandler();
+    }, 0);
+  };
+
+  // 图片点击新窗口打开
+  const addImgHandler = () => {
+    const imgs = document.querySelectorAll('#md-note .md-img');
+    Array.from(imgs).forEach((img: HTMLImageElement) => {
+      img.onclick = function() {
+        window.open(img.src);
+        // updatePicPreview({
+        //   show: true,
+        //   src: img.src,
+        //   alt: img.alt,
+        //   onClose: onClosePicPreview,
+        // });
+      };
+    });
   };
 
   // 视图滚动到对应标题位置
@@ -117,13 +148,16 @@ const NoteDetail: React.FC = () => {
             title="返回首页"
             onClick={onBack}
           />
-          <span title="文章标题">&nbsp;{title}</span>
+          <span className={styles.title} title="文章标题">
+            &nbsp;{title}
+          </span>
         </div>
       </Header>
       <main className={`center-content ${styles['note-detail']}`}>
         {mdtext ? (
           <>
             <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
+            <PicPreview {...picPreview} />
             <StickyRight>
               <MdCatalog
                 mdtext={mdtext}

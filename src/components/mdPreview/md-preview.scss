@@ -3,23 +3,10 @@ $padding-edge: 16px;
 .md-container {
   .md-content {
     position: relative;
-    padding: 10px 0;
+    padding: 10px 16px;
     @include themeify {
       color: themed('base-color');
       background: themed('bg-color');
-    }
-
-    > p,
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > h5 {
-      padding: 0 $padding-edge;
-    }
-
-    ul {
-      padding-right: $padding-edge;
     }
 
     &::before {
@@ -36,6 +23,12 @@ $padding-edge: 16px;
 
     p {
       word-break: break-word;
+    }
+
+    img {
+      &:hover {
+        cursor: zoom-in;
+      }
     }
 
     // 代码段
@@ -216,5 +209,20 @@ $padding-edge: 16px;
 @media screen and (max-width: 1099px) {
   .md-detail {
     max-width: 1100px;
+  }
+
+  .md-container {
+    .md-content {
+      padding: 10px 0;
+
+      > p,
+      > h1,
+      > h2,
+      > h3,
+      > h4,
+      > h5 {
+        padding: 0 $padding-edge;
+      }
+    }
   }
 }

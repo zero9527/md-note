@@ -128,6 +128,7 @@ import Link from 'next/link';
 
 如下：
 * 客户端
+
 ```js
 // ...
   return (
@@ -141,6 +142,7 @@ import Link from 'next/link';
 ```
 
 * 服务端
+
 ```js
 // server.ts
   server.get('/detail/:id', (req: Req, res: http.ServerResponse) => {
@@ -539,12 +541,14 @@ export default About;
 
 ## 7、路径别名
 使用 `babel-plugin-module-alias`，直接配置 webpack 是无效的
-```
+
+```shell
 yarn add babel-plugin-module-alias -D
 ```
 
 * 配置 .babelrc
-```
+
+```json
 {
   "plugins": [
     ["module-alias", { "src": "./src", "expose": "@" }]
@@ -556,7 +560,8 @@ yarn add babel-plugin-module-alias -D
 ```
 
 * tsconfig.json
-```
+
+```json
 {
   "compilerOptions": {
     ...

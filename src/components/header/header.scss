@@ -18,14 +18,14 @@
 .visible {
   visibility: visible;
   transform: translateY(-100%);
-  animation: show 0.3s forwards;
+  animation: show 0.5s forwards;
 
   @keyframes show {
     from {
-      transform: translateY(-100%);
+      transform: translateY(-100%) translateZ(0);
     }
     to {
-      transform: translateY(0);
+      transform: translateY(0) translateZ(0);
     }
   }
 }

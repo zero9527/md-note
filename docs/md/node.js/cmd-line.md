@@ -236,7 +236,8 @@ module.export = {
 
 #### 命令行打印的提示
 * 新文件
-```cmd
+
+```shell
 $ npm run create:comp aa
 
 > test@1.0.0 create:comp D:\node-test
@@ -253,7 +254,8 @@ D:\node-test\components\aa\index.js 文件创建成功！
 ```
 
 * 文件已存在
-```cmd
+
+```shell
 $ npm run create:comp aa
 
 > test@1.0.0 create:comp D:\node-test
@@ -298,6 +300,7 @@ package.json:
 ```
 
 * 命令生成 sh/sh1.js:
+
 > 使用npm命令时，需如上所示，在上面`package.json`中`scripts`配置好
 
 ```js
@@ -379,7 +382,7 @@ exec(buildFE('/code/react-t1', 'npm run build'), (err, stdout, stderr) => {
 
 * 命令行打印：
 
-```cmd
+```shell
 $ npm run sh
 
 > test@1.0.0 sh D:\node-test

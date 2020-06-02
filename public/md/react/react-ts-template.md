@@ -146,7 +146,7 @@ function getServedPath(appPackageJson) {
 
 4. 报@types/tapable @types/html-minifier @types/webpack不存在
     
-```cmd
+```shell
 yarn add @types/tapable @types/html-minifier @types/webpack
 ```
 
@@ -554,7 +554,7 @@ Api.testApi(params).then((res: any) => {...});
 ## -7、状态管理使用rematch (已换为 mobx )
 由于 `redux v7.1.0` 新增了 `useSelector`, `useDispatch` 等Hooks，更新 `react-redux` 版本即可使用，下面将增加使用 `useSelector, useDispatch` 的版本
 
-```cmd
+```shell
 yarn add @rematch/core react-redux
 ```
 
@@ -899,7 +899,7 @@ class Home extends React.Component<IProps> {
 
 ## 8、跨域代理
 使用 `http-proxy-middleware` 插件
-```cmd
+```shell
 yarn add http-proxy-middleware
 ```
 
@@ -938,7 +938,7 @@ class 输出配置: `[local]__[hash:base64:6]`，输出形如：`content__1f1Aqs
 sass全局变量使用这个 loader `sass-resources-loader`，<br>
 配置一下 loader，然后在这个文件里面 `src/utils/variable.scss` 写变量，然后就可以愉快的使用了
 
-```cmd
+```shell
 yarn add sass-resources-loader
 ```
 
@@ -1123,7 +1123,7 @@ export default withAppContext<IProps>(withRouter(Header));
 
 ## 12、国际化
 使用 react-intl
-```cmd
+```shell
 yarn add react-intl @types/react-intl
 ```
 
@@ -1291,7 +1291,7 @@ chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
 ### tree-shaking
 webpack 文档有说明要设置 `mode: 'production'`，但是我这里 build 之后的文件，打开 `webpack module` 会报错；但是设置 `mode: 'development'` 之后就可以正常访问，只是文件比用 `production` 要大一点，，，这样就没意义了，所以这部分 **暂时不搞** 了。。。
 
-```cmd
+```shell
 TypeError: Cannot read property 'call' of undefined
 ```
 

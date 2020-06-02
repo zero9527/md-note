@@ -16,6 +16,7 @@ body {
   }
 }
 * {
+  line-height: 1.4;
   box-sizing: border-box;
   transition: color, background 0.3s;
 }
@@ -30,8 +31,10 @@ h3 {
   padding-top: 10px;
   font-size: 1.1rem;
 }
-ul {
+ul,
+ol {
   padding-left: 36px;
+  padding-right: 16px;
 }
 a {
   @include themeify {

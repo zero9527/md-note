@@ -6,10 +6,10 @@ export interface PicPreview {
   show: boolean;
   src: string;
   alt: string;
-  onClode: () => void;
+  onClose: () => void;
 }
 // 图片预览
-const PicPreview: React.FC<PicPreview> = ({ show, src, alt, onClode }) => {
+const PicPreview: React.FC<PicPreview> = ({ show, src, alt, onClose }) => {
   useEffect(() => {
     const mdNote = document.querySelector('#md-note') as HTMLDivElement;
     const catalog = document.querySelector('#catalog') as HTMLElement;
@@ -35,7 +35,7 @@ const PicPreview: React.FC<PicPreview> = ({ show, src, alt, onClode }) => {
       {show && (
         <section className={styles['pic-preview']}>
           <div className={styles.content}>
-            <button className={`btn ${styles.close}`} onClick={onClode}>
+            <button className={`btn ${styles.close}`} onClick={onClose}>
               X
             </button>
             <div className={styles['img-content']}>

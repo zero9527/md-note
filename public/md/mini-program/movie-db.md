@@ -281,19 +281,21 @@ Page({
 
 
 ## 说明
-* 忽略的文件(project.config.json) <br />
-  > 设置的文件/文件夹不会被上传到微信服务器（使用开发者工具上传代码会有提示哪些文件不上传），如 `_readme` 中存放一些 `README.md` 的引用文件
-    ```js
-    // project.config.json
-    "packOptions": {
-    	"ignore": [
-    		{
-    			"type": "folder",
-    			"value": "_readme"
-    		}
-    	]
-    },
-    ```
+* 忽略的文件(project.config.json) 
+
+> 设置的文件/文件夹不会被上传到微信服务器（使用开发者工具上传代码会有提示哪些文件不上传），如 `_readme` 中存放一些 `README.md` 的引用文件
+
+```js
+// project.config.json
+"packOptions": {
+  "ignore": [
+    {
+      "type": "folder",
+      "value": "_readme"
+    }
+  ]
+},
+```
 
 
 ## 最后

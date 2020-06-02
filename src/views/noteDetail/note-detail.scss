@@ -13,11 +13,18 @@
 }
 
 .header {
+  .title {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1;
+  }
+
   :global {
-    .content {
+    .center-content {
       display: flex;
       align-items: center;
-      justify-content: space-between;
     }
   }
 

@@ -66,11 +66,12 @@
 ```
 
 * #### components-dir-tree.json: output
+
 ```js
 "output": "D:\\node-test\n└─ components\n    ├─ components-dir-tree1.json\n    ├─ file.2.js\n    ├─ file.bakeup.js\n    ├─ file.js\n    ├─ index.js\n    ├─ log.js\n    ├─ node-test-dir-tree.json\n    ├─ run-sh.js\n    ├─ test\n      └─ aa\n        ├─ bb.js\n        └─ cc\n    └─ timeFormat.js\n"
 ```
 
-```cmd
+```shell
  D:\node-test
 ├─ components
     ├─ components-dir-tree1.json
@@ -254,6 +255,7 @@ module.exports = {
 
 ## 四、调用
 * #### package.json:
+
 ```js
 {
   ...
@@ -267,6 +269,7 @@ module.exports = {
 ```
 
 * #### 函数主体
+
 ```js
 // components/index.js
 // 获取目录树初始化

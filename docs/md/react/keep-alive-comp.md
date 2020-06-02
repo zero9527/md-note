@@ -6,7 +6,7 @@
 本文 [示例代码](https://github.com/zero9527/keep-alive/tree/master/example)，[在线例子](https://zero9527.github.io/keep-alive)
 
 已发布 `npm`，[地址](https://www.npmjs.com/package/keep-alive-comp)
-```
+```shell
 npm install keep-alive-comp
 
 # 或
@@ -301,7 +301,7 @@ describe('============= keep-alive test =============', () => {
 
 ### 3.5 yarn test
 执行 `yarn test`
-```cmd
+```shell
 PS F:\code\keep-alive> yarn test
 yarn run v1.17.3
 $ cross-env NODE_ENV=test jest --config jest.config.js

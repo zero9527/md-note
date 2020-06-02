@@ -16,7 +16,7 @@ export interface ExportProps {
 
 // 导出md文件、生成图片(html2canvas)
 function Export({ id, position, mdtext, ...props }: ExportProps) {
-  const { theme } = useGlobalModel(modal => [modal.theme]);
+  const { theme } = useGlobalModel((modal) => [modal.theme]);
   const [imgUrl, setImgUrl] = useState('');
   const [mdUrl, setMdUrl] = useState('');
   const [exportName, setExportName] = useState('');
@@ -59,7 +59,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
 
     const url = window.URL;
     const tempmd: Blob = new Blob([mdtext], {
-      type: 'application/text'
+      type: 'application/text',
     });
     setMdUrl(url.createObjectURL(tempmd));
 
@@ -104,7 +104,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         scrollY: 0,
         width,
         useCORS: true,
-        backgroundColor: theme === 'dark' ? '#232426' : '#fff'
+        backgroundColor: theme === 'dark' ? '#232426' : '#fff',
       };
       if (!isCompact) config['windowWidth'] = width;
 
@@ -129,7 +129,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
     window.removeEventListener('click', bodyClick);
   };
 
-  const onPicPreviewClode = () => {
+  const onPicPreviewClose = () => {
     setIsExportImg(false);
     setImgUrl('');
   };
@@ -171,7 +171,7 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
         show={isExportImg}
         src={imgUrl}
         alt={`${exportName}.png`}
-        onClode={onPicPreviewClode}
+        onClose={onPicPreviewClose}
       />
     </div>
   );
