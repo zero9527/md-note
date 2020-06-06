@@ -1,0 +1,264 @@
+// 骨架屏
+#skeleton {
+  .title,
+  .tag,
+  .tag > span,
+  .time {
+    animation: loading 0.5s infinite alternate;
+    @include themeify {
+      color: themed('bg-color-light');
+      background: themed('bg-color-light');
+    }
+  }
+}
+
+.note-list {
+  width: 100%;
+  height: 100%;
+  padding-top: 46px;
+  overflow: auto;
+
+  .add {
+    width: 46px;
+    height: 46px;
+    position: fixed;
+    bottom: 40px;
+    margin-left: -60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 46px;
+    font-size: 20px;
+  }
+}
+
+.header {
+  .desc {
+    font-size: 85%;
+    @include themeify {
+      color: themed('desc-color');
+    }
+  }
+  :global .content {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.container {
+  padding-bottom: 12px;
+
+  .item {
+    position: relative;
+    margin-top: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 4px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+    @include themeify {
+      background: themed('bg-color');
+    }
+    &:hover {
+      @include themeify {
+        color: themed('base-color');
+        background: themed('bg-color-light');
+      }
+    }
+    &:active {
+      @include themeify {
+        color: themed('primary-color');
+        background: themed('bg-color-heavy');
+      }
+    }
+
+    .title {
+      padding: 6px 0;
+      font-size: 1rem;
+    }
+
+    .desc {
+      position: relative;
+      margin-top: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      @include themeify {
+        color: themed('gray-color');
+      }
+
+      .tag {
+        margin-right: 4px;
+        > span {
+          padding: 4px;
+          padding: 0 4px;
+          @include themeify {
+            color: themed('primary-color');
+          }
+        }
+      }
+
+      .time {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .reach-bottom {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 90%;
+    @include themeify {
+      color: themed('gray-color');
+    }
+
+    span {
+      position: relative;
+
+      &::before,
+      &::after {
+        content: '';
+        width: 60px;
+        height: 1px;
+        position: absolute;
+        top: 50%;
+        margin-top: -0.5px;
+        opacity: 0.6;
+        @include themeify {
+          background-color: themed('gray-color');
+        }
+      }
+
+      &::before {
+        left: 0;
+        margin-left: -70px;
+      }
+
+      &::after {
+        right: 0;
+        margin-right: -70px;
+      }
+    }
+  }
+}
+
+.right-panel {
+  margin-top: 58px;
+  transition: margin-top 0.5s;
+
+  :global #app-calendar {
+    width: 276px;
+    min-height: 358px;
+    @include themeify {
+      background: themed('bg-color');
+    }
+
+    .calendar {
+      @include themeify {
+        color: themed('base-color');
+        background: themed('bg-color');
+      }
+
+      .body {
+        &::before {
+          @include themeify {
+            color: themed('border-color');
+          }
+        }
+
+        .another-month-date {
+          @include themeify {
+            color: themed('gray-color');
+          }
+        }
+      }
+
+      .from-today {
+        @include themeify {
+          color: themed('gray-color');
+        }
+      }
+
+      .select-year-month {
+        .content {
+          @include themeify {
+            color: themed('base-color');
+            background: themed('bg-color');
+          }
+
+          .up {
+            @include themeify {
+              background: themed('linear-background-0');
+            }
+          }
+
+          .down {
+            @include themeify {
+              background: themed('linear-background-180');
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.beian {
+  padding: 20px 0;
+  @include themeify {
+    color: themed('gray-color');
+  }
+
+  a {
+    text-decoration: none;
+    font-size: 14px;
+    @include themeify {
+      color: themed('gray-color');
+    }
+
+    &:hover {
+      @include themeify {
+        color: themed('primary-color');
+      }
+    }
+  }
+}
+
+@keyframes loading {
+  from {
+    @include themeify {
+      color: themed('bg-color-light');
+      background: themed('bg-color-light');
+    }
+  }
+  to {
+    @include themeify {
+      color: themed('bg-color-heavy');
+      background: themed('bg-color-heavy');
+    }
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .container {
+    max-width: 800px;
+  }
+}
+
+@media screen and (max-width: 1099px) {
+  .container {
+    padding: 0 12px 12px;
+  }
+
+  :global #app-calendar {
+    display: none;
+  }
+
+  .beian {
+    display: none;
+  }
+}

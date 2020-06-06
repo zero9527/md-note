@@ -1,13 +1,10 @@
-import React, { useState, CSSProperties, useEffect } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './stickyRight.scss';
 import useGlobalModel from '@/model/useGlobalModel';
+import styles from './styles.scss';
 
-interface StickyRightProps {
-  className?: React.HTMLAttributes<HTMLDivElement>;
-  style?: React.HTMLAttributes<HTMLDivElement>;
+interface StickyRightProps extends React.HTMLAttributes<HTMLDivElement> {
   onResize?: (position: CSSProperties) => void;
-  [props: string]: any;
 }
 
 // 固定在内容右侧

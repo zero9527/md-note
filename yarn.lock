@@ -10009,6 +10009,11 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
+single-spa@^5.5.2:
+  version "5.5.2"
+  resolved "https://registry.npm.taobao.org/single-spa/download/single-spa-5.5.2.tgz#9f2fe21e19b002d19e59e7afb18c209dfa32de42"
+  integrity sha1-ny/iHhmwAtGeWeevsYwgnfoy3kI=
+
 sisteransi@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npm.taobao.org/sisteransi/download/sisteransi-1.0.4.tgz?cache=0&sync_timestamp=1573410719947&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fsisteransi%2Fdownload%2Fsisteransi-1.0.4.tgz#386713f1ef688c7c0304dc4c0632898941cad2e3"

@@ -1,0 +1,230 @@
+$padding-edge: 16px;
+
+.md-container {
+  .md-content {
+    position: relative;
+    padding: 10px 16px;
+    @include themeify {
+      color: themed('base-color');
+      background: themed('bg-color');
+    }
+
+    &::before {
+      content: attr(data-text);
+      position: absolute;
+      top: 2px;
+      left: 10px;
+      color: #ccc;
+      font-size: 12px;
+      @include themeify {
+        color: themed('gray-color');
+      }
+    }
+
+    p {
+      word-break: break-word;
+    }
+
+    img {
+      &:hover {
+        cursor: zoom-in;
+      }
+    }
+
+    // 代码段
+    li > code,
+    p > code {
+      padding: 0 2px;
+      word-break: break-word;
+      font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
+        monospace;
+      @include themeify {
+        color: themed('primary-color');
+        background: themed('bg-color-light');
+      }
+    }
+
+    pre {
+      position: relative;
+      padding: 20px $padding-edge;
+      color: #abb2bf;
+      background: #282c34;
+      overflow-x: auto;
+      transform: translatez(0);
+
+      code {
+        font-size: 94%;
+        font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
+          monospace;
+        background: transparent;
+
+        &::before {
+          // 语言
+          content: attr(class);
+          min-height: 18px;
+          position: absolute;
+          left: 0;
+          margin-top: -18px;
+          padding: 0 16px;
+          text-align: left;
+          // color: #666;
+          font-size: 90%;
+          box-sizing: border-box;
+          @include themeify {
+            color: themed('desc-color');
+          }
+        }
+      }
+    }
+
+    p > img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 600px;
+      display: inherit;
+      margin: auto;
+    }
+
+    blockquote {
+      width: 100%;
+      display: inline-block;
+      padding: 0 $padding-edge;
+      margin: 0;
+      border-left: 6px solid #cbcbcb;
+      @include themeify {
+        color: themed('desc-color');
+        border-color: themed('border-color');
+        background: themed('bg-color-light');
+      }
+    }
+
+    table {
+      margin: 10px 0;
+      border-collapse: collapse;
+
+      thead {
+        @include themeify {
+          background: themed('bg-color-heavy');
+        }
+      }
+
+      td,
+      th {
+        padding: 2px 4px;
+        border: 1px solid #ccc;
+        @include themeify {
+          border-color: themed('border-color');
+        }
+      }
+    }
+  }
+}
+
+// 详情的样式
+.md-detail {
+  width: 100%;
+  min-height: 100%;
+
+  .md-content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+}
+
+// 预览的样式
+.md-preview {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  font-size: 85%;
+  transform: translate3d(0, 0, 0);
+  will-change: contents;
+  z-index: 999;
+
+  .drag {
+    width: 36px;
+    height: 36px;
+    position: relative;
+    left: 50%;
+    margin-left: -18px;
+    border-radius: 50%;
+  }
+
+  .md-content {
+    width: 60vmin;
+    height: 60vh;
+    margin: 5px 0;
+    border-radius: 4px;
+    box-shadow: -1px 1px 4px rgba(150, 150, 150, 0.6);
+    overflow: auto;
+  }
+
+  :global {
+    .change-size {
+      padding: 0 8px;
+      position: absolute;
+      margin-left: -14px;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+
+      &::before {
+        content: '';
+        width: 3px;
+        height: 40px;
+        display: block;
+        background: #999;
+        box-shadow: 0 0 2px rgba(250, 250, 250, 0.8);
+      }
+    }
+
+    .change-size-bottom {
+      margin-left: 0;
+      margin-top: -9px;
+      top: calc(100% - 30px);
+      left: 50%;
+      padding: 8px 0;
+      transform: translateX(-50%);
+
+      &::before {
+        width: 40px;
+        height: 3px;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .md-detail {
+    max-width: 800px;
+  }
+
+  :global {
+    .title {
+      width: 800px;
+    }
+  }
+}
+
+@media screen and (max-width: 1099px) {
+  .md-detail {
+    max-width: 1100px;
+  }
+
+  .md-container {
+    .md-content {
+      padding: 10px 0;
+
+      > p,
+      > h1,
+      > h2,
+      > h3,
+      > h4,
+      > h5 {
+        padding: 0 $padding-edge;
+      }
+    }
+  }
+}

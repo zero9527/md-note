@@ -4,8 +4,8 @@ import { faThLarge, faTimes } from '@fortawesome/free-solid-svg-icons';
 import useGlobalModel from '@/model/useGlobalModel';
 import PicPreview from '../picPreview';
 // import { cacheUtil } from '@/utils';
-import styles from './export.scss';
 import Modal from '../Modal';
+import styles from './styles.scss';
 
 export interface ExportProps {
   id: string | number;

@@ -4,7 +4,7 @@ import { faCog } from '@fortawesome/free-solid-svg-icons';
 import useNoteModel from '@/model/useNoteModel';
 import ChangeTheme from '../changeTheme';
 import Modal from '@/components/Modal';
-import styles from './Tools.scss';
+import styles from './styles.scss';
 
 const Tools: React.FC = () => {
   const exportJsonRef = useRef<HTMLAnchorElement>(null);

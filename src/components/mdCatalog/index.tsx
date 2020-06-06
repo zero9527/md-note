@@ -7,8 +7,8 @@ import React, {
 } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import styles from './mdCatalog.scss';
 import useScroll from '@/utils/useScroll';
+import styles from './styles.scss';
 
 export interface CatalogItem {
   id: string; // 标题的id
@@ -32,7 +32,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   onGetTitle,
   ...props
 }) => {
-  const { scrollTop } = useScroll();
+  const { scrollTop, prevScrollTop } = useScroll();
   const useScrollTop = useRef(true);
   const [showCate, setShowCate] = useState(false);
   const [cate, setCate] = useState<CatalogItem[]>([]);
@@ -91,7 +91,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         const el = document.getElementById(item.id) as HTMLElement;
         if (el) {
           const bcr = el.getBoundingClientRect();
-          if (bcr.top < 0) {
+          if (bcr.top < 20) {
             setCateActive(item.id);
           }
         } else {
@@ -223,6 +223,9 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         style={{ display: showCate ? 'block' : 'none' }}
       />
       <div
+        style={{
+          marginTop: scrollTop > 50 && scrollTop > prevScrollTop ? '0' : '',
+        }}
         className={`${styles.catelist} ${cateListTransition}`}
         onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >

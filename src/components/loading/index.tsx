@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import styles from './loading.scss';
+import styles from './styles.scss';
 
 // 路由跳转 Loading组件
 function Loading() {

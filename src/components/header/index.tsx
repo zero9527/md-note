@@ -1,6 +1,6 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
 import useScroll from '@/utils/useScroll';
-import styles from './header.scss';
+import styles from './styles.scss';
 
 interface HeaderProps {
   hiddenTop?: number; // 滚动开始隐藏的距离

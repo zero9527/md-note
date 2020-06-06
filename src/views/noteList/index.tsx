@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
 import { KeepAliveAssist } from 'keep-alive-comp';
+import { Link } from 'react-router-dom';
+import useGlobalModel from '@/model/useGlobalModel';
 import useNoteModel from '@/model/useNoteModel';
 import useScroll from '@/utils/useScroll';
 import Header from '@/components/header';
 import Tools from '@/components/Tools';
 import Scroll2Top from '@/components/Scroll2Top';
-import useGlobalModel from '@/model/useGlobalModel';
-import RightPanel from './rightPanel';
-import styles from './noteList.scss';
+import styles from './styles.scss';
 
 interface NoteListProps extends KeepAliveAssist {}
 
@@ -63,12 +63,12 @@ const NoteList: React.FC<NoteListProps> = (props) => {
         >
           {noteList?.length > 0 ? (
             <>
-              {noteList?.map?.((noteitem, noteindex) => {
+              {noteList?.map?.((noteitem) => {
                 return (
-                  <a
+                  <Link
+                    to={`/detail/${noteitem.tag}/${noteitem.name}`}
                     className={`link ${styles.item}`}
                     key={`${noteitem.tag}-${noteitem.name}`}
-                    href={`./#/detail/${noteitem.tag}/${noteitem.name}`}
                     onClick={toDetailClick}
                   >
                     <div className={styles.title}>{noteitem.title}</div>
@@ -80,7 +80,7 @@ const NoteList: React.FC<NoteListProps> = (props) => {
                         创建时间：{noteitem.create_time}
                       </span>
                     </div>
-                  </a>
+                  </Link>
                 );
               })}
               <ReachBottom />
@@ -90,12 +90,6 @@ const NoteList: React.FC<NoteListProps> = (props) => {
           )}
         </section>
         {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
-        <RightPanel />
-        {/* <div className="gitter">
-          <a href="./#/note-add" className={`link btn ${styles.add}`}>
-            +
-          </a>
-        </div> */}
       </main>
     </>
   );

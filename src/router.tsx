@@ -1,14 +1,14 @@
 import React, { Suspense } from 'react';
+import { HashRouter, Route } from 'react-router-dom';
 import { lazy } from '@loadable/component';
-import { HashRouter, Route, Redirect } from 'react-router-dom';
-import KeepAlive from 'keep-alive-comp';
-import NoteList from './views/noteList';
 import Loading from '@/components/loading';
 
-const App = lazy(() => import('@/App'));
+const App = lazy(() => import(/* webpackPrefetch: true */ '@/App'));
+
 const Detail = lazy(() =>
   import(/* webpackPrefetch: true */ '@/views/noteDetail')
 );
+
 const Editor = lazy(() =>
   import(/* webpackPrefetch: true */ '@/views/mdEditor')
 );
@@ -16,8 +16,7 @@ const Editor = lazy(() =>
 const Router = () => (
   <HashRouter>
     <Route
-      key="app"
-      exact={true}
+      key="home"
       path="/"
       component={() => (
         <Suspense fallback={<Loading />}>
@@ -28,20 +27,10 @@ const Router = () => (
     <Route
       key="detail"
       exact={true}
-      path="/detail/:tag/:tid"
+      path="/detail/:tag/:name"
       component={() => (
         <Suspense fallback={<Loading />}>
           <Detail />
-        </Suspense>
-      )}
-    />
-    <Route
-      key="note-add"
-      exact={true}
-      path="/note-add"
-      component={() => (
-        <Suspense fallback={<Loading />}>
-          <Editor />
         </Suspense>
       )}
     />

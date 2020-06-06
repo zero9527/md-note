@@ -17,7 +17,7 @@ export default function AxiosConfig() {
 
       return {
         ...config,
-        _t: Date.now()
+        _t: Date.now(),
       };
     },
     (err: AxiosError) => {

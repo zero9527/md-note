@@ -1,4 +1,4 @@
-import React, { useState, useEffect, CSSProperties } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
@@ -11,30 +11,28 @@ import Header from '@/components/header';
 import useScroll from '@/utils/useScroll';
 import MdPreview from '@/components/mdPreview';
 import MdCatalog from '@/components/mdCatalog';
-import Export from '@/components/export';
 // import { throttle } from '@/utils';
-import styles from './note-detail.scss';
 import PicPreview from '@/components/picPreview';
+import styles from './styles.scss';
 
 // 详情
 const NoteDetail: React.FC = () => {
-  const { theme } = useGlobalModel((modal) => [modal.theme]);
-  const {
-    getNoteById,
-    updateNoteById,
-    fetchNoteById,
-  } = useNoteModel((modal) => [
-    modal.getNoteById,
-    modal.updateNoteById,
-    modal.fetchNoteById,
-  ]);
-  const { tag, tid } = useParams<{ tag: string; tid: string }>();
-  const history = useHistory();
-  const location = useLocation();
-  const { scrollTop } = useScroll();
   const { stickyRightStyle } = useGlobalModel((modal) => [
     modal.stickyRightStyle,
   ]);
+  const {
+    getNoteById,
+    updateNoteById,
+    fetchNoteByName,
+  } = useNoteModel((modal) => [
+    modal.getNoteById,
+    modal.updateNoteById,
+    modal.fetchNoteByName,
+  ]);
+  const { tag, name } = useParams<{ tag: string; name: string }>();
+  const history = useHistory();
+  const location = useLocation();
+  const { scrollTop } = useScroll();
   const [is404, setIs404] = useState(false);
   const [title, setTitle] = useState('');
   const [mdtext, setMdtext] = useState<string | undefined>();
@@ -61,7 +59,7 @@ const NoteDetail: React.FC = () => {
   }, [scrollTop]);
 
   const init = async () => {
-    const cache = getNoteById(tid);
+    const cache = getNoteById(name);
     if (cache?.data) {
       setMdtext(cache.data);
       return;
@@ -69,10 +67,10 @@ const NoteDetail: React.FC = () => {
 
     try {
       // 请求数据
-      const res: any = await fetchNoteById(tag, tid);
+      const res: any = await fetchNoteByName(tag, name);
       if (res?.code === 0) {
         if (res.data.substring(0, 20).includes('<!DOCTYPE html>')) return;
-        updateNoteById(tid, res.data);
+        updateNoteById(name, res.data);
         setMdtext(res.data);
       } else {
         console.log('数据没有了！');
@@ -165,8 +163,8 @@ const NoteDetail: React.FC = () => {
                 onCateClick={onCateClick}
                 onGetTitle={onGetTitle}
               >
-                {/* <Export id={tid} position={stickyRightStyle} mdtext={mdtext}>
-                  <a href={`./#/md-editor/${tag}/${tid}`} className="link">
+                {/* <Export id={name} position={stickyRightStyle} mdtext={mdtext}>
+                  <a href={`./#/md-editor/${tag}/${name}`} className="link">
                     <button className="btn">编辑</button>
                   </a>
                 </Export> */}

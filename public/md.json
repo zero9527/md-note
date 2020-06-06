@@ -66,6 +66,12 @@
     "create_time": "2019/10/01 00:00:00"
   },
   {
+    "tag": "others",
+    "name": "create-react-app_single-spa.md",
+    "title": "React使用single-spa",
+    "create_time": "2019/10/01 00:00:00"
+  },
+  {
     "tag": "react",
     "name": "keep-alive-comp.md",
     "title": "简单实现一个React组件Keep-Alive",

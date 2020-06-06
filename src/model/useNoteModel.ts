@@ -55,12 +55,6 @@ const useNoteModel = () => {
         updateNoteList(res);
         setLoading(false);
       });
-      // import('./data').then(({ default: data }) => {
-      //   const templist: NoteItem[] = data;
-
-      //   updateNoteList(templist);
-      //   setLoading(false);
-      // });
     }
   }, []);
 
@@ -69,20 +63,8 @@ const useNoteModel = () => {
     if (noteList) cache.current.setData<NoteItem[]>(noteList);
   }, [noteList]);
 
-  // 过滤数据
-  function filterData(arr: NoteItem[]) {
-    const all = [...noteList, ...arr];
-    const newArr: NoteItem[] = [];
-    all.forEach((item) => {
-      if (item.name && !newArr.some((i) => i.name === item.name)) {
-        newArr.push(item);
-      }
-    });
-    return newArr;
-  }
-
   // 请求数据 tag: 标签；name：名称
-  const fetchNoteById = async (tag: NoteTag | string, name: string) => {
+  const fetchNoteByName = async (tag: NoteTag | string, name: string) => {
     try {
       const res: any = await fileApi(`/${tag}/${name}`);
       return { code: 0, data: res, msg: 'ok' };
@@ -128,34 +110,13 @@ const useNoteModel = () => {
       //   list[itemIndex] = { id, data, date, desc: getTitleByData(data) };
       // }
 
-      return sortList(list).map((i) => i);
+      return list;
     });
   };
 
   // 更新数据
   const updateNoteList = (data: any) => {
-    const sortArr = sortList(data);
-    setNoteList(() => sortArr);
-  };
-
-  // 排序，时间降序
-  const sortList = (arr: NoteItem[]): NoteItem[] => {
-    return arr;
-    if (arr.length <= 1) return arr;
-    const mid: NoteItem = arr.shift()!;
-    const left: NoteItem[] = [];
-    const right: NoteItem[] = [];
-
-    arr.forEach((item: NoteItem) => {
-      const midTime = new Date(mid.create_time).getTime();
-      const itemTime = new Date(item.create_time).getTime();
-      if (itemTime <= midTime) left.push(item);
-      else right.push(item);
-    });
-
-    return sortList(right)
-      .concat(mid)
-      .concat(sortList(left));
+    setNoteList(data);
   };
 
   const getTitleByData = (data: string) => {
@@ -179,7 +140,7 @@ const useNoteModel = () => {
     getNoteById,
     updateNoteById,
     updateNoteList,
-    fetchNoteById,
+    fetchNoteByName,
     clearCache,
   };
 };

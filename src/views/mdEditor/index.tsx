@@ -14,13 +14,13 @@ import useNoteModel from '@/model/useNoteModel';
 import MdPreview from '../../components/mdPreview';
 import MdToolBar, { IToolItem } from '@/components/mdToolbar';
 // import fileApi from '@/api/file';
-import styles from './mdEditor.scss';
+import styles from './styles.scss';
 
 // 编辑器
 function MdEditor() {
-  const { path, params } = useRouteMatch<{ tag: string; id: string }>();
+  const { path, params } = useRouteMatch<{ tag: string; name: string }>();
   const history = useHistory();
-  const { getNoteById, updateNoteById, fetchNoteById } = useNoteModel();
+  const { getNoteById, updateNoteById, fetchNoteByName } = useNoteModel();
   const codeMirrorEditor = useRef<CodeMirror.Editor>();
   const noteAdd = useRef<string>('');
   const [mdtextRaw, setMdtextRaw] = useState(''); // 原始的编辑数据
@@ -33,12 +33,12 @@ function MdEditor() {
   }, []);
 
   const init = async () => {
-    const cache = getNoteById(params.id);
+    const cache = getNoteById(params.name);
     if (cache) {
       setMdtextRaw(cache.data);
       setMdtext(cache.data);
     } else {
-      const res: any = await fetchNoteById(params.tag, params.id);
+      const res: any = await fetchNoteByName(params.tag, params.name);
       if (res) {
         if (res.substring(0, 20).includes('<!DOCTYPE html>')) return;
         setMdtextRaw(res);
@@ -64,8 +64,8 @@ function MdEditor() {
 
   const onBack = () => {
     let path = '';
-    const id = params.id || codeMirrorEditor.current;
-    if (!params.id) path = '/';
+    const id = params.name || codeMirrorEditor.current;
+    if (!params.name) path = '/';
     else path = `/detail/${id}`;
     history.push(path);
   };
@@ -101,8 +101,8 @@ function MdEditor() {
   ) => {
     // console.log('editor: ', editor);
     if (!codeMirrorEditor.current) codeMirrorEditor.current = editor;
-    if (!params.id && !noteAdd.current) noteAdd.current = `${Date.now()}`;
-    updateNoteById(params.id || noteAdd.current, value);
+    if (!params.name && !noteAdd.current) noteAdd.current = `${Date.now()}`;
+    updateNoteById(params.name || noteAdd.current, value);
     setMdtext(value);
   };
 

@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 import useWindowClick from '@/utils/useWindowClick';
-import styles from './scroll2top.scss';
+import styles from './styles.scss';
 
 export interface Scroll2TopProps {
   position?: CSSProperties;

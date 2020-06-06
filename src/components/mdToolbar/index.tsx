@@ -5,9 +5,9 @@ import {
   // faLink,
   faUndo,
   faRedo,
-  IconDefinition
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
-import styles from './md-toolbar.scss';
+import styles from './styles.scss';
 
 interface Props {
   onToolbarClick(item: IToolItem): void;
@@ -39,14 +39,14 @@ export default class MdToolBar extends React.Component<Props, State> {
         key: 'undo',
         value: 'undo',
         label: 'UnDo',
-        icon: faUndo
+        icon: faUndo,
       },
       {
         key: 'redo',
         value: 'redo',
         label: 'ReDo',
-        icon: faRedo
-      }
+        icon: faRedo,
+      },
       // {
       //   key: 'tab',
       //   value: 'Tab',
@@ -73,7 +73,7 @@ export default class MdToolBar extends React.Component<Props, State> {
 
     return (
       <div className={`${styles['md-toolbar']}`}>
-        {toolbar.map(item => (
+        {toolbar.map((item) => (
           <div
             key={item.key}
             className={styles['tool-item']}

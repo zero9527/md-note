@@ -1,0 +1,13 @@
+{
+  "local": {
+    "distDir": "./docs",
+    "distZip": "./dist.zip"
+  },
+  "server": {
+    "host": "139.159.152.157",
+    "username": "web",
+    "password": "web123456",
+    "distDir": "/var/www/html/website/md-note",
+    "distZipName": "dist"
+  }
+}

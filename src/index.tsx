@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import registerServiceWorker from './registerServiceWorker';
-import AxiosConfig from './api';
-import Router from './router';
+import registerServiceWorker from '@/registerServiceWorker';
 import Loading from '@/components/loading';
-import VConsole from 'vconsole';
+import AxiosConfig from '@/api';
+import Router from './router';
 import './index.scss';
 
+// import VConsole from 'vconsole';
 // new VConsole();
 
 AxiosConfig(); // 初始化 axios

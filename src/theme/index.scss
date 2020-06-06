@@ -13,7 +13,10 @@ $light: (
   bg-color: #fefefe,
   bg-color-light: #f6f6f6,
   bg-color-heavy: #f1f1f1,
-  mask-opacity: 0,
+  linear-background-0:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
+  linear-background-180:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
 );
 
 $dark: (
@@ -28,7 +31,10 @@ $dark: (
   bg-color: #232426,
   bg-color-light: #292b2d,
   bg-color-heavy: #1e1f21,
-  mask-opacity: 0.3,
+  linear-background-0:
+    linear-gradient(0deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
+  linear-background-180:
+    linear-gradient(180deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
 );
 
 $themes: (

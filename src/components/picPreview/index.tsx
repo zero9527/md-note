@@ -1,6 +1,6 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './index.scss';
+import styles from './styles.scss';
 
 export interface PicPreview {
   show: boolean;
