@@ -146,88 +146,6 @@
   }
 }
 
-.right-panel {
-  margin-top: 58px;
-  transition: margin-top 0.5s;
-
-  :global #app-calendar {
-    width: 276px;
-    min-height: 358px;
-    @include themeify {
-      background: themed('bg-color');
-    }
-
-    .calendar {
-      @include themeify {
-        color: themed('base-color');
-        background: themed('bg-color');
-      }
-
-      .body {
-        &::before {
-          @include themeify {
-            color: themed('border-color');
-          }
-        }
-
-        .another-month-date {
-          @include themeify {
-            color: themed('gray-color');
-          }
-        }
-      }
-
-      .from-today {
-        @include themeify {
-          color: themed('gray-color');
-        }
-      }
-
-      .select-year-month {
-        .content {
-          @include themeify {
-            color: themed('base-color');
-            background: themed('bg-color');
-          }
-
-          .up {
-            @include themeify {
-              background: themed('linear-background-0');
-            }
-          }
-
-          .down {
-            @include themeify {
-              background: themed('linear-background-180');
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-.beian {
-  padding: 20px 0;
-  @include themeify {
-    color: themed('gray-color');
-  }
-
-  a {
-    text-decoration: none;
-    font-size: 14px;
-    @include themeify {
-      color: themed('gray-color');
-    }
-
-    &:hover {
-      @include themeify {
-        color: themed('primary-color');
-      }
-    }
-  }
-}
-
 @keyframes loading {
   from {
     @include themeify {
@@ -254,11 +172,9 @@
     padding: 0 12px 12px;
   }
 
-  :global #app-calendar {
-    display: none;
-  }
-
-  .beian {
-    display: none;
+  .header {
+    .desc {
+      display: none;
+    }
   }
 }

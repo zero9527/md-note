@@ -42,7 +42,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
 
   useEffect(() => {
     if (title) {
-      document.title += `|${title}`;
+      document.title = `MD-NOTE|${title}`;
       onGetTitle?.(title);
     }
   }, [title]);
@@ -107,7 +107,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     let allcateArr: string[] = [];
     const cateList: CatalogItem[] = [];
     const content = mdtext.slice(mdtext.indexOf('\n'), mdtext.length);
-    setTitle(mdtext.slice(1, mdtext.indexOf('\n')));
+    setTitle(mdtext.slice(2, mdtext.indexOf('\n')));
     const cate2Arr = content.split('\n## ');
 
     cate2Arr.forEach((cate2) => {

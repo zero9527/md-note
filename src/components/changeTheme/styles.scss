@@ -1,0 +1,10 @@
+.color {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.theme {
+  @include themeify {
+    color: themed('primary-color');
+  }
+}

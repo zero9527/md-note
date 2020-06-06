@@ -1,14 +1,12 @@
 import React from 'react';
-import StickyRight from '@/components/stickyRight';
-import styles from './styles.scss';
 import useScroll from '@/utils/useScroll';
+import StickyRight from '@/components/stickyRight';
+import useGlobalModel from '@/model/useGlobalModel';
+import styles from './styles.scss';
 
-interface RightPanelProps {
-  visible: boolean;
-}
-
-const RightPanel: React.FC<RightPanelProps> = ({ visible }) => {
+const RightPanel: React.FC = () => {
   const { scrollTop, prevScrollTop } = useScroll();
+  const { rightPanelVisible } = useGlobalModel();
 
   const Beian = () => (
     <a href="http://www.beian.miit.gov.cn/" target="__blank" title="备案号">
@@ -29,7 +27,7 @@ const RightPanel: React.FC<RightPanelProps> = ({ visible }) => {
     <StickyRight
       className={styles['right-panel']}
       style={{
-        display: visible ? 'block' : 'none',
+        display: rightPanelVisible ? 'block' : 'none',
         marginTop: scrollTop > 50 && scrollTop > prevScrollTop ? '0' : '',
       }}
     >

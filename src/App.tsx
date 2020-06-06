@@ -1,42 +1,30 @@
-import React, { useEffect, Suspense, useState } from 'react';
-import { useRouteMatch } from 'react-router';
-import { lazy } from '@loadable/component';
+import React, { useEffect } from 'react';
+import singleSpaSetup from './single-spa-config';
 import KeepAlive from 'keep-alive-comp';
 import useGlobalModel from '@/model/useGlobalModel';
 import { mobileReg } from '@/utils/regx';
-import Loading from '@/components/loading';
-import singleSpaSetup from './single-spa-config';
+import NoteList from '@/views/noteList';
 
 singleSpaSetup();
 
-const NoteList = lazy(() => import('@/views/noteList'));
-const RightPanel = lazy(() => import('@/views/noteList/rightPanel'));
-
 const App: React.FC = () => {
-  const homePage = useRouteMatch('/');
-  const { setIsMobile } = useGlobalModel((modal) => [modal.setIsMobile]);
-  const [contentVisible, setContentVisible] = useState(false);
+  const { setIsMobile, setRightPanelVisible } = useGlobalModel((modal) => [
+    modal.setIsMobile,
+    modal.setRightPanelVisible,
+  ]);
 
   useEffect(() => {
     const isMobile = mobileReg.test(window.navigator.userAgent);
     setIsMobile(isMobile);
+    setRightPanelVisible(true);
+
+    return () => {
+      setRightPanelVisible(false);
+    };
   }, []);
 
-  useEffect(() => {
-    setContentVisible(homePage?.isExact || false);
-  }, [homePage]);
-
   return (
-    <>
-      {contentVisible && (
-        <Suspense fallback={<Loading />}>
-          <KeepAlive name="list">
-            {(props) => <NoteList {...props} />}
-          </KeepAlive>
-        </Suspense>
-      )}
-      <RightPanel visible={contentVisible} />
-    </>
+    <KeepAlive name="list">{(props) => <NoteList {...props} />}</KeepAlive>
   );
 };
 

@@ -50,8 +50,8 @@ const NoteList: React.FC<NoteListProps> = (props) => {
       <Header className={styles.header}>
         <div className="center-content content">
           <div>
-            MD-NOTE：
-            <span className={styles.desc}>一个使用 markdown 的简易博客</span>
+            MD-NOTE
+            <span className={styles.desc}>：一个使用 markdown 的简易博客</span>
           </div>
           <Tools />
         </div>

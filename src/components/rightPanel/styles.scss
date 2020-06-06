@@ -1,0 +1,127 @@
+.right-panel {
+  margin-top: 58px;
+  transition: margin-top 0.5s;
+
+  :global #app-calendar {
+    width: 276px;
+    min-height: 358px;
+    @include themeify {
+      background: themed('bg-color');
+    }
+
+    .calendar {
+      @include themeify {
+        color: themed('base-color');
+        background: themed('bg-color');
+      }
+
+      .body {
+        &::before {
+          @include themeify {
+            color: themed('border-color');
+          }
+        }
+
+        .week-day {
+          .active {
+            @include themeify {
+              color: themed('primary-color');
+            }
+          }
+        }
+
+        .week {
+          .item {
+            &:hover {
+              &:after {
+                @include themeify {
+                  border-color: themed('primary-color');
+                }
+              }
+            }
+
+            &.active {
+              &:after {
+                @include themeify {
+                  border-color: themed('primary-color');
+                  background: themed('primary-color');
+                  box-shadow: 2px 2px 10px -2px themed('primary-color');
+                }
+              }
+            }
+          }
+        }
+
+        .another-month-date {
+          @include themeify {
+            color: themed('gray-color');
+          }
+        }
+      }
+
+      .from-today {
+        @include themeify {
+          color: themed('gray-color');
+        }
+      }
+
+      .select-year-month {
+        .content {
+          @include themeify {
+            color: themed('base-color');
+            background: themed('bg-color');
+          }
+
+          .up {
+            @include themeify {
+              background: themed('linear-background-0');
+            }
+          }
+
+          .down {
+            @include themeify {
+              background: themed('linear-background-180');
+            }
+          }
+
+          .active {
+            @include themeify {
+              background: themed('primary-color');
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.beian {
+  padding: 20px 0;
+  @include themeify {
+    color: themed('gray-color');
+  }
+
+  a {
+    text-decoration: none;
+    font-size: 14px;
+    @include themeify {
+      color: themed('gray-color');
+    }
+
+    &:hover {
+      @include themeify {
+        color: themed('primary-color');
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1099px) {
+  :global #app-calendar {
+    display: none;
+  }
+
+  .beian {
+    display: none;
+  }
+}

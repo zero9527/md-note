@@ -77,6 +77,8 @@ chunkFilename: 'js/[name].chunk.js'
 ```
 
 ### webpack 配置自动导入
+这里是可选的，上面那个是手动修改，这个是自动生成，当前还是要配置一下的
+
 #### 新建一个 `systemJs-Importmap.js`
 
 里面就像这样
@@ -136,46 +138,95 @@ templateParameters: {
 ## 启动 single-spa
 在适当的位置引入 `single-spa-config.ts` ，然后执行;
 
+我这里是当作某个路由下的一个 `子组件` 来使用的
+
 > **注意！**<br>
 > `DOM` 节点应该一直存在（如果在子应用那里设置了挂载节点 `el` 的话，默认挂载在 `body` 下面），不然放在某个组件下面，第一次进入正常，但是再回来就会报错，找不到 `el` 的那个节点
 
-我的做法是（子应用就放在 `RightPanel` 下）
+我的做法是：
+- 子应用就放在组件 `RightPanel` 下，
+- 组件 `RightPanel` 放在 `HashRouter` 下，独立在所有 `Route` 之外，
+- 组件 `RightPanel` 通过判断 `location.pathname` 为需要显示的路由，去控制显示、隐藏
+
 ```jsx
-// src/App.tsx
-import React, { useEffect, Suspense, useState } from 'react';
-import { useRouteMatch } from 'react-router';
-import { lazy } from '@loadable/component';
-import KeepAlive from 'keep-alive-comp';
-import { mobileReg } from '@/utils/regx';
+// src/index.tsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import registerServiceWorker from '@/registerServiceWorker';
+import RightPanel from './views/noteList/rightPanel';
 import Loading from '@/components/loading';
-import singleSpaSetup from './single-spa-config';
+import AxiosConfig from '@/api';
+import Router from './router';
+import './index.scss';
 
-singleSpaSetup();
+AxiosConfig(); // 初始化 axios
 
-const NoteList = lazy(() => import('@/views/noteList'));
-const RightPanel = lazy(() => import('@/views/noteList/rightPanel'));
+ReactDOM.render(
+  <React.Suspense fallback={<Loading />}>
+    <Router>
+      <RightPanel />
+    </Router>
+  </React.Suspense>,
+  document.getElementById('md-note') as HTMLElement
+);
 
-const App: React.FC = () => {
-  const homePage = useRouteMatch('/');
-  const [contentVisible, setContentVisible] = useState(false);
+registerServiceWorker();
+```
 
-  useEffect(() => {
-    setContentVisible(homePage?.isExact || false);
-  }, [homePage]);
+```jsx
+// src/router.tsx
+import React, { Suspense } from 'react';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import { lazy } from '@loadable/component';
+import Loading from '@/components/loading';
+import Page404 from './components/Page404';
 
-  return (
-    <>
-      {contentVisible && (
-        <Suspense fallback={<Loading />}>
-          <KeepAlive name="list">
-            {(props) => <NoteList {...props} />}
-          </KeepAlive>
-        </Suspense>
-      )}
-      <RightPanel visible={contentVisible} />
-    </>
-  );
-};
+const App = lazy(() => import(/* webpackPrefetch: true */ '@/App'));
 
-export default App;
+const Detail = lazy(() =>
+  import(/* webpackPrefetch: true */ '@/views/noteDetail')
+);
+
+const Editor = lazy(() =>
+  import(/* webpackPrefetch: true */ '@/views/mdEditor')
+);
+
+const Router = (props: any) => (
+  <HashRouter>
+    {props?.children}
+    <Switch>
+      <Route
+        key="home"
+        path="/"
+        exact={true}
+        render={() => (
+          <Suspense fallback={<Loading />}>
+            <App />
+          </Suspense>
+        )}
+      />
+      <Route
+        key="detail"
+        path="/detail/:tag/:name"
+        component={() => (
+          <Suspense fallback={<Loading />}>
+            <Detail />
+          </Suspense>
+        )}
+      />
+      <Route
+        key="md-editor"
+        path="/md-editor/:tag/:tid"
+        component={() => (
+          <Suspense fallback={<Loading />}>
+            <Editor />
+          </Suspense>
+        )}
+      />
+      <Route key="404" path="*" component={Page404} />
+    </Switch>
+  </HashRouter>
+);
+
+export default Router;
 ```

@@ -5,6 +5,7 @@ import 'highlight.js/styles/atom-one-dark.css';
 // import 'highlight.js/styles/an-old-hope.css';
 // import 'highlight.js/styles/docco.css';
 // import 'highlight.js/styles/monokai.css';
+// import 'highlight.js/styles/github.css';
 import MoveBtn, { PosParam } from './moveBtn';
 import styles from './styles.scss';
 
@@ -46,7 +47,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     const renderer = new marked.Renderer();
     // 设置标题，生成目录跳转需要
     renderer.heading = function(text: string, level: number) {
-      return `<h${level} class="heading-h${level}" id="${text}" title="${text}">${text}</h${level}>`;
+      return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
     };
     // 设置链接
     renderer.link = function(href: string, title: string, text: string) {

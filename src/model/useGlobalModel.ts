@@ -1,22 +1,18 @@
 import { useState, useEffect, CSSProperties } from 'react';
 import { createModel } from 'hox';
-import { getUrlParams } from '@/utils';
 
 const useGlobalModel = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [height, setHeight] = useState(0);
-  const [theme, updateTheme] = useState('light');
+  const [theme, updateTheme] = useState('blue');
   const [stickyRightStyle, setStickyRightStyle] = useState<CSSProperties>();
+  const [rightPanelVisible, setRightPanelVisible] = useState(false);
 
   useEffect(() => {
     setHeight(window.innerHeight);
-  }, []);
-
-  useEffect(() => {
     const _theme = localStorage.getItem('theme');
-    if (_theme && _theme !== theme) setTheme(_theme);
-    else setTheme(theme);
-  }, [theme]);
+    if (_theme) setTheme(_theme);
+  }, []);
 
   const setTheme = (_theme: string) => {
     updateTheme(_theme);
@@ -32,6 +28,8 @@ const useGlobalModel = () => {
     height,
     stickyRightStyle,
     setStickyRightStyle,
+    rightPanelVisible,
+    setRightPanelVisible,
   };
 };
 

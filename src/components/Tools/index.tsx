@@ -80,11 +80,11 @@ const Tools: React.FC = () => {
   return (
     <div className={styles['home-tools']}>
       <ChangeTheme />
-      <FontAwesomeIcon
+      {/* <FontAwesomeIcon
         className={styles.setting}
         icon={faCog}
         onClick={onShowSettingPanel}
-      />
+      /> */}
       <Modal
         visible={showContent}
         title="设置"
