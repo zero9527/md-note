@@ -41,10 +41,10 @@ export default function singleSpaSetup() {
 
 ## 修改 webpack
 ### Access-Control-Allow-Origin
-开发环境死活加不上，然后我去nginx设置子应用添加了，子应用放guthub Page的话已经是有加上去的，不然会跨域
+开发环境死活加不上，然后我去 `nginx` 设置子应用添加了，子应用放 `github Page` 的话已经是有加上去的，不然会跨域
 
 ### libraryTarget
-这里不需要在将 `output.libraryTarget` 改为 `system`，原因我也不知道，加上会报错，我就去掉了，反正不加也正常运行。。。
+这里不需要将 `output.libraryTarget` 改为 `system`，原因我也不知道，加上会报错，我就去掉了，反正不加也正常运行。。。
 
 ### chunkFilename
 `output.chunkFilename` 改一下，不包含 `hash`，不然 `HTML入口那里` 引入比较麻烦，虽然这样缓存不好控制了。。。
@@ -77,7 +77,7 @@ chunkFilename: 'js/[name].chunk.js'
 ```
 
 ### webpack 配置自动导入
-这里是可选的，上面那个是手动修改，这个是自动生成，当前还是要配置一下的
+这里是可选的，上面那个是手动修改，这个是自动生成，当然还是要配置一下的
 
 #### 新建一个 `systemJs-Importmap.js`
 
@@ -163,9 +163,7 @@ AxiosConfig(); // 初始化 axios
 
 ReactDOM.render(
   <React.Suspense fallback={<Loading />}>
-    <Router>
-      <RightPanel />
-    </Router>
+    <Router />
   </React.Suspense>,
   document.getElementById('md-note') as HTMLElement
 );
@@ -178,6 +176,7 @@ registerServiceWorker();
 import React, { Suspense } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { lazy } from '@loadable/component';
+import RightPanel from '@/components/rightPanel';
 import Loading from '@/components/loading';
 import Page404 from './components/Page404';
 
@@ -191,9 +190,9 @@ const Editor = lazy(() =>
   import(/* webpackPrefetch: true */ '@/views/mdEditor')
 );
 
-const Router = (props: any) => (
+const Router = () => (
   <HashRouter>
-    {props?.children}
+    <RightPanel />
     <Switch>
       <Route
         key="home"

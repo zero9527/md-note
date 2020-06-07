@@ -30,8 +30,8 @@ const StickyRight: React.FC<StickyRightProps> = ({
 
   const resize = () => {
     const bodyWidth = document.body.clientWidth;
-    const MAX_VIEW_WIDTH = 1100;
-    const CONTENT_WIDTH = 800;
+    const MAX_VIEW_WIDTH = 980;
+    const CONTENT_WIDTH = MAX_VIEW_WIDTH - 300;
     const style =
       bodyWidth > MAX_VIEW_WIDTH
         ? { left: `${(bodyWidth - MAX_VIEW_WIDTH) / 2 + CONTENT_WIDTH + 20}px` }

@@ -50,6 +50,14 @@
               }
             }
           }
+
+          .same-date {
+            &:after {
+              @include themeify {
+                border-color: themed('primary-color');
+              }
+            }
+          }
         }
 
         .another-month-date {
@@ -116,7 +124,7 @@
   }
 }
 
-@media screen and (max-width: 1099px) {
+@media screen and (max-width: 979px) {
   :global #app-calendar {
     display: none;
   }

@@ -106,7 +106,7 @@ $padding-edge: 16px;
           font-size: 90%;
           box-sizing: border-box;
           @include themeify {
-            color: themed('desc-color');
+            color: themed('gray-color');
           }
         }
       }
@@ -249,21 +249,21 @@ $padding-edge: 16px;
   }
 }
 
-@media screen and (min-width: 1100px) {
+@media screen and (min-width: 980px) {
   .md-detail {
-    max-width: 800px;
+    max-width: calc(980px - 300px);
   }
 
   :global {
     .title {
-      width: 800px;
+      width: calc(980px - 300px);
     }
   }
 }
 
-@media screen and (max-width: 1099px) {
+@media screen and (max-width: 979px) {
   .md-detail {
-    max-width: 1100px;
+    max-width: 979px;
   }
 
   .md-container {

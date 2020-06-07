@@ -33,11 +33,11 @@ function Export({ id, position, mdtext, ...props }: ExportProps) {
   useEffect(() => {
     resize();
     function resize() {
-      if (!btnShow && window.innerWidth >= 1100) {
+      if (!btnShow && window.innerWidth >= 980) {
         setBtnShow(true);
         setIsCompact(false);
       }
-      if (window.innerWidth < 1100) {
+      if (window.innerWidth < 980) {
         setBtnShow(false);
         setIsCompact(true);
       }

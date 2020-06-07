@@ -113,7 +113,7 @@ define('m1', ['lodash', 'm2'], function(_, m2) {
 
 
 ## 二、CMD/sea.js
-#### 什么是CMD？
+### 什么是CMD？
 * 在浏览器端的`CommonJS`（除去某些Node.js环境特有的API）；同步、动态加载;
 * **依赖就近**，哪里需要哪里`require`；
 * 异步引入 `require.async([dependencies], callback)`；

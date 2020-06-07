@@ -19,18 +19,20 @@
 #### 组件销毁前，请求还在继续～
 * 类组件的处理方式：
 
-  在组件 `unmount` 前 **重写 this.setState 方法**
-  ```js
-  public componentWillUnmount() {
-    // 组件销毁后，不操作数据
-    this.setState = () => {};
-  }
-  ```
+在组件 `unmount` 前 **重写 this.setState 方法**
+
+```js
+public componentWillUnmount() {
+  // 组件销毁后，不操作数据
+  this.setState = () => {};
+}
+```
   
 * Hooks 的处理方式
- > 参考 [这里](https://www.robinwieruch.de/react-hooks-fetch-data)，翻到最后一个标题就是了，这篇文章也是看了这位大佬的 [文章](https://juejin.im/post/5e03fe81f265da33cd03c0fd) 05 才知道的
+
+> 参考 [这里](https://www.robinwieruch.de/react-hooks-fetch-data)，翻到最后一个标题就是了，这篇文章也是看了这位大佬的 [文章](https://juejin.im/post/5e03fe81f265da33cd03c0fd) 05 才知道的
   
-  使用一个标记如：`let isDestroyed = false`，`useEffect` 回调函数中返回一个函数，在这个函数内修改这个标记 `isDestroyed = true`，然后请求结束时，如果 `isDestroyed === false` 才调用 `setState` 的方法 
+使用一个标记如：`let isDestroyed = false`，`useEffect` 回调函数中返回一个函数，在这个函数内修改这个标记 `isDestroyed = true`，然后请求结束时，如果 `isDestroyed === false` 才调用 `setState` 的方法 
 
 **封装一个 `useFetchData`**
 ```js
@@ -101,24 +103,25 @@ export function getMovieDetail({ id = '' } = {}) {
 ```
 
 #### 监听滚动
-* Class 组件写法：
+* Class 组件写法
+
 ```js
 // src/views/home/index.tsx
-  constructor(props: IProps) {
-    super(props);
-    this._onScroll = this._onScroll.bind(this);
-  }
-  
-  public componentDidMount() {
-    window.addEventListener('scroll', this._onScroll);
-  }
+constructor(props: IProps) {
+  super(props);
+  this._onScroll = this._onScroll.bind(this);
+}
 
-  public componentWillUnmount() {
-    window.removeEventListener('scroll', this._onScroll);
-  }
+public componentDidMount() {
+  window.addEventListener('scroll', this._onScroll);
+}
+
+public componentWillUnmount() {
+  window.removeEventListener('scroll', this._onScroll);
+}
 ```
 
-* 函数+Hooks 写法：
+* 函数+Hooks 写法
   * **useEffect 第二个参数为传空数组[]*：* 在 `_onScroll` 内 `useState` 只会起作用一次！！！很诡异（Capture Value ?）。。。
   一开始我是这么写的，
   * **useEffect 第二个参数不传：** 这样就可以，但是这样又会导致 **每次 state 变化** 执行一次，官方的 Demo 写法好像就是这样的。。。不知道这是不是正确的姿势！？！
@@ -180,64 +183,64 @@ export default [
 ```js
 // src/views/home/index.tsx
 
-  public isDetailPage() {
-    return this.props.location.pathname.includes("/movie-detail/");
-  }
+public isDetailPage() {
+  return this.props.location.pathname.includes("/movie-detail/");
+}
 
-  public render() {
-    const { 
-      movieLineStatus, 
-      isLoading, 
-      movieLine, 
-      movieComing, 
-      movieTop250, 
-      isTop250FullLoaded
-    } = this.state;
+public render() {
+  const { 
+    movieLineStatus, 
+    isLoading, 
+    movieLine, 
+    movieComing, 
+    movieTop250, 
+    isTop250FullLoaded
+  } = this.state;
 
-    return (
-      <div className={`${styles.home}`}>
-        {!this.isDetailPage() &&
-          <HeaderSearch onConfirm={(val) => this.onConfirm(val)} />
-        }
-        <div 
-          className={`${styles['home-content']} center-content`}
-          style={{display: this.isDetailPage() ? 'none' : 'block'}}
-        >
-          <section className={styles['movie-block']}>
-            <div className={styles['block-title']}>
-              <span className={`${styles['title-item']} ${movieLineStatus === 0 && styles['title-active']}`}
-                onClick={() => this.movieStatusChange(0)}
-              >院线热映</span>
-              <span className={`${styles['title-item']} ${movieLineStatus === 1 && styles['title-active']}`}
-                onClick={() => this.movieStatusChange(1)}
-              >即将上映</span>
-            </div>
-    
-            {movieLineStatus === 0 ? (
-              <MovieItem movieList={movieLine} toDetail={(id: string) => this.toDetail(id)} />
-            ) : (
-              <MovieItem movieList={movieComing} toDetail={(id: string) => this.toDetail(id)} />
-            )}
-          </section>
-    
-          <MovieTop250 
-            isLoading={isLoading} 
-            movieTop250={movieTop250} 
-            toDetail={(id: string) => this.toDetail(id)} 
-          />
-    
-          {isLoading && <Loading />}
+  return (
+    <div className={`${styles.home}`}>
+      {!this.isDetailPage() &&
+        <HeaderSearch onConfirm={(val) => this.onConfirm(val)} />
+      }
+      <div 
+        className={`${styles['home-content']} center-content`}
+        style={{display: this.isDetailPage() ? 'none' : 'block'}}
+      >
+        <section className={styles['movie-block']}>
+          <div className={styles['block-title']}>
+            <span className={`${styles['title-item']} ${movieLineStatus === 0 && styles['title-active']}`}
+              onClick={() => this.movieStatusChange(0)}
+            >院线热映</span>
+            <span className={`${styles['title-item']} ${movieLineStatus === 1 && styles['title-active']}`}
+              onClick={() => this.movieStatusChange(1)}
+            >即将上映</span>
+          </div>
+  
+          {movieLineStatus === 0 ? (
+            <MovieItem movieList={movieLine} toDetail={(id: string) => this.toDetail(id)} />
+          ) : (
+            <MovieItem movieList={movieComing} toDetail={(id: string) => this.toDetail(id)} />
+          )}
+        </section>
+  
+        <MovieTop250 
+          isLoading={isLoading} 
+          movieTop250={movieTop250} 
+          toDetail={(id: string) => this.toDetail(id)} 
+        />
+  
+        {isLoading && <Loading />}
 
-          <TopBtn />
+        <TopBtn />
 
-          {isTop250FullLoaded && <div className={styles.nomore}>没有更多数据了~</div>}
-        </div>
-        
-        {/* detial */}
-        { this.props.children }
+        {isTop250FullLoaded && <div className={styles.nomore}>没有更多数据了~</div>}
       </div>
-    )
-  }
+      
+      {/* detial */}
+      { this.props.children }
+    </div>
+  )
+}
 ```
 
 #### 2.2.2 滚动位置恢复
@@ -248,67 +251,67 @@ export default [
 
 ```js
 // src/views/home/index.tsx
-  constructor(props: IProps) {
-    super(props);
-    this._onScroll = this._onScroll.bind(this);
-  }
+constructor(props: IProps) {
+  super(props);
+  this._onScroll = this._onScroll.bind(this);
+}
 
-  public componentDidMount() {
-    this._getMovieLine();
-    this._getMovieTop250();
-    getMovieTop250All();
+public componentDidMount() {
+  this._getMovieLine();
+  this._getMovieTop250();
+  getMovieTop250All();
 
-    this.props.history.listen(route => {
-      this.onRouteChange(route);
-    })
+  this.props.history.listen(route => {
+    this.onRouteChange(route);
+  })
 
+  window.addEventListener('scroll', this._onScroll);
+}
+
+public componentWillUnmount() {
+  // 组件销毁后，不操作数据
+  this.setState = () => {};
+  window.removeEventListener('scroll', this._onScroll);
+}
+
+// 监听路由变化
+public onRouteChange(route: any) {
+  // 首页
+  if (route.pathname === '/') {
+    const { scrTop } = this.state;
     window.addEventListener('scroll', this._onScroll);
+    // 恢复滚动条位置
+    this.setScrollTop(scrTop);
   }
-
-  public componentWillUnmount() {
-    // 组件销毁后，不操作数据
-    this.setState = () => {};
+  // 详情页
+  if (route.pathname.includes("/movie-detail/")) {
+    // 重置滚动条位置
+    this.setScrollTop(0);
     window.removeEventListener('scroll', this._onScroll);
   }
+}
 
-  // 监听路由变化
-  public onRouteChange(route: any) {
-    // 首页
-    if (route.pathname === '/') {
-      const { scrTop } = this.state;
-      window.addEventListener('scroll', this._onScroll);
-      // 恢复滚动条位置
-      this.setScrollTop(scrTop);
-    }
-    // 详情页
-    if (route.pathname.includes("/movie-detail/")) {
-      // 重置滚动条位置
-      this.setScrollTop(0);
-      window.removeEventListener('scroll', this._onScroll);
-    }
+// 设置滚动条位置
+public setScrollTop(top: number) {
+  document.body.scrollTop = top;
+  document.documentElement.scrollTop = top;
+}
+
+public _onScroll() {
+  const winHeight = window.innerHeight;
+  const srcollHeight = document.documentElement.scrollHeight;
+  const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+  const toBottom = srcollHeight - winHeight - scrollTop;
+
+  if (toBottom <= 200) {
+    this._getMovieTop250({ start: this.state.currentPage*10 });
   }
-
-  // 设置滚动条位置
-  public setScrollTop(top: number) {
-    document.body.scrollTop = top;
-    document.documentElement.scrollTop = top;
+  if (this.props.location.pathname === '/') {
+    this.setState({ scrTop: scrollTop });
+  } else {
+    window.removeEventListener('scroll', this._onScroll);
   }
-
-  public _onScroll() {
-    const winHeight = window.innerHeight;
-    const srcollHeight = document.documentElement.scrollHeight;
-    const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-    const toBottom = srcollHeight - winHeight - scrollTop;
-
-    if (toBottom <= 200) {
-      this._getMovieTop250({ start: this.state.currentPage*10 });
-    }
-    if (this.props.location.pathname === '/') {
-      this.setState({ scrTop: scrollTop });
-    } else {
-      window.removeEventListener('scroll', this._onScroll);
-    }
-  }
+}
 ```
 
 
@@ -483,19 +486,24 @@ yarn add mobx mobx-react
 
 **其他的配置：**
 * 下载插件
-  ```
-  yarn add babel-plugin-transform-decorators-legacy -D
-  ```
+
+```
+yarn add babel-plugin-transform-decorators-legacy -D
+```
+
 * 然后在 .babelrc: 使用装饰器
-  ```
-  "plugins": ["transform-decorators-legacy"]
-  ```
+
+```
+"plugins": ["transform-decorators-legacy"]
+```
+
 * tsconfig.json: 使用装饰器
-  ```
-  "compilerOptions": {
-    "experimentalDecorators": true,
-  }
-  ```
+
+```
+"compilerOptions": {
+  "experimentalDecorators": true,
+}
+```
 
 ### 5.1 项目入口
 使用 `Provider` 包括项目
@@ -609,41 +617,43 @@ export default homeStore;
 
 * 初始化数据
 
-    数据初始化时，如果缓存中有数据，则使用缓存的数据覆盖默认数据
-    ```js
-    let cache = sessionStorage.getItem('homeStore');
-    
-    // 初始化数据
-    let initialState = {
-      count: 0,
-      data: {
-        time: '2019-11-08'
-      },
-    };
-    
-    // 缓存数据
-    if (cache) {
-      initialState = {
-        ...initialState,
-        ...JSON.parse(cache)
-      }
-    }
-    ```
+数据初始化时，如果缓存中有数据，则使用缓存的数据覆盖默认数据
+
+```js
+let cache = sessionStorage.getItem('homeStore');
+
+// 初始化数据
+let initialState = {
+  count: 0,
+  data: {
+    time: '2019-11-08'
+  },
+};
+
+// 缓存数据
+if (cache) {
+  initialState = {
+    ...initialState,
+    ...JSON.parse(cache)
+  }
+}
+```
 
 * 监听数据变化
 
-    监听数据变化，在 `reaction` 后，将 `homeStore` 转化为 js 对象(只包含 state )，然后存到缓存中
-    ```js
-    const homeStore = new Home();
-    
-    mobx.spy((event) => {
-      // 数据变化后触发，数据缓存
-      if (event.type === 'reaction') {
-        const obj = mobx.toJS(homeStore);
-        sessionStorage.setItem('homeStore', JSON.stringify(obj));
-      }
-    })
-    ```
+监听数据变化，在 `reaction` 后，将 `homeStore` 转化为 js 对象(只包含 state )，然后存到缓存中
+
+```js
+const homeStore = new Home();
+
+mobx.spy((event) => {
+  // 数据变化后触发，数据缓存
+  if (event.type === 'reaction') {
+    const obj = mobx.toJS(homeStore);
+    sessionStorage.setItem('homeStore', JSON.stringify(obj));
+  }
+})
+```
 
 ### 5.4 模块管理输出
 ```js

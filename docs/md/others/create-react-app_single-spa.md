@@ -163,9 +163,7 @@ AxiosConfig(); // 初始化 axios
 
 ReactDOM.render(
   <React.Suspense fallback={<Loading />}>
-    <Router>
-      <RightPanel />
-    </Router>
+    <Router />
   </React.Suspense>,
   document.getElementById('md-note') as HTMLElement
 );
@@ -178,6 +176,7 @@ registerServiceWorker();
 import React, { Suspense } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import { lazy } from '@loadable/component';
+import RightPanel from '@/components/rightPanel';
 import Loading from '@/components/loading';
 import Page404 from './components/Page404';
 
@@ -191,9 +190,9 @@ const Editor = lazy(() =>
   import(/* webpackPrefetch: true */ '@/views/mdEditor')
 );
 
-const Router = (props: any) => (
+const Router = () => (
   <HashRouter>
-    {props?.children}
+    <RightPanel />
     <Switch>
       <Route
         key="home"
