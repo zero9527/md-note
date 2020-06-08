@@ -81,19 +81,25 @@
         color: themed('base-color');
       }
 
-      ul {
-        padding-left: 15px;
-        padding-right: 0;
-      }
-
       > ul {
         margin: 0;
         margin-bottom: 10px;
-        padding-left: 0;
 
         > .cate-item {
           font-weight: bold;
         }
+
+        ul {
+          .cate-item {
+            padding-left: 40px;
+          }
+        }
+      }
+
+      ul {
+        padding-left: 20px;
+        padding-right: 0;
+        padding-left: 0;
       }
 
       .cate-item {
@@ -120,6 +126,7 @@
       .active {
         @include themeify {
           color: themed('primary-color');
+          background: themed('bg-color-light');
         }
       }
     }

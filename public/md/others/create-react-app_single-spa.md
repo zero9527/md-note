@@ -4,7 +4,7 @@
 - 主应用(React)：[md-note](https://github.com/zero9527/md-note)
 - 子应用(Vue)：[vue-calendar](https://github.com/zero9527/vue-calendar)
 
-- 主应用(Vue)：[json-util](https://github.com/zero9527/json-util)，进去后路由手动切到 `/calendar` 就能看到了（放`github`上会比较慢）
+- 主应用(Vue)：[json-util](https://github.com/zero9527/json-util)，进去后路由手动切到 `/sub-app` 就能看到了（放`github`上会比较慢）
 
 > 官方[文档](https://single-spa.js.org/docs/faq/#create-react-app)在使用 `create-react-app` 时是做另外一些处理的，但是我这个项目是之前写的，有一些 `webpack` 自定义配置，就不想从头再来
 

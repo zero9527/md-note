@@ -48,15 +48,8 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   }, [title]);
 
   useEffect(() => {
-    if (defaultActive) setCateActive(defaultActive);
-  }, []);
-
-  useEffect(() => {
-    scroll2Item();
-  }, [cateActive]);
-
-  useEffect(() => {
     generate();
+    if (defaultActive) setCateActive(defaultActive);
   }, []);
 
   useEffect(() => {
@@ -93,6 +86,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
           const bcr = el.getBoundingClientRect();
           if (bcr.top < 20) {
             setCateActive(item.id);
+            scroll2Item(item.id);
           }
         } else {
           // console.log('没有元素id为： ', item.id, item);
@@ -146,8 +140,8 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     setCate(() => cateList.filter((item) => Boolean(item.id)));
   };
 
-  const scroll2Item = () => {
-    const catelogItem = document.getElementById(`catelog-${cateActive}`);
+  const scroll2Item = (activeId: string) => {
+    const catelogItem = document.getElementById(`catelog-${activeId}`);
     catelogItem?.scrollIntoView();
     onCateClick?.(cateActive);
   };
@@ -181,19 +175,20 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   };
 
   const renderCateItem = useCallback(
-    (cateItem: CatalogItem) => {
+    (cateItem: CatalogItem, index: number) => {
       const className = `${styles['cate-item']} ${
         cateActive === cateItem.id ? styles.active : ''
       }`;
       return (
-        <div
+        <li
+          key={`${cateItem.id}-${index}`}
           data-id={cateItem.id}
           id={cateItem.header}
           className={className}
           onClick={() => cateClick(cateItem)}
         >
           {cateItem.label}
-        </div>
+        </li>
       );
     },
     [cateActive]
@@ -239,14 +234,16 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         </section>
         <section className={styles['cate-content']}>
           {cate.length > 0 ? (
-            cate.map((cate2: CatalogItem) => (
+            cate.map((cate2: CatalogItem, index2: number) => (
               <ul key={cate2.id}>
-                {renderCateItem(cate2)}
-                {cate2.child &&
-                  cate2.child?.length > 0 &&
-                  cate2.child?.map((cate3: CatalogItem) => (
-                    <ul key={cate3.id}>{renderCateItem(cate3)}</ul>
-                  ))}
+                {renderCateItem(cate2, index2)}
+                {cate2.child && cate2.child?.length > 0 && (
+                  <ul>
+                    {cate2.child?.map((cate3: CatalogItem, index3: number) =>
+                      renderCateItem(cate3, index3)
+                    )}
+                  </ul>
+                )}
               </ul>
             ))
           ) : (

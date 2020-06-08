@@ -77,7 +77,7 @@ $padding-edge: 16px;
     pre {
       position: relative;
       padding: 20px $padding-edge;
-      color: #abb2bf;
+      // color: #abb2bf;
       // background: #282c34;
       overflow-x: auto;
       transform: translatez(0);
@@ -107,6 +107,14 @@ $padding-edge: 16px;
           box-sizing: border-box;
           @include themeify {
             color: themed('gray-color');
+          }
+        }
+
+        :global {
+          .hljs-comment {
+            @include themeify {
+              color: themed('gray-color');
+            }
           }
         }
       }
