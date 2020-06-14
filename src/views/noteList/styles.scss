@@ -161,12 +161,6 @@
   }
 }
 
-@media screen and (min-width: 980px) {
-  .container {
-    max-width: calc(980px - 300px);
-  }
-}
-
 @media screen and (max-width: 979px) {
   .container {
     padding: 0 12px 12px;

@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import useGlobalModel from '@/model/useGlobalModel';
 import useNoteModel from '@/model/useNoteModel';
 import useScroll from '@/utils/useScroll';
-import Header from '@/components/header';
+import Header from '@/components/Header';
 import Tools from '@/components/Tools';
+import RightPanel from '@/components/RightPanel';
 import Scroll2Top from '@/components/Scroll2Top';
+import useDebounce from '@/utils/useDebounce';
 import styles from './styles.scss';
 
 interface NoteListProps extends KeepAliveAssist {}
@@ -59,7 +61,7 @@ const NoteList: React.FC<NoteListProps> = (props) => {
       <main className={`center-content ${styles['note-list']}`}>
         <section
           id={loading ? styles.skeleton : ''}
-          className={styles.container}
+          className={`container ${styles.container}`}
         >
           {noteList?.length > 0 ? (
             <>
@@ -91,6 +93,7 @@ const NoteList: React.FC<NoteListProps> = (props) => {
         </section>
         {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
       </main>
+      <RightPanel />
     </>
   );
 };

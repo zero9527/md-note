@@ -1,7 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-// import { useImmer } from 'use-immer';
+import { useState, useEffect } from 'react';
 import { createModel } from 'hox';
-import { cacheUtil, CacheUtil } from '@/utils/cacheUtil';
 import fileApi, { getNoteListConfig } from '@/api/file';
 import { dateFormate } from '@/utils';
 
@@ -37,18 +35,10 @@ const NoteSkeleton: NoteItem[] = [
 
 // 管理 NoteList
 const useNoteModel = () => {
-  const [version, setVersion] = useState(`${Date.now()}`);
   const [loading, setLoading] = useState(false);
-  const cache = useRef<CacheUtil>(
-    cacheUtil({ type: 'sessionStorage', cacheKey: 'note-list', version })
-  );
-  const [noteList, setNoteList] = useState<NoteItem[]>(
-    cache.current.getData<NoteItem[]>() || NoteSkeleton
-  );
+  const [noteList, setNoteList] = useState<NoteItem[]>(NoteSkeleton);
 
   useEffect(() => {
-    checkVersion();
-
     if (noteList[0]?.name === '') {
       setLoading(true);
       getNoteListConfig().then((res) => {
@@ -57,11 +47,6 @@ const useNoteModel = () => {
       });
     }
   }, []);
-
-  useEffect(() => {
-    // console.log('noteList: ', noteList);
-    if (noteList) cache.current.setData<NoteItem[]>(noteList);
-  }, [noteList]);
 
   // 请求数据 tag: 标签；name：名称
   const fetchNoteByName = async (tag: NoteTag | string, name: string) => {
@@ -74,22 +59,8 @@ const useNoteModel = () => {
     return { code: -2, data: null, msg: 'error' };
   };
 
-  // 检查缓存版本
-  const checkVersion = (maxAge: MaxAge = '24h') => {
-    // 24小时清缓存
-    if (Number(version) + maxAgeConfig[maxAge] <= Date.now()) {
-      console.log('清缓存');
-      setVersion(`${Date.now()}`);
-      updateNoteList([]);
-      cache.current.updateVersion(`${Date.now()}`);
-    }
-    const temp = cache.current.getData<NoteItem[]>();
-    if (temp) updateNoteList(temp);
-  };
-
   // 获取数据
   const getNoteById = (name: string) => {
-    checkVersion();
     const item = noteList?.find((note) => note.name === name);
     if (item) return item;
     return null;
@@ -128,11 +99,6 @@ const useNoteModel = () => {
     return noteList;
   };
 
-  // 清缓存
-  const clearCache = () => {
-    cache.current.clear();
-  };
-
   return {
     loading,
     noteList,
@@ -141,7 +107,6 @@ const useNoteModel = () => {
     updateNoteById,
     updateNoteList,
     fetchNoteByName,
-    clearCache,
   };
 };
 

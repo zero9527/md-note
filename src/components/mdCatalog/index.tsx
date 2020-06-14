@@ -74,24 +74,21 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   }, [cate]);
 
   useEffect(() => {
-    if (useScrollTop.current) scrollHandler();
+    if (useScrollTop.current) setTimeout(scrollHandler, 0);
   }, [scrollTop]);
 
   // 滚动时，显示高亮对应区域的标题
   const scrollHandler = () => {
     try {
-      allcate.forEach((item: CatalogItem) => {
+      const activeItem = allcate.reverse().find((item: CatalogItem) => {
         const el = document.getElementById(item.id) as HTMLElement;
-        if (el) {
-          const bcr = el.getBoundingClientRect();
-          if (bcr.top < 20) {
-            setCateActive(item.id);
-            scroll2Item(item.id);
-          }
-        } else {
-          // console.log('没有元素id为： ', item.id, item);
-        }
+        const bcr = el?.getBoundingClientRect();
+        return bcr?.top < 20 && bcr?.bottom > 0;
       });
+      if (activeItem) {
+        setCateActive(activeItem.id);
+        scroll2Item(activeItem);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -140,10 +137,11 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     setCate(() => cateList.filter((item) => Boolean(item.id)));
   };
 
-  const scroll2Item = (activeId: string) => {
-    const catelogItem = document.getElementById(`catelog-${activeId}`);
+  const scroll2Item = (activeItem: CatalogItem) => {
+    // if (!useScrollTop.current) return;
+    const catelogItem = document.getElementById(`catelog-${activeItem.id}`);
     catelogItem?.scrollIntoView();
-    onCateClick?.(cateActive);
+    onCateClick?.(activeItem.id);
   };
 
   const cateClick = (cateItem: CatalogItem) => {
@@ -184,6 +182,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
           key={`${cateItem.id}-${index}`}
           data-id={cateItem.id}
           id={cateItem.header}
+          title={cateItem.id}
           className={className}
           onClick={() => cateClick(cateItem)}
         >
@@ -222,7 +221,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
           marginTop: scrollTop > 50 && scrollTop > prevScrollTop ? '0' : '',
         }}
         className={`${styles.catelist} ${cateListTransition}`}
-        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+        // onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >
         {showCate && (
           <span className={styles.close} onClick={onHiddenCatalog}>

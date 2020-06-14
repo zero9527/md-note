@@ -27,6 +27,7 @@ const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const systemJsImportmap = require('../systemJs-Importmap');
+
 const importMap = { imports: {} };
 systemJsImportmap.forEach(
   (item) => (importMap.imports[item.name] = item.entry)
@@ -172,20 +173,20 @@ module.exports = function(webpackEnv) {
       // changing JS code would still trigger a refresh.
     ].filter(Boolean),
     output: {
+      libraryTarget: 'system',
+      // jsonpFunction: 'wpJsonpFlightsWidget',
       // The build folder.
       path: isEnvProduction ? paths.appBuild : undefined,
       // Add /* filename */ comments to generated require()s in the output.
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
-      filename: isEnvProduction
-        ? 'js/[name].[contenthash:8].js'
-        : 'js/bundle.js',
+      filename: 'js/app.js',
       // TODO: remove this when upgrading to webpack 5
       futureEmitAssets: true,
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
-        ? 'js/[name].chunk.js' // 'js/[name].[contenthash:8].chunk.js'
+        ? 'js/[name].[contenthash:8].chunk.js'
         : 'js/[name].chunk.js',
       // webpack uses `publicPath` to determine where the app is being served from.
       // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -208,16 +209,8 @@ module.exports = function(webpackEnv) {
       globalObject: 'this',
     },
     externals: isEnvProduction
-      ? {
-          lodash: 'lodash',
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react-router': 'ReactRouter',
-          marked: 'marked',
-          'highlight.js': 'hljs',
-          html2canvas: 'html2canvas',
-        }
-      : {},
+      ? ['react', 'react-dom', 'react-router', 'highlight.js']
+      : [],
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
@@ -309,12 +302,6 @@ module.exports = function(webpackEnv) {
             reuseExistingChunk: true,
           },
         },
-      },
-      // Keep the runtime chunk separated to enable long term caching
-      // https://twitter.com/wSokra/status/969679223278505985
-      // https://github.com/facebook/create-react-app/issues/5358
-      runtimeChunk: {
-        name: (entrypoint) => `runtime-${entrypoint.name}`,
       },
     },
     resolve: {

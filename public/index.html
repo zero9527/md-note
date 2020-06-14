@@ -7,10 +7,6 @@
       content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no"
     />
     <meta name="theme-color" content="#333" />
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <% if (isEnvProduction) { %>
@@ -27,23 +23,16 @@
       rel="stylesheet"
     />
     <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
-    <script src="https://cdn.bootcss.com/react/16.13.0/umd/react.production.min.js"></script>
-    <script src="https://cdn.bootcss.com/react-dom/16.13.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.bootcss.com/react-router/5.1.2/react-router.min.js"></script>
-    <script src="https://cdn.bootcss.com/lodash.js/4.17.15/lodash.core.min.js"></script>
-    <script src="https://cdn.bootcss.com/marked/0.8.0/marked.min.js"></script>
-    <script src="https://cdn.bootcss.com/highlight.js/9.18.1/highlight.min.js" async defer></script>
-    <script src="./lib/html2vanvas1.0.0-rc.5.js" async defer></script>
     <% } %>
     <meta name="importmap-type" content="systemjs-importmap" />
     <script type="systemjs-importmap">
       <%= systemJsImportmap %>
     </script>
-    <script src="./lib/systemjs/system.min.js"></script>
-    <script src="./lib/systemjs/extras/amd.min.js"></script>
-    <script src="./lib/systemjs/extras/named-exports.min.js"></script>
-    <script src="./lib/systemjs/extras/named-register.min.js"></script>
-    <script src="./lib/systemjs/extras/use-default.min.js"></script>
+    <script src="./libs/systemjs/system.min.js"></script>
+    <script src="./libs/systemjs/extras/amd.min.js"></script>
+    <script src="./libs/systemjs/extras/named-exports.min.js"></script>
+    <script src="./libs/systemjs/extras/named-register.min.js"></script>
+    <script src="./libs/systemjs/extras/use-default.min.js"></script>
     <script>
       System.import('root-config');
     </script>
@@ -63,15 +52,5 @@
     <div id="md-note">
       <div class="md-note-before">MD-NOTE</div>
     </div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>

@@ -15,13 +15,23 @@
   }
 
   .catelist {
+    position: relative;
     padding: 4px 0;
-    margin-top: 44px;
+    margin-top: 56px;
     z-index: 40;
     transition: margin-top 0.3s;
     -webkit-tap-highlight-color: transparent;
-    @include themeify {
-      background: themed('bg-color');
+
+    &::before {
+      content: '';
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-left: 1px solid;
+      @include themeify {
+        border-color: themed('border-color');
+      }
     }
 
     .close {
@@ -83,7 +93,7 @@
 
       > ul {
         margin: 0;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
 
         > .cate-item {
           font-weight: bold;
@@ -104,21 +114,27 @@
 
       .cate-item {
         position: relative;
+        margin-bottom: 1px;
         padding: 4px 10px;
         padding-left: 20px;
+        border-left: 1px solid transparent;
         cursor: pointer;
-        word-break: break-word;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        transition: none;
 
         &:hover {
           @include themeify {
-            background: themed('bg-color-light');
+            border-color: themed('primary-color');
+            background: themed('border-color');
           }
         }
 
         &:active {
           @include themeify {
             color: themed('primary-color');
-            background: themed('bg-color-heavy');
+            background: themed('border-color');
           }
         }
       }
@@ -126,7 +142,8 @@
       .active {
         @include themeify {
           color: themed('primary-color');
-          background: themed('bg-color-light');
+          border-color: themed('primary-color');
+          background: themed('border-color');
         }
       }
     }
@@ -145,7 +162,7 @@
     }
 
     .catelist {
-      width: 280px;
+      width: 246px;
       margin-bottom: 10px;
       box-shadow: none;
 
@@ -185,6 +202,9 @@
       border: transparent;
       transition: 0.3s;
       transform: translateX(100%);
+      @include themeify {
+        background: themed('bg-color-light');
+      }
 
       .close {
         display: flex;

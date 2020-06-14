@@ -3,16 +3,15 @@ import { useHistory, useParams, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import useGlobalModel from '@/model/useGlobalModel';
-import Loading from '@/components/loading';
-import Scroll2Top from '@/components/Scroll2Top';
 import useNoteModel from '@/model/useNoteModel';
-import StickyRight from '@/components/stickyRight';
-import Header from '@/components/header';
 import useScroll from '@/utils/useScroll';
-import MdPreview from '@/components/mdPreview';
-import MdCatalog from '@/components/mdCatalog';
-// import { throttle } from '@/utils';
-import PicPreview from '@/components/picPreview';
+import Loading from '@/components/Loading';
+import Header from '@/components/Header';
+import Scroll2Top from '@/components/Scroll2Top';
+import StickyRight from '@/components/StickyRight';
+import MdPreview from '@/components/MdPreview';
+import MdCatalog from '@/components/MdCatalog';
+import PicPreview from '@/components/PicPreview';
 import styles from './styles.scss';
 
 // 详情
@@ -162,13 +161,7 @@ const NoteDetail: React.FC = () => {
                 defaultActive={defaultCateActive}
                 onCateClick={onCateClick}
                 onGetTitle={onGetTitle}
-              >
-                {/* <Export id={name} position={stickyRightStyle} mdtext={mdtext}>
-                  <a href={`./#/md-editor/${tag}/${name}`} className="link">
-                    <button className="btn">编辑</button>
-                  </a>
-                </Export> */}
-              </MdCatalog>
+              />
             </StickyRight>
           </>
         ) : (

@@ -1,6 +1,7 @@
 import React, { CSSProperties, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import useGlobalModel from '@/model/useGlobalModel';
+import useThrottle from '@/utils/useThrottle';
 import styles from './styles.scss';
 
 interface StickyRightProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -28,18 +29,19 @@ const StickyRight: React.FC<StickyRightProps> = ({
     };
   }, []);
 
-  const resize = () => {
+  const resize = useThrottle(() => {
     const bodyWidth = document.body.clientWidth;
-    const MAX_VIEW_WIDTH = 980;
-    const CONTENT_WIDTH = MAX_VIEW_WIDTH - 300;
+    const MAX_VIEW_WIDTH = 979;
+    const CONTENT_WIDTH = 710;
     const style =
       bodyWidth > MAX_VIEW_WIDTH
-        ? { left: `${(bodyWidth - MAX_VIEW_WIDTH) / 2 + CONTENT_WIDTH + 20}px` }
+        ? {
+            left: `${(bodyWidth - MAX_VIEW_WIDTH) / 2 + CONTENT_WIDTH + 20}px`,
+          }
         : { right: '12px' };
     setStickyRightStyle(style);
     if (onResize) onResize(style);
-    // throttle(() => {});
-  };
+  }, 16);
 
   return ReactDOM.createPortal(
     <div

@@ -53,6 +53,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     renderer.link = function(href: string, title: string, text: string) {
       return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
     };
+    // 给图片添加类名，添加点击事件，方便点击查看大图
     renderer.image = function(src: string, alt: string) {
       return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
     };
@@ -94,7 +95,7 @@ const MdPreview: React.FC<MdPreviewProps> = ({
 
   const containerClassName = useMemo(
     () =>
-      `${styles['md-container']} ${
+      `container ${styles['md-container']} ${
         isEdit ? styles['md-preview'] : styles['md-detail']
       } ${className || ''}`,
     [isEdit, className]

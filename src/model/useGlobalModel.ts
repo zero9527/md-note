@@ -6,7 +6,6 @@ const useGlobalModel = () => {
   const [height, setHeight] = useState(0);
   const [theme, updateTheme] = useState('blue');
   const [stickyRightStyle, setStickyRightStyle] = useState<CSSProperties>();
-  const [rightPanelVisible, setRightPanelVisible] = useState(false);
 
   useEffect(() => {
     setHeight(window.innerHeight);
@@ -43,8 +42,6 @@ const useGlobalModel = () => {
     height,
     stickyRightStyle,
     setStickyRightStyle,
-    rightPanelVisible,
-    setRightPanelVisible,
   };
 };
 

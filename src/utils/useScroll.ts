@@ -7,15 +7,15 @@ const useScroll = () => {
   const prevScrollTop = usePrevState(scrollTop);
 
   useEffect(() => {
+    onScroll();
     window.addEventListener('scroll', onScroll, false);
     return () => {
       window.removeEventListener('scroll', onScroll, false);
     };
   }, []);
 
-  const onScroll = (e: any) => {
-    // 移动端 body.scrollTop, PC端 documentElement.scrollTop
-    const scTop = e.target.body.scrollTop || e.target.documentElement.scrollTop;
+  const onScroll = () => {
+    const scTop = document.body.scrollTop || document.documentElement.scrollTop;
     setScrollTop(scTop || 0);
   };
 

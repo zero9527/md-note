@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import styles from './styles.scss';
 
 // 路由跳转 Loading组件
-function Loading() {
+const Loading: React.FC = () => {
   return ReactDOM.createPortal(
     <div className={`center-content ${styles.loading}`}>
       <div className={styles.content}>
@@ -16,6 +16,6 @@ function Loading() {
     </div>,
     document.body
   );
-}
+};
 
 export default Loading;

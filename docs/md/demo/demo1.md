@@ -2,51 +2,91 @@
 
 ## 前言
 大概说一下：
-* React+Hook+TypeScript
+* React+Hook+TypeScript+single-spa
 * scss+css-module
 * markdown 渲染使用 [marked.js](https://marked.js.org)，语法高亮使用 [highlight.js](https://highlightjs.org/) 
-* 图片导出使用 [html2canvas](http://html2canvas.hertzen.com/)，纯前端操作（导出markdown同）
-* 编辑器使用 [codemirror.js](https://codemirror.net/)
-* 黑色模式
+* 主题切换
 
-> **！注意：**<br>
-> 不提供数据存储服务，仅使用浏览器缓存
 
 ## 一些预览图
-![首页](https://s1.ax1x.com/2020/05/31/t1fO56.md.png)
+- PC
 
-详情`PC布局`
+![首页PC](https://s1.ax1x.com/2020/06/14/tzHQR1.png)
+![详情PC](https://s1.ax1x.com/2020/06/14/tzHVqU.png)
 
-![详情PC布局](https://s1.ax1x.com/2020/05/31/t1R4oV.md.png)
-![详情移动端布局](https://s1.ax1x.com/2020/05/31/t1f7r9.md.png)
+- 移动端
 
-<!-- 编辑器`PC布局`
-
-![编辑器PC布局](./images/editor-pc.png) -->
-
-<!-- 编辑器`移动端布局`
-
-![编辑器移动端布局](https://s1.ax1x.com/2020/05/31/t1RXe1.png) -->
-<!-- ![详情移动端布局](./images/detail-mobile.png)
-![编辑器移动端布局](./images/editor-mobile.png) -->
+![首页移动端](https://s1.ax1x.com/2020/06/14/tzHIyV.md.png)
+![详情移动端](https://s1.ax1x.com/2020/06/14/tzHnIJ.md.png)
 
 
 ## 1、首页
 滚动位置恢复用 [这个库](https://www.npmjs.com/package/keep-alive-comp)，之前自己写的，已发布 `npm`;
 配合 `useScroll` 很简单
 
+### tag 是分类（目录名）
+public/md/目录名
+
+public/md/
+```
+.
+├── demo
+│   ├── demo1.md
+│   └── promise_This_is.md
+├── js
+│   ├── amd-cmd.md
+│   ├── evt.md
+│   ├── js-review.md
+│   ├── promise.md
+│   └── scroll-load.md
+├── mini-program
+│   └── movie-db.md
+├── node.js
+│   ├── cmd-line.md
+│   ├── directory-1.md
+│   └── directory-2.md
+├── others
+│   ├── create-react-app_single-spa.md
+│   ├── vue-cli3_single-spa.md
+│   └── web-component.md
+├── react
+│   ├── React-Hook.md
+│   ├── keep-alive-comp.md
+│   ├── movie-db-web.md
+│   ├── next-js.md
+│   ├── react-keep-alive.md
+│   └── react-ts-template.md
+└── vue
+    ├── calendar.md
+    └── uni-app.md
+```
+
+### md.json 是列表描述文件
+```json
+[
+  {
+    "tag": "demo",
+    "name": "demo1.md",
+    "title": "MD-Note说明",
+    "create_time": "2019/10/01 00:00:00"
+  },
+]
+```
+
 ```jsx
+// src/views/NoteList/index.tsx
 import React, { useEffect, useMemo } from 'react';
 import { KeepAliveAssist } from 'keep-alive-comp';
-import useNoteModel from '@/model/useNoteModel';
-import StickyRight from '@/components/stickyRight';
-import useScroll from '@/utils/useScroll';
-import Header from '@/components/header';
-import Tools from '@/components/Tools';
-import Scroll2Top from '@/components/Scroll2Top';
+import { Link } from 'react-router-dom';
 import useGlobalModel from '@/model/useGlobalModel';
-import { isMobile } from '@/utils';
-import styles from './noteList.scss';
+import useNoteModel from '@/model/useNoteModel';
+import useScroll from '@/utils/useScroll';
+import Header from '@/components/Header';
+import Tools from '@/components/Tools';
+import RightPanel from '@/components/RightPanel';
+import Scroll2Top from '@/components/Scroll2Top';
+import useDebounce from '@/utils/useDebounce';
+import styles from './styles.scss';
 
 interface NoteListProps extends KeepAliveAssist {}
 
@@ -78,62 +118,59 @@ const NoteList: React.FC<NoteListProps> = (props) => {
     return scrollTop > window.innerHeight;
   }, [scrollTop]);
 
+  const ReachBottom = () => (
+    <div className={styles['reach-bottom']}>
+      <span>到底了</span>
+    </div>
+  );
+
   return (
     <>
       <Header className={styles.header}>
         <div className="center-content content">
-          <span>MD-NOTE</span>
+          <div>
+            MD-NOTE
+            <span className={styles.desc}>：一个使用 markdown 的简易博客</span>
+          </div>
           <Tools />
         </div>
       </Header>
       <main className={`center-content ${styles['note-list']}`}>
         <section
           id={loading ? styles.skeleton : ''}
-          className={styles.container}
+          className={`container ${styles.container}`}
         >
           {noteList?.length > 0 ? (
-            noteList?.map?.((noteitem) => {
-              return (
-                <a
-                  className={`link ${styles.item}`}
-                  key={`${noteitem.tag}-${noteitem.name}`}
-                  href={`./#/detail/${noteitem.tag}/${noteitem.name}`}
-                  onClick={toDetailClick}
-                >
-                  <div className={styles.title}>{noteitem.title}</div>
-                  <div className={styles.desc}>
-                    <span className={styles.tag}>
-                      标签：<span>{noteitem.tag}</span>
-                    </span>
-                    <span className={styles.time}>
-                      创建时间：{noteitem.create_time}
-                    </span>
-                  </div>
-                </a>
-              );
-            })
+            <>
+              {noteList?.map?.((noteitem) => {
+                return (
+                  <Link
+                    to={`/detail/${noteitem.tag}/${noteitem.name}`}
+                    className={`link ${styles.item}`}
+                    key={`${noteitem.tag}-${noteitem.name}`}
+                    onClick={toDetailClick}
+                  >
+                    <div className={styles.title}>{noteitem.title}</div>
+                    <div className={styles.desc}>
+                      <span className={styles.tag}>
+                        标签：<span>{noteitem.tag}</span>
+                      </span>
+                      <span className={styles.time}>
+                        创建时间：{noteitem.create_time}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+              <ReachBottom />
+            </>
           ) : (
             <div>没有数据</div>
           )}
         </section>
         {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
-        <StickyRight className={styles.iframe}>
-          {!isMobile && (
-            <>
-              <iframe
-                src="https://zero9527.github.io/vue-calendar"
-                className={styles.calendar}
-              />
-              <div className={styles.mask} />
-            </>
-          )}
-        </StickyRight>
-        {/* <div className="gitter">
-          <a href="./#/note-add" className={`link btn ${styles.add}`}>
-            +
-          </a>
-        </div> */}
       </main>
+      <RightPanel />
     </>
   );
 };
@@ -141,67 +178,272 @@ const NoteList: React.FC<NoteListProps> = (props) => {
 export default NoteList;
 ```
 
-## 2、详情页面
 
-### 内容渲染
+## 2、主题切换
+`scss` 函数实现，通过
+
+- 在 `html` 设置 `data-theme` 
+- 然后 `scss` 生成的对应 `data-theme` 值的样式，
+- 匹配到就显示对应的样式配置
+- `sass-resources-loader` 自动引入，不用每次手动引入
+- 使用的地方，`@include` `@mixin 函数名`，样式名不变，值改为 `themed(配置的变量)`， 如 `color: themed('primary-color');`
+
+
+### 2.1 定义主题内容
+
+```scss
+// src/theme/index.scss
+$mask-bg: rgba(50, 50, 50, 0.6);
+$box-shadow: 0px 1px 1px -2px rgba(0, 0, 0, 0.8);
+
+$base: (
+  base-color: #3e3e3e,
+  desc-color: #666,
+  second-color: #999,
+  gray-color: #cccccc,
+  border-color: #e9e9e9,
+  bg-color: #fefefe,
+  bg-color-light: #f6f6f6,
+  bg-color-heavy: #f1f1f1,
+  linear-background-0:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
+  linear-background-180:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
+);
+
+$blue: (
+  primary-color: rgba(80, 152, 228, 0.8),
+  primary-color-light: rgba(80, 152, 228, 0.6),
+  primary-color-heavy: rgba(80, 152, 228, 1),
+  primary-bg-color: rgba(80, 152, 228, 0.05),
+);
+
+$red: (
+  primary-color: rgba(228, 82, 80, 0.8),
+  primary-color-light: rgba(228, 82, 80, 0.6),
+  primary-color-heavy: rgba(228, 82, 80, 1),
+  primary-bg-color: rgba(228, 82, 80, 0.05),
+);
+
+$orange: (
+  primary-color: rgba(228, 149, 80, 0.8),
+  primary-color-light: rgba(228, 149, 80, 0.6),
+  primary-color-heavy: rgba(228, 149, 80, 1),
+  primary-bg-color: rgba(228, 149, 80, 0.05),
+);
+
+$green: (
+  primary-color: rgba(0, 150, 136, 0.8),
+  primary-color-light: rgba(0, 150, 136, 0.6),
+  primary-color-heavy: rgba(0, 150, 136, 1),
+  primary-bg-color: rgba(0, 150, 136, 0.05),
+);
+
+$purple: (
+  primary-color: rgba(198, 37, 239, 0.8),
+  primary-color-light: rgba(198, 37, 239, 0.6),
+  primary-color-heavy: rgba(198, 37, 239, 1),
+  primary-bg-color: rgba(198, 37, 239, 0.05),
+);
+
+$dark: (
+  base-color: #ccc,
+  desc-color: #666,
+  second-color: #999,
+  primary-color: rgba(80, 152, 228, 0.8),
+  primary-color-light: rgba(80, 152, 228, 0.6),
+  primary-color-heavy: rgba(80, 152, 228, 1),
+  primary-bg-color: rgba(80, 152, 228, 0.05),
+  gray-color: #464444,
+  border-color: #2e2e2e,
+  bg-color: #232426,
+  bg-color-light: #292b2d,
+  bg-color-heavy: #1e1f21,
+  linear-background-0:
+    linear-gradient(0deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
+  linear-background-180:
+    linear-gradient(180deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
+);
+
+$themes: (
+  blue: map-merge($base, $blue),
+  orange: map-merge($base, $orange),
+  red: map-merge($base, $red),
+  green: map-merge($base, $green),
+  purple: map-merge($base, $purple),
+  dark: $dark,
+);
+
+@mixin themeify {
+  @each $theme-name, $theme-map in $themes {
+    $theme-map: $theme-map !global;
+    html[data-theme='#{$theme-name}'] & {
+      @content;
+    }
+  }
+}
+
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}
+```
+
+### 2.2 加一个loader
+这样就不需要每次在用到的地方，都手动引入一遍
+
+```shell
+yarn add -D sass-resources-loader
+```
+
+```js
+{
+  loader: 'sass-resources-loader',
+  options: {
+    resources: [path.resolve(__dirname, './../src/theme/index.scss')],
+  },
+}
+```
+
+
+### 2.3 主题颜色值使用
+```scss
+.theme {
+  @include themeify {
+    color: themed('primary-color');
+  }
+}
+```
+
+### 2.4 主题切换
+```js
+// src/components/ChangeTheme/index.tsx
+import React from 'react';
+import useGlobalModel from '@/model/useGlobalModel';
+import styles from './styles.scss';
+
+interface ThemeItem {
+  text: string;
+  color: string;
+}
+
+const ChangeTheme = () => {
+  const { theme, setTheme } = useGlobalModel((modal) => [
+    modal.theme,
+    modal.setTheme,
+  ]);
+  const themesConfig: ThemeItem[] = [
+    {
+      text: '白兰',
+      color: 'blue',
+    },
+    {
+      text: '暗夜',
+      color: 'dark',
+    },
+    {
+      text: '橘橙',
+      color: 'orange',
+    },
+    {
+      text: '小红',
+      color: 'red',
+    },
+    {
+      text: '浅绿',
+      color: 'green',
+    },
+    {
+      text: '媚紫',
+      color: 'purple',
+    },
+  ];
+
+  const onThemeChange = (color: string) => {
+    setTheme(color);
+  };
+
+  return (
+    <span>
+      {themesConfig.map((item) => (
+        <span
+          key={item.color}
+          className={`${styles.color} ${
+            item.color === theme ? styles.theme : ''
+          }`}
+          onClick={() => onThemeChange(item.color)}
+        >
+          {item.text}&nbsp;
+        </span>
+      ))}
+    </span>
+  );
+};
+
+export default ChangeTheme;
+```
+
+
+## 3、详情页面
+
+### 3.1 内容获取
+直接异步请求 `public/md/` 下面的 `markdown` 文件
+
+```js
+// src/model/useNoteModel.ts
+// 请求数据 tag: 标签；name：名称
+const fetchNoteByName = async (tag: NoteTag | string, name: string) => {
+  try {
+    const res: any = await fileApi(`/${tag}/${name}`);
+    return { code: 0, data: res, msg: 'ok' };
+  } catch (err) {
+    console.error('fetch error: ', err);
+  }
+  return { code: -2, data: null, msg: 'error' };
+};
+
+// src/api/file.ts
+// 获取文件
+export function fileApi(uri: string, params: any = {}) {
+  return axios.get(`./md${uri}`, {
+    data: { ...params },
+  });
+}
+```
+
+### 3.2 内容渲染
 `marked` 设置自定义渲染
-* 默认标题 id 会被去掉 `英文特殊字符`，
+
+默认：
+* 标题 id 会被去掉 `英文特殊字符`，
 * 链接不在新窗口打开
 
 ```typescript
 // 渲染设置
 const renderer = new marked.Renderer();
-
 // 设置标题，生成目录跳转需要
 renderer.heading = function(text: string, level: number) {
-  return `<h${level} class="heading-h${level}" id="${text}" title="${text}">${text}</h${level}>`;
+  return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
 };
-
 // 设置链接
 renderer.link = function(href: string, title: string, text: string) {
-  return `<a href="${href}" title="${title ||
-    text}" target="_blank">${text}</a>`;
+  return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
 };
-
-// 设置图片，导出图片需要
-renderer.image = function(href: string, title: string, text: string) {
-  return `<img src="${href}" title="${title ||
-    text}" alt="${text}" style="max-height: 700px; display: inherit; margin: auto;" />`;
+// 给图片添加类名，添加点击事件，方便点击查看大图
+renderer.image = function(src: string, alt: string) {
+  return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
 };
 ```
 
-### 目录
-* 对二级标题，三级标题生成目录
-* 点击标题视图切换到响应标题下
-
-### 操作按钮
-
-* 编辑跳转
-* 导出 `*.md` 文件
-* 导出 `*.png` 图片
-
-使用 [html2canvas](http://html2canvas.hertzen.com/)，导出前设置视图宽度为`代码块（pre>code）最大宽度`（防止导出图片截断/大片空白等问题），完成后恢复
-> 使用时，有些样式是识别不了的，这个时候可以考虑，样式直接放到标签上面设置试试
+### 3.3 目录
+- 对二级标题，三级标题生成目录
+- 点击标题视图切换到响应标题下
+- 滚动屎，高亮响应目录标题
 
 
-## 3、编辑页面
-
-### 3.1 支持 markdown 语法
-
-* [marked.js](https://marked.js.org) 解析 `markdown`
-* [highlight.js](https://highlightjs.org/) 代码高亮
-* 编辑器使用 [codemirror.js](https://codemirror.net/)
-* 编辑撤销/重做
-
-### 3.2 预览效果
-
-* 窗口拖动(移动端小窗口)
-* 可以全屏
-
-
-## 4、代码示例
+## 4、一些自定义 Hook
 
 ### usePrevState
+获取上一次的值
 ```ts
 // src/utils/usePrevState.ts
 import { useRef, useEffect, useState } from 'react';
@@ -222,7 +464,75 @@ function usePrevState<T>(state: T) {
 export default usePrevState;
 ```
 
+### useDebounce
+函数防抖
+```js
+import { useCallback } from 'react';
+
+// 防抖
+const useDebounce = (callback: (...param: any) => void, delay: number = 16) => {
+  let timer: NodeJS.Timeout;
+  let lastTime: number = 0;
+
+  const runCallback = (...args: any) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      callback.apply(null, args);
+    }, delay);
+  };
+
+  return useCallback(function(...param) {
+    const thisTime = new Date().getTime();
+    if (thisTime - lastTime > delay && lastTime !== 0) {
+      lastTime = 0;
+    } else {
+      lastTime = thisTime;
+    }
+    runCallback(...param);
+  }, []);
+};
+
+export default useDebounce;
+```
+
+### useThrottle
+函数节流
+```js
+import { useCallback } from 'react';
+
+// 节流
+const useThrottle = (callback: () => any, delay: number = 16) => {
+  let lastTime: number = 0;
+  let canCallback = true;
+
+  const restore = (time: number) => {
+    lastTime = time;
+    canCallback = false;
+  };
+
+  const runCallback = () => {
+    callback();
+  };
+
+  return useCallback((args?: any) => {
+    const thisTime = new Date().getTime();
+    if (canCallback && thisTime - lastTime > delay) {
+      restore(thisTime);
+      runCallback.apply(null, args);
+      setTimeout(() => {
+        canCallback = true;
+      }, delay);
+      return;
+    }
+  }, []);
+};
+
+export default useThrottle;
+```
+
 ### useScroll
+滚动
+
 使用：见 `src/components/header/index.tsx`
 
 ```ts
@@ -236,15 +546,15 @@ const useScroll = () => {
   const prevScrollTop = usePrevState(scrollTop);
 
   useEffect(() => {
+    onScroll();
     window.addEventListener('scroll', onScroll, false);
     return () => {
       window.removeEventListener('scroll', onScroll, false);
     };
   }, []);
 
-  const onScroll = (e: any) => {
-    // 移动端 body.scrollTop, PC端 documentElement.scrollTop
-    const scTop = e.target.body.scrollTop || e.target.documentElement.scrollTop;
+  const onScroll = () => {
+    const scTop = document.body.scrollTop || document.documentElement.scrollTop;
     setScrollTop(scTop || 0);
   };
 
@@ -258,6 +568,8 @@ export default useScroll;
 ```
 
 ### useWindowClick
+点击，可以代替 `clickOutside` 点击外部使用
+
 使用：见 `src/components/Scroll2Top/index.tsx`
 
 ```ts
@@ -300,271 +612,6 @@ function useWindowClick(callback: () => void) {
 }
 
 export default useWindowClick;
-```
-
-
-### 目录生成
-```typescript
-// src/components/mdCatalog/index.tsx
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-} from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import styles from './mdCatalog.scss';
-import useScroll from '@/utils/useScroll';
-
-export interface CatalogItem {
-  id: string; // 标题的id
-  header: string; // 本身的id
-  label: string; // 文本
-  child?: CatalogItem[];
-}
-
-export interface MdCatalogProps {
-  mdtext: string;
-  defaultActive?: string;
-  onCateClick?: (id: string) => void;
-  onGetTitle?: (title: string) => void;
-}
-
-// 根据 markdown 字符串生成 二级标题/三级标题目录
-const MdCatalog: React.FC<MdCatalogProps> = ({
-  mdtext,
-  defaultActive,
-  onCateClick,
-  onGetTitle,
-  ...props
-}) => {
-  const { scrollTop } = useScroll();
-  const useScrollTop = useRef(false);
-  const [showCate, setShowCate] = useState(false);
-  const [cate, setCate] = useState<CatalogItem[]>([]);
-  const [cateActive, setCateActive] = useState('');
-  const [title, setTitle] = useState('');
-  const [allcate, setAllcate] = useState<CatalogItem[]>([]);
-
-  useEffect(() => {
-    if (title) {
-      document.title += `|${title}`;
-      onGetTitle?.(title);
-    }
-  }, [title]);
-
-  useEffect(() => {
-    if (defaultActive) setCateActive(defaultActive);
-  }, []);
-
-  useEffect(() => {
-    scroll2Item();
-  }, [cateActive]);
-
-  useEffect(() => {
-    generate();
-  }, []);
-
-  useEffect(() => {
-    if (showCate) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = 'auto';
-    }
-  }, [showCate]);
-
-  useEffect(() => {
-    // 铺平数据，用于 scrollHandler
-    function flat(arr: any[]) {
-      const list: any[] = [];
-      arr.forEach((item) => {
-        if (item?.child?.length) list.push(item, ...flat(item.child));
-        else list.push(item);
-      });
-      return list;
-    }
-    setAllcate(flat(cate));
-  }, [cate]);
-
-  useEffect(() => {
-    if (useScrollTop.current) scrollHandler();
-  }, [scrollTop]);
-
-  // 滚动时，显示高亮对应区域的标题
-  const scrollHandler = () => {
-    try {
-      allcate.forEach((item: CatalogItem) => {
-        const el = document.getElementById(item.id) as HTMLElement;
-        if (el) {
-          const bcr = el.getBoundingClientRect();
-          if (bcr.top < 0) {
-            setCateActive(item.id);
-          }
-        } else {
-          console.log('没有元素id为： ', item.id, item);
-        }
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const generate = () => {
-    let allcateArr: string[] = [];
-    const cateList: CatalogItem[] = [];
-    const content = mdtext.slice(mdtext.indexOf('\n'), mdtext.length);
-    setTitle(mdtext.slice(1, mdtext.indexOf('\n')));
-    const cate2Arr = content.split('\n## ');
-
-    cate2Arr.forEach((cate2) => {
-      // 二级目录
-      const tempcate2 = cate2.substring(0, cate2.indexOf('\n')).trim();
-      const cat3Arr = cate2.split('\n### ');
-      cat3Arr.shift();
-      const cat2Child: CatalogItem[] = [];
-
-      cat3Arr.forEach((cate3) => {
-        // 三级目录
-        const tempcate3 = cate3.substring(0, cate3.indexOf('\n')).trim();
-        cat2Child.push({
-          id: tempcate3,
-          header: `catelog-${tempcate3}`,
-          label: tempcate3,
-        });
-      });
-
-      const cate2Item: CatalogItem = {
-        id: tempcate2,
-        header: `catelog-${tempcate2}`,
-        label: tempcate2,
-        child: [],
-      };
-
-      allcateArr.push(tempcate2);
-      if (cat2Child.length > 0) {
-        cate2Item.child = cat2Child;
-        allcateArr = allcateArr.concat(cat2Child.map((i) => i.id));
-      }
-
-      cateList.push(cate2Item);
-    });
-
-    setCate(() => cateList.filter((item) => Boolean(item.id)));
-  };
-
-  const scroll2Item = () => {
-    const catelogItem = document.getElementById(`catelog-${cateActive}`);
-    catelogItem?.scrollIntoView();
-    onCateClick?.(cateActive);
-  };
-
-  const cateClick = (cateItem: CatalogItem) => {
-    const header = document.getElementById(cateItem.id) as HTMLElement;
-    header?.scrollIntoView();
-
-    useScrollTop.current = false;
-    toggleBlur('remove');
-    setCateActive(cateItem.id);
-    onCateClick?.(cateItem.id);
-    setTimeout(() => {
-      setShowCate(false);
-      useScrollTop.current = true;
-    }, 0);
-  };
-
-  const onCateListShow = () => {
-    toggleBlur('add');
-    setTimeout(() => setShowCate(true), 0);
-  };
-
-  const onHiddenCatalog = () => {
-    setShowCate(false);
-    toggleBlur('remove');
-  };
-
-  const toggleBlur = (type: 'add' | 'remove') => {
-    document.querySelector('#md-note')?.classList[type]('blur');
-  };
-
-  const renderCateItem = useCallback(
-    (cateItem: CatalogItem) => {
-      const className = `${styles['cate-item']} ${
-        cateActive === cateItem.id ? styles.active : ''
-      }`;
-      return (
-        <div
-          data-id={cateItem.id}
-          id={cateItem.header}
-          className={className}
-          onClick={() => cateClick(cateItem)}
-        >
-          {cateItem.label}
-        </div>
-      );
-    },
-    [cateActive]
-  );
-
-  const NoCate = () => (
-    <div className={styles.desc}>
-      <p>一级标题'#'为文章名，</p>
-      <p>二级标题'##'为一级目录，</p>
-      <p>三级标题'###'为三级目录</p>
-    </div>
-  );
-
-  const cateListTransition = useMemo(() => {
-    return showCate ? styles['cate-show'] : '';
-  }, [showCate]);
-
-  return (
-    <div id="catalog" className={styles.catalog}>
-      <FontAwesomeIcon
-        className="btn"
-        icon={faListUl}
-        onClick={onCateListShow}
-      />
-      <div
-        className={styles.bg}
-        style={{ display: showCate ? 'block' : 'none' }}
-      />
-      <div
-        className={`${styles.catelist} ${cateListTransition}`}
-        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
-      >
-        {showCate && (
-          <span className={styles.close} onClick={onHiddenCatalog}>
-            <FontAwesomeIcon icon={faChevronRight} />
-          </span>
-        )}
-        <section className={styles.head} title={title}>
-          目录: {title}
-        </section>
-        <section className={styles['cate-content']}>
-          {cate.length > 0 ? (
-            cate.map((cate2: CatalogItem) => (
-              <ul key={cate2.id}>
-                {renderCateItem(cate2)}
-                {cate2.child &&
-                  cate2.child?.length > 0 &&
-                  cate2.child?.map((cate3: CatalogItem) => (
-                    <ul key={cate3.id}>{renderCateItem(cate3)}</ul>
-                  ))}
-              </ul>
-            ))
-          ) : (
-            <NoCate />
-          )}
-        </section>
-      </div>
-      {props.children}
-    </div>
-  );
-};
-
-export default MdCatalog;
 ```
 
 ### useFetchData

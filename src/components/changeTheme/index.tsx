@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useGlobalModel from '@/model/useGlobalModel';
 import styles from './styles.scss';
 

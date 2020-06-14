@@ -38,11 +38,8 @@ const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
   const scrollHandler = () => {
     let scTop = document.body.scrollTop || document.documentElement.scrollTop;
     if (scTop > 0) {
-      // 滚动距离，大于屏幕高度8倍时间隔为屏幕高度，否则100px
-      const longPage = scrollTop.current >= height.current * 8;
-      const range = longPage ? height.current : 100;
-      document.body.scrollTop -= range;
-      document.documentElement.scrollTop -= range;
+      document.body.scrollTop -= 100;
+      document.documentElement.scrollTop -= 100;
 
       if (canScroll.current) setTimeout(scrollHandler, 16);
     } else {

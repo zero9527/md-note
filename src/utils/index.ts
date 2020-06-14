@@ -61,7 +61,7 @@ export function loading() {
 
   return {
     loadingStart,
-    loadingEnd
+    loadingEnd,
   };
 }
 
@@ -101,7 +101,7 @@ export function NoticeU(): void {
   function noticeFn(): void {
     const notice = new Notification('提示', {
       body: '你要的额都在这里！',
-      icon: 'img/store-bg.png'
+      icon: 'img/store-bg.png',
     });
     notice.onclick = () => {
       console.log('点击了通知！');
@@ -109,7 +109,7 @@ export function NoticeU(): void {
   }
 
   function requestPermission(): void {
-    Notification.requestPermission().then(permission => {
+    Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
         noticeFn();
       } else if (permission === 'denied') {
@@ -130,7 +130,7 @@ export function getUrlParams(search = '', key = '') {
 
   const paramsArr = _search.split('&');
   const paramsObj = {};
-  paramsArr.forEach(param => {
+  paramsArr.forEach((param) => {
     const [_key, _value] = param.split('=');
     paramsObj[_key] = _value;
   });
