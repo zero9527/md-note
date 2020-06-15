@@ -4,9 +4,17 @@ $padding-edge: 16px;
   .md-content {
     position: relative;
     padding: 10px 16px;
+    background-size: 22px 20px;
+    background-position: center 0;
     @include themeify {
       color: themed('base-color');
-      background: themed('bg-color');
+      background-color: themed('bg-color');
+      background-image: linear-gradient(
+          90deg,
+          themed('border-color') 3%,
+          rgba(0, 0, 0, 0) 3%
+        ),
+        linear-gradient(360deg, themed('border-color') 3%, rgba(0, 0, 0, 0) 3%);
     }
 
     &::before {
@@ -76,44 +84,65 @@ $padding-edge: 16px;
 
     pre {
       position: relative;
-      padding: 20px $padding-edge;
       // color: #abb2bf;
       // background: #282c34;
-      overflow-x: auto;
+      line-height: 0;
       transform: translatez(0);
+      overflow: hidden;
       z-index: 0;
       @include themeify {
         color: themed('base-color');
-        background: themed('primary-bg-color');
       }
 
-      code {
-        font-size: 94%;
-        font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
-          monospace;
-        background: transparent;
+      &::before {
+        content: '';
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.6;
+        z-index: -1;
+        @include themeify {
+          background-color: themed('bg-color-heavy');
+        }
+      }
 
-        &::before {
-          // 语言
-          content: attr(class);
-          min-height: 18px;
-          position: absolute;
-          left: 0;
-          margin-top: -18px;
-          padding: 0 16px;
+      :global {
+        // 语言
+        .languange {
+          display: block;
+          position: relative;
+          margin: 0;
+          padding: 0 $padding-edge;
           text-align: left;
-          // color: #666;
           font-size: 90%;
           box-sizing: border-box;
           @include themeify {
             color: themed('gray-color');
+            background-color: themed('bg-color-heavy');
           }
         }
 
-        :global {
-          .hljs-comment {
-            @include themeify {
-              color: themed('gray-color');
+        .code-wrapper {
+          width: 100%;
+          position: relative;
+          margin: 0;
+          display: block;
+          padding: 16px $padding-edge;
+          overflow-x: auto;
+
+          code {
+            font-size: 94%;
+            font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
+              monospace;
+            background: transparent;
+
+            .hljs-comment {
+              @include themeify {
+                color: themed('gray-color');
+              }
             }
           }
         }
@@ -137,7 +166,7 @@ $padding-edge: 16px;
       display: inline-block;
       padding: 0 $padding-edge;
       margin: 4px 0;
-      border-left: 6px solid #cbcbcb;
+      border-left: 4px solid #cbcbcb;
       z-index: 1;
       @include themeify {
         color: themed('desc-color');
@@ -155,7 +184,7 @@ $padding-edge: 16px;
         z-index: -1;
         @include themeify {
           opacity: 0.1;
-          background: themed('primary-color');
+          background: themed('primary-color-light');
         }
       }
     }
@@ -176,6 +205,15 @@ $padding-edge: 16px;
         border: 1px solid #ccc;
         @include themeify {
           border-color: themed('border-color');
+        }
+      }
+    }
+
+    :global {
+      .link {
+        svg {
+          font-size: 10px;
+          vertical-align: text-top;
         }
       }
     }

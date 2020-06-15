@@ -3,6 +3,11 @@
 ## 前言
 其实方便点可以使用 [qiankun](https://qiankun.umijs.org/zh/) 的微前端方案
 
+依赖版本：
+```json
+"single-spa": "^5.5.2",
+"single-spa-vue": "^1.8.2",
+```
 
 ## 流程
 ### 主应用流程

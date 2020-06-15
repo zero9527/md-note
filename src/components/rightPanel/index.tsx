@@ -8,19 +8,13 @@ const RightPanel: React.FC = () => {
   const { scrollTop, prevScrollTop } = useScroll();
 
   useEffect(() => {
-    mountParcelClock();
-    mountParcelCalendar();
+    mountParcelHandler('@vue-mf/clock', 'app-clock');
+    mountParcelHandler('@vue-mf/calendar', 'app-calendar');
   }, []);
 
-  const mountParcelClock = () => {
-    const parcelConfig = (window as any).System.import('@vue-mf/clock');
-    const domElement = document.getElementById('app-clock')!;
-    mountParcel(parcelConfig, { domElement });
-  };
-
-  const mountParcelCalendar = () => {
-    const parcelConfig = (window as any).System.import('@vue-mf/calendar');
-    const domElement = document.getElementById('app-calendar')!;
+  const mountParcelHandler = (appName: string, domId: string) => {
+    const parcelConfig = (window as any).System.import(appName);
+    const domElement = document.getElementById(domId)!;
     mountParcel(parcelConfig, { domElement });
   };
 

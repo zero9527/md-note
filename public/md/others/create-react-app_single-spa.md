@@ -3,6 +3,11 @@
 ## 前言
 其实方便点可以使用 [qiankun](https://qiankun.umijs.org/zh/) 的微前端方案
 
+依赖版本：
+```json
+"single-spa": "^5.5.2",
+"single-spa-react": "^2.14.0",
+```
 
 项目例子：[在线查看](http://zero9527.site/md-note)
 - 主应用(React)：[md-note](https://github.com/zero9527/md-note)
@@ -16,7 +21,7 @@
 
 ## 流程
 ### 主应用流程
-- 启动由 `system.js` 接管，配置 `webpack` 下 `out.libraryTarget` 为 `system`；使用 `Parcel` 时要去掉 `optimization.runtimeChunk`
+- 启动由 `system.js` 接管，配置 `webpack` 下 `output.libraryTarget` 为 `system`；使用 `Parcel` 时要去掉 `optimization.runtimeChunk`
 
 - `html` 入口中通过 `importmap`，设置当前应用、子应用 名称+地址
 
@@ -42,7 +47,7 @@
 
 
 ## 1 主应用
-> 主应用使用 `Parcel` 引用子应用时，需要自身使用 `single-spa-react`，这个时候，webpack 配置里面需要把 `optimization.runtimrChunk` 去掉；只是使用 `application` 加载子应用的话就不影响
+> 主应用使用 `Parcel` 引用子应用时，需要自身使用 `single-spa-react`，这个时候，webpack 配置里面需要把 `optimization.runtimeChunk` 去掉；只是使用 `application` 加载子应用的话就不影响
 
 ### 1.1 下载依赖
 ```shell
@@ -79,7 +84,7 @@ export default function singleSpaSetup() {
 开发环境死活加不上，然后我去 `nginx` 设置子应用添加了，子应用放 `github Page` 的话已经是有加上去的，不然会跨域
 
 #### libraryTarget
-这里不需要将 `output.libraryTarget` 改为 `system`，原因我也不知道，加上会报错，我就去掉了，反正不加也正常运行。。。
+将 `output.libraryTarget` 改为 `system`
 
 #### filename
 这里把 `optimization.runtimeChunk` 去掉之后，才会使用 `filename` 作为入口，不然的话入口是 `chunkFilename` 即 `main.chunk.js`
@@ -166,6 +171,10 @@ module.exports = maplist;
 ```
 
 #### 配置 externals
+> **注意！**
+> 如果设置了 `externals`，第三方包就不能通 `script` 的方式引入了，要用 `systemjs-importmap` 的方式引入（如上）
+
+
 根据开发环境、生产环境做区分
 ```js
 externals: isEnvProduction
@@ -177,7 +186,7 @@ externals: isEnvProduction
 可以是直接在 `options` 下增加参数，也可以 `templateParameters`，
 区别是 `templateParameters` 可以直接在 `HTML入口` 引用，而 `options` 的话就要带一串东西
 
-> `eject` 之后改 `templateParameters` 很方便，但是没有 `eject` 的改起来就麻烦，还是 `options` 方便（比如使用 `react-app-rewried` 等）
+> `eject` 之后改 `templateParameters` 很方便，但是没有 `eject` 的改起来就麻烦，还是 `options` 方便（比如使用 `react-app-rewired` 等）
 
 - templateParameters
 
@@ -304,7 +313,7 @@ export const { mount, unmount } = reactLifeCycles;
 // src/components/rightPanel/index.tsx
 import React, { useEffect } from 'react';
 import useScroll from '@/utils/useScroll';
-import StickyRight from '@/components/stickyRight';
+import StickyRight from '@/components/StickyRight';
 import { mountParcel } from '@/index';
 import styles from './styles.scss';
 
@@ -312,19 +321,13 @@ const RightPanel: React.FC = () => {
   const { scrollTop, prevScrollTop } = useScroll();
 
   useEffect(() => {
-    mountParcelClock();
-    mountParcelCalendar();
+    mountParcelHandler('@vue-mf/clock', 'app-clock');
+    mountParcelHandler('@vue-mf/calendar', 'app-calendar');
   }, []);
 
-  const mountParcelClock = () => {
-    const parcelConfig = (window as any).System.import('@vue-mf/clock');
-    const domElement = document.getElementById('app-clock')!;
-    mountParcel(parcelConfig, { domElement });
-  };
-
-  const mountParcelCalendar = () => {
-    const parcelConfig = (window as any).System.import('@vue-mf/calendar');
-    const domElement = document.getElementById('app-calendar')!;
+  const mountParcelHandler = (appName: string, domId: string) => {
+    const parcelConfig = (window as any).System.import(appName);
+    const domElement = document.getElementById(domId)!;
     mountParcel(parcelConfig, { domElement });
   };
 

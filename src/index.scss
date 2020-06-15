@@ -72,13 +72,6 @@ a {
     filter: blur(2px);
   }
 
-  .link {
-    text-decoration: none;
-    @include themeify {
-      color: themed('base-color');
-    }
-  }
-
   .gitter {
     float: right;
 

@@ -418,19 +418,50 @@ export function fileApi(uri: string, params: any = {}) {
 * 链接不在新窗口打开
 
 ```typescript
-// 渲染设置
-const renderer = new marked.Renderer();
-// 设置标题，生成目录跳转需要
-renderer.heading = function(text: string, level: number) {
-  return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
-};
-// 设置链接
-renderer.link = function(href: string, title: string, text: string) {
-  return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
-};
-// 给图片添加类名，添加点击事件，方便点击查看大图
-renderer.image = function(src: string, alt: string) {
-  return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
+// marked 样式
+const markedHighlight = () => {
+  // 渲染设置
+  const renderer = new marked.Renderer();
+  // 设置标题，生成目录跳转需要
+  renderer.heading = function(text: string, level: number) {
+    return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
+  };
+  // 代码块
+  renderer.code = function(src: string, tokens: string) {
+    return `<pre>
+      <span class="languange">${tokens}</span>
+      <span class="code-wrapper"><code class="${tokens}">${highlight(
+      src,
+      tokens
+    )}</code></span>
+    </pre>`;
+  };
+  // 设置链接
+  renderer.link = function(href: string, title: string, text: string) {
+    return `<a href="${href}" class="link" title="${title}" target="_blank">${text}
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="external-link-alt" class="svg-inline--fa fa-external-link-alt fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path fill="currentColor" d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z">
+    </path></svg>
+    </a>`;
+  };
+  // 给图片添加类名，添加点击事件，方便点击查看大图
+  renderer.image = function(src: string, alt: string) {
+    return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
+  };
+
+  marked.setOptions({
+    renderer,
+    highlight,
+    langPrefix: '',
+    pedantic: false,
+    gfm: true,
+    tables: true,
+    breaks: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false,
+    xhtml: false,
+  });
 };
 ```
 

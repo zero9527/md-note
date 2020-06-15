@@ -48,6 +48,13 @@
 .container {
   padding-bottom: 12px;
 
+  :global .link {
+    text-decoration: none;
+    @include themeify {
+      color: themed('base-color');
+    }
+  }
+
   .item {
     position: relative;
     margin-top: 12px;

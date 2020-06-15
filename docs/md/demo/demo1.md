@@ -418,19 +418,46 @@ export function fileApi(uri: string, params: any = {}) {
 * 链接不在新窗口打开
 
 ```typescript
-// 渲染设置
-const renderer = new marked.Renderer();
-// 设置标题，生成目录跳转需要
-renderer.heading = function(text: string, level: number) {
-  return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
-};
-// 设置链接
-renderer.link = function(href: string, title: string, text: string) {
-  return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
-};
-// 给图片添加类名，添加点击事件，方便点击查看大图
-renderer.image = function(src: string, alt: string) {
-  return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
+// marked 样式
+const markedHighlight = () => {
+  // 渲染设置
+  const renderer = new marked.Renderer();
+  // 设置标题，生成目录跳转需要
+  renderer.heading = function(text: string, level: number) {
+    return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
+  };
+  // 代码块
+  renderer.code = function(src: string, tokens: string) {
+    return `<pre>
+      <span class="languange">${tokens}</span>
+      <span class="code-wrapper"><code class="${tokens}">${highlight(
+      src,
+      tokens
+    )}</code></span>
+    </pre>`;
+  };
+  // 设置链接
+  renderer.link = function(href: string, title: string, text: string) {
+    return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
+  };
+  // 给图片添加类名，添加点击事件，方便点击查看大图
+  renderer.image = function(src: string, alt: string) {
+    return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
+  };
+
+  marked.setOptions({
+    renderer,
+    highlight,
+    langPrefix: '',
+    pedantic: false,
+    gfm: true,
+    tables: true,
+    breaks: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false,
+    xhtml: false,
+  });
 };
 ```
 
