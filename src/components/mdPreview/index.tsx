@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import ReactDOM from 'react-dom';
 import marked from 'marked';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
@@ -9,8 +8,6 @@ import 'highlight.js/styles/atom-one-dark.css';
 // import 'highlight.js/styles/github.css';
 import MoveBtn, { PosParam } from './moveBtn';
 import styles from './styles.scss';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface MdPreviewProps {
   isEdit?: boolean;
@@ -59,8 +56,16 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     };
     // 代码块
     renderer.code = function(src: string, tokens: string) {
+      const codeCopyContent = encodeURI(src);
+      const iconContent = `<span>复制代码</span>
+      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy fa-w-14 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+      <path fill="currentColor" d="M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z"></path>
+      </svg>`;
       return `<pre>
-        <div class="languange">${tokens}</div>
+        <div class="languange">
+          <span>${tokens}</span>
+          <span class="copy-code" data-code="${codeCopyContent}">${iconContent}</span>
+        </div>
         <div class="code-wrapper"><code class="${tokens}">${highlight(
         src,
         tokens
@@ -69,7 +74,8 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     };
     // 设置链接
     renderer.link = function(href: string, title: string, text: string) {
-      return `<a href="${href}" class="link" title="${title}" target="_blank">${text}
+      const _title = title || href || '';
+      return `<a href="${href}" class="link" title="${_title}" target="_blank">${text}
       <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="external-link-alt" class="svg-inline--fa fa-external-link-alt fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
       <path fill="currentColor" d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z">
       </path></svg>

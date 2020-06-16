@@ -4,14 +4,14 @@ $padding-edge: 16px;
   .md-content {
     position: relative;
     padding: 10px 16px;
-    background-size: 22px 20px;
+    background-size: 22.1px 20px;
     background-position: center 0;
     @include themeify {
       color: themed('base-color');
       background-color: themed('bg-color');
       background-image: linear-gradient(
           90deg,
-          themed('border-color') 3%,
+          themed('border-color') 1%,
           rgba(0, 0, 0, 0) 3%
         ),
         linear-gradient(360deg, themed('border-color') 3%, rgba(0, 0, 0, 0) 3%);
@@ -84,12 +84,11 @@ $padding-edge: 16px;
 
     pre {
       position: relative;
-      // color: #abb2bf;
-      // background: #282c34;
       line-height: 0;
       transform: translatez(0);
       overflow: hidden;
       z-index: 0;
+      box-shadow: 0 0 4px rgba(100, 100, 100, 0.4);
       @include themeify {
         color: themed('base-color');
       }
@@ -112,16 +111,40 @@ $padding-edge: 16px;
       :global {
         // 语言
         .languange {
-          display: block;
+          display: flex;
+          justify-content: space-between;
           position: relative;
           margin: 0;
           padding: 0 $padding-edge;
           text-align: left;
           font-size: 90%;
           box-sizing: border-box;
+          line-height: 0;
           @include themeify {
             color: themed('gray-color');
             background-color: themed('bg-color-heavy');
+          }
+
+          .copy-code {
+            display: inline-flex;
+            padding: 4px 0;
+
+            &:hover {
+              cursor: pointer;
+              @include themeify {
+                color: themed('primary-color');
+              }
+
+              & > span {
+                display: inline-block;
+              }
+            }
+
+            & > span {
+              display: none;
+              margin-right: 4px;
+              line-height: 1;
+            }
           }
         }
 
@@ -211,7 +234,12 @@ $padding-edge: 16px;
 
     :global {
       .link {
+        position: relative;
+        padding-right: 14px;
         svg {
+          position: absolute;
+          top: 0;
+          right: 0;
           font-size: 10px;
           vertical-align: text-top;
         }

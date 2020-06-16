@@ -21,16 +21,16 @@
     z-index: 40;
     transition: margin-top 0.3s;
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
 
     &::before {
       content: '';
       height: 100%;
       position: absolute;
       top: 0;
-      left: 0;
-      border-left: 1px solid;
+      left: 0px;
       @include themeify {
-        border-color: themed('border-color');
+        border-left: 1px solid themed('border-color');
       }
     }
 
@@ -101,7 +101,7 @@
 
         ul {
           .cate-item {
-            padding-left: 40px;
+            padding-left: 32px;
           }
         }
       }
@@ -116,8 +116,7 @@
         position: relative;
         margin-bottom: 1px;
         padding: 4px 10px;
-        padding-left: 20px;
-        border-left: 1px solid transparent;
+        padding-left: 16px;
         cursor: pointer;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -126,8 +125,19 @@
 
         &:hover {
           @include themeify {
-            border-color: themed('primary-color');
             background: themed('border-color');
+          }
+
+          &::before {
+            content: '';
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0px;
+            border-left: 1px solid;
+            @include themeify {
+              border-color: themed('primary-color');
+            }
           }
         }
 
@@ -142,8 +152,19 @@
       .active {
         @include themeify {
           color: themed('primary-color');
-          border-color: themed('primary-color');
           background: themed('border-color');
+        }
+
+        &::before {
+          content: '';
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0px;
+          border-left: 1px solid;
+          @include themeify {
+            border-color: themed('primary-color');
+          }
         }
       }
     }
@@ -162,12 +183,12 @@
     }
 
     .catelist {
-      width: 250px;
+      width: 252px;
       margin-bottom: 10px;
       box-shadow: none;
 
       .cate-content {
-        width: 100%;
+        width: calc(100% + 20px);
         max-height: calc(100vh - 226px);
       }
     }

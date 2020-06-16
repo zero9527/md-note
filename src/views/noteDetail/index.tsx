@@ -99,24 +99,41 @@ const NoteDetail: React.FC = () => {
     const hash = location.hash.substr(1, location.hash.length);
     setTimeout(() => {
       scrollToView(decodeURI(hash));
-      addImgHandler();
+      onMdContentClick();
     }, 0);
   };
 
+  // 点击事件代理
+  const onMdContentClick = () => {
+    const mdContent = document.querySelector('#md-content') as HTMLElement;
+    mdContent.onclick = function(e: any) {
+      onCopyCode(e);
+      addImgHandler(e);
+    };
+  };
+
   // 图片点击新窗口打开
-  const addImgHandler = () => {
-    const imgs = document.querySelectorAll('#md-note .md-img');
-    Array.from(imgs).forEach((img: HTMLImageElement) => {
-      img.onclick = function() {
-        window.open(img.src);
-        // updatePicPreview({
-        //   show: true,
-        //   src: img.src,
-        //   alt: img.alt,
-        //   onClose: onClosePicPreview,
-        // });
-      };
-    });
+  const addImgHandler = (e: any) => {
+    const imgEl: HTMLImageElement | null = e.target?.closest('.md-img');
+    if (imgEl) {
+      window.open(imgEl.src);
+      // updatePicPreview({
+      //   show: true,
+      //   src: img.src,
+      //   alt: img.alt,
+      //   onClose: onClosePicPreview,
+      // });
+    }
+  };
+
+  // 复制代码
+  const onCopyCode = (e: any) => {
+    // TODO: 复制到剪贴板
+    const copyCodeEl: HTMLElement | null = e.target?.closest('.copy-code');
+    if (copyCodeEl && copyCodeEl.dataset.code) {
+      const realCode = decodeURI(copyCodeEl.dataset.code);
+      console.log(realCode);
+    }
   };
 
   // 视图滚动到对应标题位置
