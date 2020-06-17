@@ -136,12 +136,12 @@ $padding-edge: 16px;
               }
 
               & > span {
-                display: inline-block;
+                visibility: visible;
               }
             }
 
             & > span {
-              display: none;
+              visibility: hidden;
               margin-right: 4px;
               line-height: 1;
             }

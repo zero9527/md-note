@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory, useParams, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import ClipboardJS from 'clipboard';
 import useGlobalModel from '@/model/useGlobalModel';
 import useNoteModel from '@/model/useNoteModel';
 import useScroll from '@/utils/useScroll';
@@ -37,6 +38,7 @@ const NoteDetail: React.FC = () => {
   const [mdtext, setMdtext] = useState<string | undefined>();
   const [showScroll2Top, setShowScroll2Top] = useState(false);
   const [defaultCateActive, setDefaultCateActive] = useState<string>();
+  const clipboard = useRef<ClipboardJS>();
 
   const onClosePicPreview = () => {
     updatePicPreview((pre) => ({ ...pre, show: false }));
@@ -51,6 +53,7 @@ const NoteDetail: React.FC = () => {
 
   useEffect(() => {
     init();
+    // document.querySelector('#md-content')?.click();
   }, []);
 
   useEffect(() => {
@@ -110,6 +113,15 @@ const NoteDetail: React.FC = () => {
       onCopyCode(e);
       addImgHandler(e);
     };
+    // 需要初始化一次，不然要点击两次才能复制
+    const copyCodeElems = document.querySelectorAll(
+      '#md-content .copy-code'
+    ) as NodeList;
+    Array.from(copyCodeElems).forEach((el: HTMLElement) => {
+      el.onmouseenter = function(e: any) {
+        onCopyCode(e);
+      };
+    });
   };
 
   // 图片点击新窗口打开
@@ -128,12 +140,28 @@ const NoteDetail: React.FC = () => {
 
   // 复制代码
   const onCopyCode = (e: any) => {
-    // TODO: 复制到剪贴板
     const copyCodeEl: HTMLElement | null = e.target?.closest('.copy-code');
-    if (copyCodeEl && copyCodeEl.dataset.code) {
-      const realCode = decodeURI(copyCodeEl.dataset.code);
-      console.log(realCode);
-    }
+    if (!copyCodeEl || !copyCodeEl.dataset.code) return;
+
+    const text = copyCodeEl.querySelector('span')!;
+    const realCode = decodeURI(copyCodeEl.dataset.code);
+
+    clipboard.current = new ClipboardJS(copyCodeEl, {
+      action: () => 'copy',
+      text: () => realCode,
+    });
+    clipboard.current.on('success', () => restoreText('复制成功'));
+    clipboard.current.on('error', () =>
+      restoreText('<span style="color:red;">复制失败</span>')
+    );
+
+    const restoreText = (innerHTML: string) => {
+      text.innerHTML = innerHTML;
+      clipboard.current?.destroy();
+      setTimeout(() => {
+        text.innerHTML = '复制代码';
+      }, 2000);
+    };
   };
 
   // 视图滚动到对应标题位置

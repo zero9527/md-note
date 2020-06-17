@@ -21,7 +21,6 @@
     z-index: 40;
     transition: margin-top 0.3s;
     -webkit-tap-highlight-color: transparent;
-    overflow: hidden;
 
     &::before {
       content: '';
@@ -186,6 +185,7 @@
       width: 252px;
       margin-bottom: 10px;
       box-shadow: none;
+      overflow: hidden;
 
       .cate-content {
         width: calc(100% + 20px);
