@@ -90,25 +90,31 @@
         color: themed('base-color');
       }
 
-      > ul {
-        margin: 0;
-        margin-bottom: 6px;
-
-        > .cate-item {
-          font-weight: bold;
-        }
-
-        ul {
-          .cate-item {
-            padding-left: 32px;
-          }
-        }
-      }
-
       ul {
         padding-left: 20px;
         padding-right: 0;
         padding-left: 0;
+
+        &.header-2 {
+          margin: 0;
+          margin-bottom: 6px;
+
+          > .cate-item {
+            font-weight: bold;
+          }
+        }
+
+        &.header-3 {
+          > .cate-item {
+            padding-left: 32px;
+          }
+        }
+
+        &.header-4 {
+          > .cate-item {
+            padding-left: 44px;
+          }
+        }
       }
 
       .cate-item {

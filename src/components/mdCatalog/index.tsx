@@ -107,23 +107,41 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
       const cat3Arr = cate2.split('\n### ');
       cat3Arr.shift();
       const cat2Child: CatalogItem[] = [];
-
-      cat3Arr.forEach((cate3) => {
-        // 三级目录
-        const tempcate3 = cate3.substring(0, cate3.indexOf('\n')).trim();
-        cat2Child.push({
-          id: tempcate3,
-          header: `catelog-${tempcate3}`,
-          label: tempcate3,
-        });
-      });
-
       const cate2Item: CatalogItem = {
         id: tempcate2,
         header: `catelog-${tempcate2}`,
         label: tempcate2,
         child: [],
       };
+
+      cat3Arr.forEach((cate3) => {
+        // 三级目录
+        const tempcate3 = cate3.substring(0, cate3.indexOf('\n')).trim();
+        const cat4Arr = cate3.split('\n#### ');
+        cat4Arr.shift();
+        const cat3Child: CatalogItem[] = [];
+        const cate3Item: CatalogItem = {
+          id: tempcate3,
+          header: `catelog-${tempcate3}`,
+          label: tempcate3,
+          child: [],
+        };
+
+        cat4Arr.forEach((cate4) => {
+          // 四级目录
+          const tempcate4 = cate4.substring(0, cate4.indexOf('\n')).trim();
+          cat3Child.push({
+            id: tempcate4,
+            header: `catelog-${tempcate4}`,
+            label: tempcate4,
+          });
+        });
+
+        if (cat3Child.length) {
+          cate3Item.child = cat3Child;
+        }
+        cat2Child.push({ ...cate3Item });
+      });
 
       allcateArr.push(tempcate2);
       if (cat2Child.length > 0) {
@@ -172,6 +190,20 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     document.querySelector('#md-note')?.classList[type]('blur');
   };
 
+  const renderCatelog = useCallback(
+    (_cate: CatalogItem[], level: number) => {
+      return _cate.map((cate: CatalogItem, index: number) => (
+        <ul className={styles[`header-${level}`]} key={cate.id}>
+          {renderCateItem(cate, index)}
+          {cate.child && cate.child.length > 0 && (
+            <li>{renderCatelog(cate.child, level + 1)}</li>
+          )}
+        </ul>
+      ));
+    },
+    [cate, cateActive]
+  );
+
   const renderCateItem = useCallback(
     (cateItem: CatalogItem, index: number) => {
       const className = `${styles['cate-item']} ${
@@ -198,6 +230,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
       <p>一级标题'#'为文章名，</p>
       <p>二级标题'##'为一级目录，</p>
       <p>三级标题'###'为三级目录</p>
+      <p>四级标题'####'为四级目录</p>
     </div>
   );
 
@@ -232,22 +265,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
           目录: {title}
         </section>
         <section className={styles['cate-content']}>
-          {cate.length > 0 ? (
-            cate.map((cate2: CatalogItem, index2: number) => (
-              <ul key={cate2.id}>
-                {renderCateItem(cate2, index2)}
-                {cate2.child && cate2.child?.length > 0 && (
-                  <ul>
-                    {cate2.child?.map((cate3: CatalogItem, index3: number) =>
-                      renderCateItem(cate3, index3)
-                    )}
-                  </ul>
-                )}
-              </ul>
-            ))
-          ) : (
-            <NoCate />
-          )}
+          {cate.length > 0 ? renderCatelog(cate, 2) : <NoCate />}
         </section>
       </div>
       {props.children}
