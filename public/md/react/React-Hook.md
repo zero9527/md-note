@@ -219,14 +219,13 @@ const Counter: React.FC = () => {
 export default Counter;
 ```
 
-## 自定义 Hook
-实现几个常用的 自定义 Hook
+## 4、一些自定义 Hook
 
 ### usePrevState
-这个其实 React 官网有说过，后期可能会成为官方api，这里只是简单实现
-
-```typescript
-import React, { useRef, useEffect, useState } from 'react';
+获取上一次的值
+```ts
+// src/utils/usePrevState.ts
+import { useRef, useEffect, useState } from 'react';
 
 function usePrevState<T>(state: T) {
   const countRef = useRef<any>(null);
@@ -244,42 +243,166 @@ function usePrevState<T>(state: T) {
 export default usePrevState;
 ```
 
-使用：
+### useDebounce
+函数防抖
+```js
+import { useCallback } from 'react';
 
-```typescript
-import React, { useState } from 'react';
-import usePrevState from './usePrevState';
+// 防抖
+const useDebounce = (callback: (...param: any) => void, delay: number = 16) => {
+  let timer: NodeJS.Timeout;
+  let lastTime: number = 0;
 
-const Count2: React.FC = props => {
-  const [count, setCount] = useState<number>(0);
-  const prevCount = usePrevState<number>(count);
+  const runCallback = (...args: any) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      callback.apply(null, args);
+    }, delay);
+  };
 
-  return (
-    <div>
-      <p>prevCount: {prevCount}</p>
-      <p>count: {count}</p>
-      <button type="button" onClick={() => setCount(prev => prev + 1)}>
-        increment
-      </button>
-      <button type="button" onClick={() => setCount(prev => prev - 1)}>
-        decrement
-      </button>
-    </div>
-  );
+  return useCallback(function(...param) {
+    const thisTime = new Date().getTime();
+    if (thisTime - lastTime > delay && lastTime !== 0) {
+      lastTime = 0;
+    } else {
+      lastTime = thisTime;
+    }
+    runCallback(...param);
+  }, []);
 };
 
-export default Count2;
+export default useDebounce;
+```
+
+### useThrottle
+函数节流
+```js
+import { useCallback } from 'react';
+
+// 节流
+const useThrottle = (callback: () => any, delay: number = 16) => {
+  let lastTime: number = 0;
+  let canCallback = true;
+
+  const restore = (time: number) => {
+    lastTime = time;
+    canCallback = false;
+  };
+
+  const runCallback = () => {
+    callback();
+  };
+
+  return useCallback((args?: any) => {
+    const thisTime = new Date().getTime();
+    if (canCallback && thisTime - lastTime > delay) {
+      restore(thisTime);
+      runCallback.apply(null, args);
+      setTimeout(() => {
+        canCallback = true;
+      }, delay);
+      return;
+    }
+  }, []);
+};
+
+export default useThrottle;
+```
+
+### useScroll
+滚动
+
+使用：见 `src/components/header/index.tsx`
+
+```ts
+// src/utils/useScroll.ts
+import { useEffect, useState } from 'react';
+import usePrevState from './usePrevState';
+
+// 监听window滚动
+const useScroll = () => {
+  const [scrollTop, setScrollTop] = useState(0);
+  const prevScrollTop = usePrevState(scrollTop);
+
+  useEffect(() => {
+    onScroll();
+    window.addEventListener('scroll', onScroll, false);
+    return () => {
+      window.removeEventListener('scroll', onScroll, false);
+    };
+  }, []);
+
+  const onScroll = () => {
+    const scTop = document.body.scrollTop || document.documentElement.scrollTop;
+    setScrollTop(scTop || 0);
+  };
+
+  return {
+    prevScrollTop,
+    scrollTop,
+  };
+};
+
+export default useScroll;
+```
+
+### useWindowClick
+点击，可以代替 `clickOutside` 点击外部使用
+
+使用：见 `src/components/Scroll2Top/index.tsx`
+
+```ts
+import { useEffect, useRef } from 'react';
+
+// 添加全局点击事件，底层元素阻止冒泡则不会触发
+function useWindowClick(callback: () => void) {
+  const isReady = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('click', onWindowClick, false);
+    };
+  }, []);
+
+  const addListener = () => {
+    isReady.current = true;
+    window.addEventListener('click', onWindowClick, false);
+  };
+
+  const removeListener = () => {
+    isReady.current = false;
+    window.removeEventListener('click', onWindowClick, false);
+  };
+
+  const onWindowClick = () => {
+    if (typeof callback !== 'function') {
+      return console.warn('callback 不是函数！');
+    }
+    if (callback && isReady) {
+      callback();
+      removeListener();
+    }
+  };
+
+  return {
+    addListener,
+    removeListener,
+  };
+}
+
+export default useWindowClick;
 ```
 
 ### useFetchData
+
 这个是之前看一位大佬的 [文章](https://juejin.im/post/5e03fe81f265da33cd03c0fd) 05，里面分享的另一篇国外的 [文章](https://www.robinwieruch.de/react-hooks-fetch-data)，然后自己根据实际使用改的
 
 项目使用的是 [UmiJS](https://umijs.org/zh/) 框架，自带的 request，
 
-> 使用 axios 的话也是差不多的，把 fetchFn 类型改为<br />
-> `fetchFn: () => Promise<AxiosResponse>;` 然后，请求函数改为 axios 相应的写法就可以了
+> 使用 axios 的话也是差不多的，把 fetchFn 类型改为 <br />`fetchFn: () => Promise<AxiosResponse>;` 然后，请求函数改为 axios 相应的写法就可以了
 
-参数说明：
+说明：
+
 * fetchFn: 请求函数
 * deps: 更新依赖，重新执行 fetchFn
 * isReady: fetchFn 执行条件
@@ -306,11 +429,10 @@ export type ResponseType = {
  * @example 使用时最好这样: useFetchData<{}>，方便给 resData 提供类型
  * @type <S>：在 返回数据格式 基础上扩展的字段，如总数字段等
  * @param fetchFn {*} 使用 request 封装的请求函数
- * @param deps 更新依赖，重新执行
- * @param isReady 可以获取数据标志，默认直接获取数据
+ * @param deps {*} 更新依赖，重新执行
+ * @param isReady {*} 可以获取数据标志，默认直接获取数据
  *
  * @returns isLoading: 是否正在请求
- * @returns isError: 是否出错
  * @returns resData: 请求返回的数据
  * @returns fetchData: 请求函数，供外部调用手动请求数据
  */
@@ -363,22 +485,6 @@ export default function useFetchData<S = ResponseType>({
 }
 ```
 
-使用：
-
-```typescript
-const { isLoading, resData, fetchData } = useFetchData<{ count: number }>({
-  fetchFn: () => getAccountList(searchParams),
-  deps: [searchParams],
-  isReady: Boolean(searchParams.pid),
-});
-
-// getAccountList 是这样的：
-export function getAccountList(params: AccountListRequestProps) {
-  return request('/accountList', {
-    params,
-  });
-}
-```
 
 ## 与 Hook 相关的状态管理
 [hox](https://www.npmjs.com/package/hox)

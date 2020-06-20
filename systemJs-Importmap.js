@@ -15,8 +15,8 @@ const maplist = [
   {
     name: '@vue-mf/clock',
     entry: isEnvDev
-      ? '//zero9527.github.io/clock/js/app.js' // '//localhost:2333/js/app.js'
-      : '//zero9527.github.io/clock/js/app.js',
+      ? '//zero9527.site/vue-clock/js/app.js' // '//localhost:2333/js/app.js'
+      : '//zero9527.site/vue-clock/js/app.js',
   },
 ];
 

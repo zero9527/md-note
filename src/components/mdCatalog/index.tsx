@@ -94,6 +94,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     }
   };
 
+  // 生成目录 TODO：待优化逻辑
   const generate = () => {
     let allcateArr: string[] = [];
     const cateList: CatalogItem[] = [];

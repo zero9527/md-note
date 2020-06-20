@@ -4,7 +4,17 @@ import StickyRight from '@/components/StickyRight';
 import { mountParcel } from '@/index';
 import styles from './styles.scss';
 
-const RightPanel: React.FC = () => {
+export interface RightPanelProps {
+  tags: string[];
+  currentTag: string;
+  onTagChange: (tag: string) => void;
+}
+
+const RightPanel: React.FC<RightPanelProps> = ({
+  tags,
+  currentTag,
+  onTagChange,
+}) => {
   const { scrollTop, prevScrollTop } = useScroll();
 
   useEffect(() => {
@@ -17,6 +27,22 @@ const RightPanel: React.FC = () => {
     const domElement = document.getElementById(domId)!;
     mountParcel(parcelConfig, { domElement });
   };
+
+  // 标签
+  const Tags = () => (
+    <div className={styles.tags}>
+      <span>标签：</span>
+      {tags.map((tag: string, index: number) => (
+        <span
+          key={tag}
+          className={`${styles.tag} ${tag === currentTag ? styles.active : ''}`}
+          onClick={() => onTagChange(index === 0 ? '' : tag)}
+        >
+          {index === 0 ? '全部' : tag}
+        </span>
+      ))}
+    </div>
+  );
 
   const Beian = () => (
     <a href="http://www.beian.miit.gov.cn/" target="__blank" title="备案号">
@@ -42,7 +68,8 @@ const RightPanel: React.FC = () => {
     >
       <div id="app-clock" className={styles['single-spa-clock']} />
       <div id="app-calendar" className={styles['single-spa-calendar']} />
-      <div className={styles.beian}>
+      <Tags />
+      <div className={styles.footer}>
         <Beian />
         <CopyRight />
       </div>

@@ -39,6 +39,7 @@
   .single-spa-calendar {
     width: 250px;
     min-height: 358px;
+    margin-bottom: 20px;
     @include themeify {
       background: themed('bg-color');
     }
@@ -137,11 +138,43 @@
       }
     }
   }
+
+  .tags {
+    width: 250px;
+    display: block;
+    margin-bottom: 20px;
+
+    > span {
+      @include themeify {
+        color: themed('desc-color');
+      }
+    }
+
+    .tag {
+      padding-right: 10px;
+      word-break: break-word;
+      cursor: pointer;
+      @include themeify {
+        color: themed('gray-color');
+      }
+
+      &:hover {
+        @include themeify {
+          color: themed('primary-color');
+        }
+      }
+
+      &.active {
+        @include themeify {
+          color: themed('primary-color');
+        }
+      }
+    }
+  }
 }
 
-.beian {
-  padding: 20px 0;
-  text-align: center;
+.footer {
+  margin-bottom: 20px;
   @include themeify {
     color: themed('gray-color');
   }

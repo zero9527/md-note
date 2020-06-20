@@ -1,23 +1,23 @@
 {
   "files": {
     "commons.css": "./css/commons.6160f695.chunk.css",
-    "commons.js": "./js/commons.56302c33.chunk.js",
-    "main.css": "./css/main.a8d572a0.css",
+    "commons.js": "./js/commons.4fe59735.chunk.js",
+    "main.css": "./css/main.aaac85de.css",
     "main.js": "./js/app.js",
-    "css/2.858a664e.chunk.css": "./css/2.858a664e.chunk.css",
-    "js/2.a2fd643a.chunk.js": "./js/2.a2fd643a.chunk.js",
-    "css/3.fab66520.chunk.css": "./css/3.fab66520.chunk.css",
-    "js/3.7eb917e9.chunk.js": "./js/3.7eb917e9.chunk.js",
+    "css/2.4e07785d.chunk.css": "./css/2.4e07785d.chunk.css",
+    "js/2.1cf65988.chunk.js": "./js/2.1cf65988.chunk.js",
+    "css/3.e3abfa6e.chunk.css": "./css/3.e3abfa6e.chunk.css",
+    "js/3.c4d789fe.chunk.js": "./js/3.c4d789fe.chunk.js",
     "css/4.9fbeb06c.chunk.css": "./css/4.9fbeb06c.chunk.css",
-    "js/4.086a3411.chunk.js": "./js/4.086a3411.chunk.js",
+    "js/4.bf209fbb.chunk.js": "./js/4.bf209fbb.chunk.js",
     "index.html": "./index.html",
-    "js/4.086a3411.chunk.js.LICENSE.txt": "./js/4.086a3411.chunk.js.LICENSE.txt",
+    "js/4.bf209fbb.chunk.js.LICENSE.txt": "./js/4.bf209fbb.chunk.js.LICENSE.txt",
     "js/app.js.LICENSE.txt": "./js/app.js.LICENSE.txt",
-    "precache-manifest.c4a2454757dde2d1099332664fb78cb4.js": "./precache-manifest.c4a2454757dde2d1099332664fb78cb4.js",
+    "precache-manifest.9f1f074d80bba38688e7a47d7777aee1.js": "./precache-manifest.9f1f074d80bba38688e7a47d7777aee1.js",
     "service-worker.js": "./service-worker.js"
   },
   "entrypoints": [
-    "css/main.a8d572a0.css",
+    "css/main.aaac85de.css",
     "js/app.js"
   ]
 }

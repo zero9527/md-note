@@ -20,13 +20,8 @@ const NoteDetail: React.FC = () => {
   const { stickyRightStyle } = useGlobalModel((modal) => [
     modal.stickyRightStyle,
   ]);
-  const {
-    getNoteById,
-    updateNoteById,
-    fetchNoteByName,
-  } = useNoteModel((modal) => [
+  const { getNoteById, fetchNoteByName } = useNoteModel((modal) => [
     modal.getNoteById,
-    modal.updateNoteById,
     modal.fetchNoteByName,
   ]);
   const { tag, name } = useParams<{ tag: string; name: string }>();
@@ -72,7 +67,6 @@ const NoteDetail: React.FC = () => {
       const res: any = await fetchNoteByName(tag, name);
       if (res?.code === 0) {
         if (res.data.substring(0, 20).includes('<!DOCTYPE html>')) return;
-        updateNoteById(name, res.data);
         setMdtext(res.data);
       } else {
         console.log('数据没有了！');

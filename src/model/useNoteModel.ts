@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createModel } from 'hox';
 import fileApi, { getNoteListConfig } from '@/api/file';
 import { dateFormate } from '@/utils';
+import FastSort from '@/utils/fastSort';
 
 // 标签
 export type NoteTag =
@@ -41,8 +42,8 @@ const useNoteModel = () => {
   useEffect(() => {
     if (noteList[0]?.name === '') {
       setLoading(true);
-      getNoteListConfig().then((res) => {
-        updateNoteList(res);
+      getNoteListConfig().then((res: any) => {
+        updateNoteList(FastSort<NoteItem>(res, 'create_time').reverse());
         setLoading(false);
       });
     }
@@ -66,33 +67,9 @@ const useNoteModel = () => {
     return null;
   };
 
-  // 更新某条数据
-  const updateNoteById = (name: string, data: any) => {
-    // 新增
-    if (!name) name = `${Date.now()}`;
-
-    setNoteList((list: NoteItem[]) => {
-      const itemIndex = list.findIndex((note: NoteItem) => note.name === name);
-      const date = dateFormate({ timeStamp: Date.now(), splitChar: '/' });
-
-      // if (itemIndex < 0) {
-      //   list.push({ id, data, date, desc: getTitleByData(data) });
-      // } else {
-      //   list[itemIndex] = { id, data, date, desc: getTitleByData(data) };
-      // }
-
-      return list;
-    });
-  };
-
   // 更新数据
   const updateNoteList = (data: any) => {
     setNoteList(data);
-  };
-
-  const getTitleByData = (data: string) => {
-    if (!data.includes('\n')) return data;
-    return data.substring(0, data.indexOf('\n'));
   };
 
   const getNoteList = () => {
@@ -104,7 +81,6 @@ const useNoteModel = () => {
     noteList,
     getNoteList,
     getNoteById,
-    updateNoteById,
     updateNoteList,
     fetchNoteByName,
   };

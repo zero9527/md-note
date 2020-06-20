@@ -52,7 +52,8 @@ const MdPreview: React.FC<MdPreviewProps> = ({
     const renderer = new marked.Renderer();
     // 设置标题，生成目录跳转需要
     renderer.heading = function(text: string, level: number) {
-      return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
+      const realId = text.replace('<code>', '`').replace('</code>', '`');
+      return `<h${level} class="heading-h${level}" id="${realId}" title="${realId}"><span>${text}</span></h${level}>`;
     };
     // 代码块
     renderer.code = function(src: string, tokens: string) {

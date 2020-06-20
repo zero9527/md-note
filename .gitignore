@@ -10,7 +10,7 @@
 /build
 
 # 部署配置
-/scripts/deploy/deploy-config.json
+zr-deploy-config.json
 *.zip
 
 # misc

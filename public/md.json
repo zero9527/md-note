@@ -55,7 +55,7 @@
   },
   {
     "tag": "node.js",
-    "name": "deploy.md",
+    "name": "zr-deploy.md",
     "title": "node.js写一个前端项目部署脚本",
     "create_time": "2020/06/01"
   },

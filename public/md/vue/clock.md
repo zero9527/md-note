@@ -5,7 +5,7 @@
 
 [源码](https://github.com/zero9527/clock)
 
-在线[预览](https://zero9527.github.io/clock/)
+在线[预览](http://zero9527.site/vue-clock/)
 
 ![截图](https://s1.ax1x.com/2020/06/14/tzHma4.png)
 

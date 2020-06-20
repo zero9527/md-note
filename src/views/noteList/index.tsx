@@ -1,40 +1,78 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { KeepAliveAssist } from 'keep-alive-comp';
 import { Link } from 'react-router-dom';
 import useGlobalModel from '@/model/useGlobalModel';
-import useNoteModel from '@/model/useNoteModel';
+import useNoteModel, { NoteItem } from '@/model/useNoteModel';
 import useScroll from '@/utils/useScroll';
 import Header from '@/components/Header';
 import Tools from '@/components/Tools';
 import RightPanel from '@/components/RightPanel';
 import Scroll2Top from '@/components/Scroll2Top';
-import useDebounce from '@/utils/useDebounce';
 import styles from './styles.scss';
 
 interface NoteListProps extends KeepAliveAssist {}
 
 // 列表
 const NoteList: React.FC<NoteListProps> = (props) => {
-  const { loading, noteList } = useNoteModel();
   const { scrollTop } = useScroll();
+  const { loading, noteList: fullNoteList } = useNoteModel();
   const { stickyRightStyle } = useGlobalModel((modal) => [
     modal.stickyRightStyle,
   ]);
+  // 当前noteList
+  const [noteList, setNoteList] = useState<NoteItem[]>([]);
+  // 当前标签
+  const [currentTag, setCurrentTag] = useState('');
 
   useEffect(() => {
     restore();
   }, []);
 
+  useEffect(() => {
+    setNoteList(fullNoteList);
+  }, [fullNoteList]);
+
+  useEffect(() => {
+    if (currentTag) {
+      setNoteList(() => {
+        return fullNoteList.filter((note) => note.tag === currentTag);
+      });
+    } else {
+      setNoteList(fullNoteList);
+    }
+  }, [currentTag]);
+
   const restore = () => {
     const scTop = props.scrollRestore!();
+    const _state = props.stateRestore!();
+    setNoteList(_state?.noteList || []);
+    setCurrentTag(_state?.currentTag || '');
     setTimeout(() => {
       document.body.scrollTop = scTop || 0;
       document.documentElement.scrollTop = scTop || 0;
     }, 0);
   };
 
+  // 标签
+  const tags = useMemo(() => {
+    if (!fullNoteList) return [];
+    const tags: string[] = [''];
+    fullNoteList[0]?.name &&
+      fullNoteList?.forEach((noteItem) => {
+        if (!tags.includes(noteItem.tag)) tags.push(noteItem.tag);
+      });
+    return tags;
+  }, [fullNoteList]);
+
+  const onTagChange = (tag: string) => {
+    setCurrentTag(tag);
+  };
+
   const toDetailClick = () => {
-    props.beforeRouteLeave!(scrollTop, {});
+    props.beforeRouteLeave!(scrollTop, {
+      noteList,
+      currentTag,
+    });
   };
 
   const showScroll2Top = useMemo(() => {
@@ -88,12 +126,16 @@ const NoteList: React.FC<NoteListProps> = (props) => {
               <ReachBottom />
             </>
           ) : (
-            <div>没有数据</div>
+            <ReachBottom />
           )}
         </section>
         {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
       </main>
-      <RightPanel />
+      <RightPanel
+        tags={tags}
+        currentTag={currentTag}
+        onTagChange={onTagChange}
+      />
     </>
   );
 };

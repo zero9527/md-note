@@ -5,8 +5,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
-    "deploy": "node deploy/index.js"
+    "test": "node scripts/test.js --env=jsdom"
   },
   "sideEffects": false,
   "license": "MIT",
@@ -93,9 +92,7 @@
     "jest-watch-typeahead": "0.4.2",
     "mini-css-extract-plugin": "0.9.0",
     "node-sass": "^4.13.1",
-    "node-ssh": "^8.0.0",
     "optimize-css-assets-webpack-plugin": "5.0.3",
-    "ora": "^4.0.3",
     "pnp-webpack-plugin": "1.6.0",
     "postcss-flexbugs-fixes": "4.1.0",
     "postcss-loader": "3.0.0",
@@ -121,8 +118,7 @@
     "webpack-dev-server": "3.10.2",
     "webpack-manifest-plugin": "2.2.0",
     "workbox-webpack-plugin": "4.3.1",
-    "yarn": "^1.22.1",
-    "zip-local": "^0.3.4"
+    "yarn": "^1.22.1"
   },
   "jest": {
     "roots": [

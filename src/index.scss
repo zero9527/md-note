@@ -65,6 +65,7 @@ a {
 
 :global {
   #md-note {
+    min-height: 100vh;
     @include themeify {
       color: themed('base-color');
       background: themed('bg-color-heavy');
