@@ -2,206 +2,607 @@
 
 ## 前言
 大概说一下：
-* React+Hook+TypeScript
+* React+Hook+TypeScript+single-spa
 * scss+css-module
 * markdown 渲染使用 [marked.js](https://marked.js.org)，语法高亮使用 [highlight.js](https://highlightjs.org/) 
-* 图片导出使用 [html2canvas](http://html2canvas.hertzen.com/)，纯前端操作（导出markdown同）
-* 编辑器使用 [codemirror.js](https://codemirror.net/)
-* 黑色模式
+* 主题切换
 
-> **！注意：**<br>
-> 不提供数据存储服务，仅使用浏览器缓存
 
 ## 一些预览图
-![首页](https://s1.ax1x.com/2020/05/31/t1fO56.png)
+- PC
 
-详情`PC布局`
+![首页PC](https://s1.ax1x.com/2020/06/14/tzHQR1.png)
+![详情PC](https://s1.ax1x.com/2020/06/15/NPM0je.png)
 
-![详情PC布局](https://s1.ax1x.com/2020/05/31/t1R4oV.png)
-![详情移动端布局](https://s1.ax1x.com/2020/05/31/t1f7r9.png)
+- 移动端
 
-<!-- 编辑器`PC布局`
-
-![编辑器PC布局](./images/editor-pc.png) -->
-
-<!-- 编辑器`移动端布局`
-
-![编辑器移动端布局](https://s1.ax1x.com/2020/05/31/t1RXe1.png) -->
-<!-- ![详情移动端布局](./images/detail-mobile.png)
-![编辑器移动端布局](./images/editor-mobile.png) -->
+![首页移动端](https://s1.ax1x.com/2020/06/14/tzHIyV.md.png)
+![详情移动端](https://s1.ax1x.com/2020/06/15/NPMDnH.md.png)
 
 
 ## 1、首页
 滚动位置恢复用 [这个库](https://www.npmjs.com/package/keep-alive-comp)，之前自己写的，已发布 `npm`;
 配合 `useScroll` 很简单
 
+### 1.1 tag 是分类（目录名）
+public/md/目录名
+
+public/md/
+```
+.
+├── demo
+│   └── demo1.md
+├── js
+│   ├── amd-cmd.md
+│   ├── evt.md
+│   ├── js-review.md
+│   ├── promise.md
+│   └── scroll-load.md
+├── mini-program
+│   └── movie-db.md
+├── node.js
+│   ├── cmd-line.md
+│   ├── directory-1.md
+│   ├── directory-2.md
+│   └── zr-deploy.md
+├── others
+│   ├── create-react-app_single-spa.md
+│   ├── vue-cli3_single-spa.md
+│   └── web-component.md
+├── react
+│   ├── React-Hook.md
+│   ├── keep-alive-comp.md
+│   ├── movie-db-web.md
+│   ├── next-js.md
+│   ├── react-keep-alive.md
+│   └── react-ts-template.md
+└── vue
+    ├── calendar.md
+    ├── clock.md
+    └── uni-app.md
+```
+
+### 1.2 md.json 是列表描述文件
+```json
+[
+  {
+    "tag": "demo",
+    "name": "demo1.md",
+    "title": "MD-Note说明",
+    "create_time": "2019/10/01 00:00:00"
+  },
+]
+```
+
+### 1.3 状态恢复
+
 ```jsx
-import React, { useEffect, useMemo } from 'react';
-import { KeepAliveAssist } from 'keep-alive-comp';
-import useNoteModel from '@/model/useNoteModel';
-import StickyRight from '@/components/stickyRight';
-import useScroll from '@/utils/useScroll';
-import Header from '@/components/header';
-import Tools from '@/components/Tools';
-import Scroll2Top from '@/components/Scroll2Top';
+// src/views/NoteList/index.tsx
+
+useEffect(() => {
+  restore();
+}, []);
+
+const restore = () => {
+  const scTop = props.scrollRestore!();
+  const _state = props.stateRestore!();
+  setNoteList(_state?.noteList || []);
+  setCurrentTag(_state?.currentTag);
+  setTimeout(() => {
+    document.body.scrollTop = scTop || 0;
+    document.documentElement.scrollTop = scTop || 0;
+  }, 0);
+};
+
+// 离开前保存状态
+const toDetailClick = () => {
+  props.beforeRouteLeave!(scrollTop, {
+    noteList,
+    currentTag,
+  });
+};
+```
+
+### 1.4 标签提取
+```js
+// 标签
+const tags: TagItem[] = useMemo(() => {
+  if (!fullNoteList) return [];
+  const _tags: TagItem[] = [];
+  fullNoteList[0]?.name &&
+    fullNoteList?.forEach((noteItem) => {
+      const hasItem: TagItem | undefined = _tags.find(
+        (item) => item.name === noteItem.tag
+      );
+      if (hasItem) {
+        hasItem.count++;
+      } else {
+        _tags.push({ name: noteItem.tag, count: 1 });
+      }
+    });
+  return [{ name: '全部', count: fullNoteList.length }, ..._tags];
+}, [fullNoteList]);
+
+const onTagChange = (tag: TagItem | undefined) => {
+  setCurrentTag(tag);
+};
+
+```
+
+
+## 2、主题切换
+`scss` 函数实现，通过
+
+- 在 `html` 设置 `data-theme` 
+- 然后 `scss` 生成的对应 `data-theme` 值的样式，
+- 匹配到就显示对应的样式配置
+- `sass-resources-loader` 自动引入，不用每次手动引入
+- 使用的地方，`@include` `@mixin 函数名`，样式名不变，值改为 `themed(配置的变量)`， 如 `color: themed('primary-color');`
+
+
+### 2.1 定义主题内容
+
+```scss
+// src/theme/index.scss
+$mask-bg: rgba(50, 50, 50, 0.6);
+$box-shadow: 0px 1px 1px -2px rgba(0, 0, 0, 0.8);
+
+$base: (
+  base-color: #3e3e3e,
+  desc-color: #666,
+  second-color: #999,
+  gray-color: #cccccc,
+  border-color: #e9e9e9,
+  bg-color: #fefefe,
+  bg-color-light: #f6f6f6,
+  bg-color-heavy: #f1f1f1,
+  linear-background-0:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
+  linear-background-180:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
+);
+
+$blue: (
+  primary-color: rgba(80, 152, 228, 0.8),
+  primary-color-light: rgba(80, 152, 228, 0.6),
+  primary-color-heavy: rgba(80, 152, 228, 1),
+  primary-bg-color: rgba(80, 152, 228, 0.05),
+);
+
+$red: (
+  primary-color: rgba(228, 82, 80, 0.8),
+  primary-color-light: rgba(228, 82, 80, 0.6),
+  primary-color-heavy: rgba(228, 82, 80, 1),
+  primary-bg-color: rgba(228, 82, 80, 0.05),
+);
+
+$orange: (
+  primary-color: rgba(228, 149, 80, 0.8),
+  primary-color-light: rgba(228, 149, 80, 0.6),
+  primary-color-heavy: rgba(228, 149, 80, 1),
+  primary-bg-color: rgba(228, 149, 80, 0.05),
+);
+
+$green: (
+  primary-color: rgba(0, 150, 136, 0.8),
+  primary-color-light: rgba(0, 150, 136, 0.6),
+  primary-color-heavy: rgba(0, 150, 136, 1),
+  primary-bg-color: rgba(0, 150, 136, 0.05),
+);
+
+$purple: (
+  primary-color: rgba(198, 37, 239, 0.8),
+  primary-color-light: rgba(198, 37, 239, 0.6),
+  primary-color-heavy: rgba(198, 37, 239, 1),
+  primary-bg-color: rgba(198, 37, 239, 0.05),
+);
+
+$dark: (
+  base-color: #ccc,
+  desc-color: #666,
+  second-color: #999,
+  primary-color: rgba(80, 152, 228, 0.8),
+  primary-color-light: rgba(80, 152, 228, 0.6),
+  primary-color-heavy: rgba(80, 152, 228, 1),
+  primary-bg-color: rgba(80, 152, 228, 0.05),
+  gray-color: #464444,
+  border-color: #2e2e2e,
+  bg-color: #232426,
+  bg-color-light: #292b2d,
+  bg-color-heavy: #1e1f21,
+  linear-background-0:
+    linear-gradient(0deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
+  linear-background-180:
+    linear-gradient(180deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
+);
+
+$themes: (
+  blue: map-merge($base, $blue),
+  orange: map-merge($base, $orange),
+  red: map-merge($base, $red),
+  green: map-merge($base, $green),
+  purple: map-merge($base, $purple),
+  dark: $dark,
+);
+
+@mixin themeify {
+  @each $theme-name, $theme-map in $themes {
+    $theme-map: $theme-map !global;
+    html[data-theme='#{$theme-name}'] & {
+      @content;
+    }
+  }
+}
+
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}
+```
+
+### 2.2 加一个loader
+这样就不需要每次在用到的地方，都手动引入一遍
+
+```shell
+yarn add -D sass-resources-loader
+```
+
+```js
+{
+  loader: 'sass-resources-loader',
+  options: {
+    resources: [path.resolve(__dirname, './../src/theme/index.scss')],
+  },
+}
+```
+
+
+### 2.3 主题颜色值使用
+```scss
+.theme {
+  @include themeify {
+    color: themed('primary-color');
+  }
+}
+```
+
+### 2.4 主题切换
+```js
+// src/components/ChangeTheme/index.tsx
+import React from 'react';
 import useGlobalModel from '@/model/useGlobalModel';
-import { isMobile } from '@/utils';
-import styles from './noteList.scss';
+import styles from './styles.scss';
 
-interface NoteListProps extends KeepAliveAssist {}
+interface ThemeItem {
+  text: string;
+  color: string;
+}
 
-// 列表
-const NoteList: React.FC<NoteListProps> = (props) => {
-  const { loading, noteList } = useNoteModel();
-  const { scrollTop } = useScroll();
-  const { stickyRightStyle } = useGlobalModel((modal) => [
-    modal.stickyRightStyle,
+const ChangeTheme = () => {
+  const { theme, setTheme } = useGlobalModel((modal) => [
+    modal.theme,
+    modal.setTheme,
   ]);
+  const themesConfig: ThemeItem[] = [
+    {
+      text: '白兰',
+      color: 'blue',
+    },
+    {
+      text: '暗夜',
+      color: 'dark',
+    },
+    {
+      text: '橘橙',
+      color: 'orange',
+    },
+    {
+      text: '小红',
+      color: 'red',
+    },
+    {
+      text: '浅绿',
+      color: 'green',
+    },
+    {
+      text: '媚紫',
+      color: 'purple',
+    },
+  ];
 
-  useEffect(() => {
-    restore();
-  }, []);
-
-  const restore = () => {
-    const scTop = props.scrollRestore!();
-    setTimeout(() => {
-      document.body.scrollTop = scTop || 0;
-      document.documentElement.scrollTop = scTop || 0;
-    }, 0);
+  const onThemeChange = (color: string) => {
+    setTheme(color);
   };
-
-  const toDetailClick = () => {
-    props.beforeRouteLeave!(scrollTop, {});
-  };
-
-  const showScroll2Top = useMemo(() => {
-    return scrollTop > window.innerHeight;
-  }, [scrollTop]);
 
   return (
-    <>
-      <Header className={styles.header}>
-        <div className="center-content content">
-          <span>MD-NOTE</span>
-          <Tools />
-        </div>
-      </Header>
-      <main className={`center-content ${styles['note-list']}`}>
-        <section
-          id={loading ? styles.skeleton : ''}
-          className={styles.container}
+    <span>
+      {themesConfig.map((item) => (
+        <span
+          key={item.color}
+          className={`${styles.color} ${
+            item.color === theme ? styles.theme : ''
+          }`}
+          onClick={() => onThemeChange(item.color)}
         >
-          {noteList?.length > 0 ? (
-            noteList?.map?.((noteitem) => {
-              return (
-                <a
-                  className={`link ${styles.item}`}
-                  key={`${noteitem.tag}-${noteitem.name}`}
-                  href={`./#/detail/${noteitem.tag}/${noteitem.name}`}
-                  onClick={toDetailClick}
-                >
-                  <div className={styles.title}>{noteitem.title}</div>
-                  <div className={styles.desc}>
-                    <span className={styles.tag}>
-                      标签：<span>{noteitem.tag}</span>
-                    </span>
-                    <span className={styles.time}>
-                      创建时间：{noteitem.create_time}
-                    </span>
-                  </div>
-                </a>
-              );
-            })
-          ) : (
-            <div>没有数据</div>
-          )}
-        </section>
-        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
-        <StickyRight className={styles.iframe}>
-          {!isMobile && (
-            <>
-              <iframe
-                src="https://zero9527.github.io/vue-calendar"
-                className={styles.calendar}
-              />
-              <div className={styles.mask} />
-            </>
-          )}
-        </StickyRight>
-        {/* <div className="gitter">
-          <a href="./#/note-add" className={`link btn ${styles.add}`}>
-            +
-          </a>
-        </div> */}
-      </main>
-    </>
+          {item.text}&nbsp;
+        </span>
+      ))}
+    </span>
   );
 };
 
-export default NoteList;
+export default ChangeTheme;
 ```
 
-## 2、详情页面
 
-### 内容渲染
+## 3、详情页面
+
+### 3.1 内容获取
+直接异步请求 `public/md/` 下面的 `markdown` 文件
+
+> 注意需要使用 `HashRouter` 才能用相对路径获取到 `public` 下的东西
+
+```js
+// src/model/useNoteModel.ts
+// 请求数据 tag: 标签；name：名称
+const fetchNoteByName = async (tag: NoteTag | string, name: string) => {
+  try {
+    const res: any = await fileApi(`/${tag}/${name}`);
+    return { code: 0, data: res, msg: 'ok' };
+  } catch (err) {
+    console.error('fetch error: ', err);
+  }
+  return { code: -2, data: null, msg: 'error' };
+};
+
+// src/api/file.ts
+// 获取文件
+export function fileApi(uri: string, params: any = {}) {
+  return axios.get(`./md${uri}`, {
+    data: { ...params },
+  });
+}
+```
+
+### 3.2 内容渲染
 `marked` 设置自定义渲染
-* 默认标题 id 会被去掉 `英文特殊字符`，
+
+默认：
+* 标题 id 会被去掉 `英文特殊字符`，
 * 链接不在新窗口打开
 
 ```typescript
-// 渲染设置
-const renderer = new marked.Renderer();
+// marked 样式
+const markedHighlight = () => {
+  // 渲染设置
+  const renderer = new marked.Renderer();
+  // 设置标题，生成目录跳转需要
+  renderer.heading = function(text: string, level: number) {
+    const realId = text.replace('<code>', '`').replace('</code>', '`');
+    return `<h${level} class="heading-h${level}" id="${realId}" title="${realId}"><span>${text}</span></h${level}>`;
+  };
+  // 代码块
+  renderer.code = function(src: string, tokens: string) {
+    const codeCopyContent = encodeURI(src);
+    const iconContent = `<span>复制代码</span>
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="copy" class="svg-inline--fa fa-copy fa-w-14 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+    <path fill="currentColor" d="M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z"></path>
+    </svg>`;
+    return `<pre>
+      <div class="languange">
+        <span>${tokens}</span>
+        <span class="copy-code" data-code="${codeCopyContent}">${iconContent}</span>
+      </div>
+      <div class="code-wrapper"><code class="${tokens}">${highlight(
+      src,
+      tokens
+    )}</code></div>
+    </pre>`;
+  };
+  // 设置链接
+  renderer.link = function(href: string, title: string, text: string) {
+    const _title = title || href || '';
+    return `<a href="${href}" class="link" title="${_title}" target="_blank" rel="noopener noreferrer">${text}
+    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="external-link-alt" class="svg-inline--fa fa-external-link-alt fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <path fill="currentColor" d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z">
+    </path></svg>
+    </a>`;
+  };
+  // 给图片添加类名，添加点击事件，方便点击查看大图
+  renderer.image = function(src: string, alt: string) {
+    return `<img src="${src}" alt="${alt || ''}" class="md-img" />`;
+  };
 
-// 设置标题，生成目录跳转需要
-renderer.heading = function(text: string, level: number) {
-  return `<h${level} class="heading-h${level}" id="${text}" title="${text}">${text}</h${level}>`;
-};
-
-// 设置链接
-renderer.link = function(href: string, title: string, text: string) {
-  return `<a href="${href}" title="${title ||
-    text}" target="_blank">${text}</a>`;
-};
-
-// 设置图片，导出图片需要
-renderer.image = function(href: string, title: string, text: string) {
-  return `<img src="${href}" title="${title ||
-    text}" alt="${text}" style="max-height: 700px; display: inherit; margin: auto;" />`;
+  marked.setOptions({
+    renderer,
+    highlight,
+    langPrefix: '',
+    pedantic: false,
+    gfm: true,
+    tables: true,
+    breaks: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false,
+    xhtml: false,
+  });
 };
 ```
 
-### 目录
-* 对二级标题，三级标题生成目录
-* 点击标题视图切换到响应标题下
+### 3.3 目录生成
+- 对二级标题，三级标题，四级标题生成目录
+- 点击标题视图切换到响应标题下
+- 滚动时，高亮响应目录标题
 
-### 操作按钮
+生成目录
+```js
+// src/components/MdCatalog/index.tsx
+// 生成目录
+const generateCate = (
+  text: string,
+  splitChar: string = '\n##',
+  list: CatalogItem[] = []
+) => {
+  // 最多到四级标题h4 ####
+  if (splitChar === '\n#####') return [];
+  const cateList: CatalogItem[] = [];
+  const content = text.slice(text.indexOf('\n'), text.length);
+  const cateArr = content.split(`${splitChar} `);
+  cateArr.shift();
 
-* 编辑跳转
-* 导出 `*.md` 文件
-* 导出 `*.png` 图片
+  cateArr.forEach((cate) => {
+    const id = cate.substring(0, cate.indexOf('\n')).trim();
+    const cateItem: CatalogItem = {
+      id,
+      header: `catelog-${id}`,
+      label: id,
+      child: [],
+    };
 
-使用 [html2canvas](http://html2canvas.hertzen.com/)，导出前设置视图宽度为`代码块（pre>code）最大宽度`（防止导出图片截断/大片空白等问题），完成后恢复
-> 使用时，有些样式是识别不了的，这个时候可以考虑，样式直接放到标签上面设置试试
+    const cateItemChild = generateCate(cate, `${splitChar}#`);
+    if (cateItemChild.length) cateItem.child = cateItemChild;
+
+    cateList.push(cateItem);
+  });
+  return list.concat(cateList);
+};
+```
+
+### 3.4 复制代码、图片处理
+```js
+// src/views/NoteDetail/index.tsx
+// 点击事件代理
+const onMdContentClick = () => {
+  const mdContent = document.querySelector('#md-content') as HTMLElement;
+  mdContent.onclick = function(e: any) {
+    onCopyCode(e);
+    onImgClick(e);
+  };
+  // 需要初始化一次，不然要点击两次才能复制
+  const copyCodeElems = document.querySelectorAll(
+    '#md-content .copy-code'
+  ) as NodeList;
+  Array.from(copyCodeElems).forEach((el: HTMLElement) => {
+    el.onmouseenter = function(e: any) {
+      onCopyCode(e);
+    };
+  });
+};
 
 
-## 3、编辑页面
+// 复制代码
+const onCopyCode = (e: any) => {
+  const copyCodeEl: HTMLElement | null = e.target?.closest('.copy-code');
+  if (!copyCodeEl || !copyCodeEl.dataset.code) return;
 
-### 3.1 支持 markdown 语法
+  const text = copyCodeEl.querySelector('span')!;
+  const realCode = decodeURI(copyCodeEl.dataset.code);
 
-* [marked.js](https://marked.js.org) 解析 `markdown`
-* [highlight.js](https://highlightjs.org/) 代码高亮
-* 编辑器使用 [codemirror.js](https://codemirror.net/)
-* 编辑撤销/重做
+  clipboard.current = new ClipboardJS(copyCodeEl, {
+    action: () => 'copy',
+    text: () => realCode,
+  });
+  clipboard.current.on('success', () => restoreText('复制成功'));
+  clipboard.current.on('error', () =>
+    restoreText('<span style="color:red;">复制失败</span>')
+  );
 
-### 3.2 预览效果
+  const restoreText = (innerHTML: string) => {
+    text.innerHTML = innerHTML;
+    clipboard.current?.destroy();
+    setTimeout(() => {
+      text.innerHTML = '复制代码';
+    }, 2000);
+  };
+};
 
-* 窗口拖动(移动端小窗口)
-* 可以全屏
+// 图片点击新窗口打开
+const onImgClick = (e: any) => {
+  const imgEl: HTMLImageElement | null = e.target?.closest('.md-img');
+  if (imgEl) {
+    window.open(imgEl.src);
+    // updatePicPreview({
+    //   show: true,
+    //   src: img.src,
+    //   alt: img.alt,
+    //   onClose: onClosePicPreview,
+    // });
+  }
+};
+
+```
+
+### 3.5 回顶部按钮
+`定时器`+自定义Hook `useWindowClick` 实现滚动可中断（滚动时，点击页面任意处就停止滚动）
+```js
+import React, { CSSProperties, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
+import useWindowClick from '@/utils/useWindowClick';
+import styles from './styles.scss';
+
+export interface Scroll2TopProps {
+  position?: CSSProperties;
+}
+
+// 回到顶部
+const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
+  const scrollTop = useRef(0);
+  const canScroll = useRef(false); // 允许滚动
+
+  // 全局点击
+  const onWindowClick = () => {
+    onRemoveClick();
+  };
+
+  const onRemoveClick = () => {
+    canScroll.current = false;
+    removeListener();
+  };
+
+  const { addListener, removeListener } = useWindowClick(onWindowClick);
+
+  const onScroll2oTop = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    scrollTop.current =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    canScroll.current = true;
+    addListener();
+    scrollHandler();
+  };
+
+  const scrollHandler = () => {
+    let scTop = document.body.scrollTop || document.documentElement.scrollTop;
+    if (scTop > 0) {
+      document.body.scrollTop -= 100;
+      document.documentElement.scrollTop -= 100;
+
+      if (canScroll.current) setTimeout(scrollHandler, 16);
+    } else {
+      onRemoveClick();
+    }
+  };
+
+  return (
+    <div className="gitter">
+      <div
+        style={position}
+        className={`btn ${styles.scroll2top}`}
+        onClick={(e: any) => onScroll2oTop(e)}
+      >
+        <FontAwesomeIcon icon={faAngleDoubleUp} />
+      </div>
+    </div>
+  );
+};
+
+export default Scroll2Top;
+```
 
 
-## 4、代码示例
+## 4、一些自定义 Hook
 
 ### usePrevState
+获取上一次的值
 ```ts
 // src/utils/usePrevState.ts
 import { useRef, useEffect, useState } from 'react';
@@ -222,7 +623,75 @@ function usePrevState<T>(state: T) {
 export default usePrevState;
 ```
 
+### useDebounce
+函数防抖
+```js
+import { useCallback } from 'react';
+
+// 防抖
+const useDebounce = (callback: (...param: any) => void, delay: number = 16) => {
+  let timer: NodeJS.Timeout;
+  let lastTime: number = 0;
+
+  const runCallback = (...args: any) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      callback.apply(null, args);
+    }, delay);
+  };
+
+  return useCallback(function(...param) {
+    const thisTime = new Date().getTime();
+    if (thisTime - lastTime > delay && lastTime !== 0) {
+      lastTime = 0;
+    } else {
+      lastTime = thisTime;
+    }
+    runCallback(...param);
+  }, []);
+};
+
+export default useDebounce;
+```
+
+### useThrottle
+函数节流
+```js
+import { useCallback } from 'react';
+
+// 节流
+const useThrottle = (callback: () => any, delay: number = 16) => {
+  let lastTime: number = 0;
+  let canCallback = true;
+
+  const restore = (time: number) => {
+    lastTime = time;
+    canCallback = false;
+  };
+
+  const runCallback = () => {
+    callback();
+  };
+
+  return useCallback((args?: any) => {
+    const thisTime = new Date().getTime();
+    if (canCallback && thisTime - lastTime > delay) {
+      restore(thisTime);
+      runCallback.apply(null, args);
+      setTimeout(() => {
+        canCallback = true;
+      }, delay);
+      return;
+    }
+  }, []);
+};
+
+export default useThrottle;
+```
+
 ### useScroll
+滚动
+
 使用：见 `src/components/header/index.tsx`
 
 ```ts
@@ -236,15 +705,15 @@ const useScroll = () => {
   const prevScrollTop = usePrevState(scrollTop);
 
   useEffect(() => {
+    onScroll();
     window.addEventListener('scroll', onScroll, false);
     return () => {
       window.removeEventListener('scroll', onScroll, false);
     };
   }, []);
 
-  const onScroll = (e: any) => {
-    // 移动端 body.scrollTop, PC端 documentElement.scrollTop
-    const scTop = e.target.body.scrollTop || e.target.documentElement.scrollTop;
+  const onScroll = () => {
+    const scTop = document.body.scrollTop || document.documentElement.scrollTop;
     setScrollTop(scTop || 0);
   };
 
@@ -258,6 +727,8 @@ export default useScroll;
 ```
 
 ### useWindowClick
+点击，可以代替 `clickOutside` 点击外部使用
+
 使用：见 `src/components/Scroll2Top/index.tsx`
 
 ```ts
@@ -300,271 +771,6 @@ function useWindowClick(callback: () => void) {
 }
 
 export default useWindowClick;
-```
-
-
-### 目录生成
-```typescript
-// src/components/mdCatalog/index.tsx
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-} from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import styles from './mdCatalog.scss';
-import useScroll from '@/utils/useScroll';
-
-export interface CatalogItem {
-  id: string; // 标题的id
-  header: string; // 本身的id
-  label: string; // 文本
-  child?: CatalogItem[];
-}
-
-export interface MdCatalogProps {
-  mdtext: string;
-  defaultActive?: string;
-  onCateClick?: (id: string) => void;
-  onGetTitle?: (title: string) => void;
-}
-
-// 根据 markdown 字符串生成 二级标题/三级标题目录
-const MdCatalog: React.FC<MdCatalogProps> = ({
-  mdtext,
-  defaultActive,
-  onCateClick,
-  onGetTitle,
-  ...props
-}) => {
-  const { scrollTop } = useScroll();
-  const useScrollTop = useRef(false);
-  const [showCate, setShowCate] = useState(false);
-  const [cate, setCate] = useState<CatalogItem[]>([]);
-  const [cateActive, setCateActive] = useState('');
-  const [title, setTitle] = useState('');
-  const [allcate, setAllcate] = useState<CatalogItem[]>([]);
-
-  useEffect(() => {
-    if (title) {
-      document.title += `|${title}`;
-      onGetTitle?.(title);
-    }
-  }, [title]);
-
-  useEffect(() => {
-    if (defaultActive) setCateActive(defaultActive);
-  }, []);
-
-  useEffect(() => {
-    scroll2Item();
-  }, [cateActive]);
-
-  useEffect(() => {
-    generate();
-  }, []);
-
-  useEffect(() => {
-    if (showCate) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = 'auto';
-    }
-  }, [showCate]);
-
-  useEffect(() => {
-    // 铺平数据，用于 scrollHandler
-    function flat(arr: any[]) {
-      const list: any[] = [];
-      arr.forEach((item) => {
-        if (item?.child?.length) list.push(item, ...flat(item.child));
-        else list.push(item);
-      });
-      return list;
-    }
-    setAllcate(flat(cate));
-  }, [cate]);
-
-  useEffect(() => {
-    if (useScrollTop.current) scrollHandler();
-  }, [scrollTop]);
-
-  // 滚动时，显示高亮对应区域的标题
-  const scrollHandler = () => {
-    try {
-      allcate.forEach((item: CatalogItem) => {
-        const el = document.getElementById(item.id) as HTMLElement;
-        if (el) {
-          const bcr = el.getBoundingClientRect();
-          if (bcr.top < 0) {
-            setCateActive(item.id);
-          }
-        } else {
-          console.log('没有元素id为： ', item.id, item);
-        }
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const generate = () => {
-    let allcateArr: string[] = [];
-    const cateList: CatalogItem[] = [];
-    const content = mdtext.slice(mdtext.indexOf('\n'), mdtext.length);
-    setTitle(mdtext.slice(1, mdtext.indexOf('\n')));
-    const cate2Arr = content.split('\n## ');
-
-    cate2Arr.forEach((cate2) => {
-      // 二级目录
-      const tempcate2 = cate2.substring(0, cate2.indexOf('\n')).trim();
-      const cat3Arr = cate2.split('\n### ');
-      cat3Arr.shift();
-      const cat2Child: CatalogItem[] = [];
-
-      cat3Arr.forEach((cate3) => {
-        // 三级目录
-        const tempcate3 = cate3.substring(0, cate3.indexOf('\n')).trim();
-        cat2Child.push({
-          id: tempcate3,
-          header: `catelog-${tempcate3}`,
-          label: tempcate3,
-        });
-      });
-
-      const cate2Item: CatalogItem = {
-        id: tempcate2,
-        header: `catelog-${tempcate2}`,
-        label: tempcate2,
-        child: [],
-      };
-
-      allcateArr.push(tempcate2);
-      if (cat2Child.length > 0) {
-        cate2Item.child = cat2Child;
-        allcateArr = allcateArr.concat(cat2Child.map((i) => i.id));
-      }
-
-      cateList.push(cate2Item);
-    });
-
-    setCate(() => cateList.filter((item) => Boolean(item.id)));
-  };
-
-  const scroll2Item = () => {
-    const catelogItem = document.getElementById(`catelog-${cateActive}`);
-    catelogItem?.scrollIntoView();
-    onCateClick?.(cateActive);
-  };
-
-  const cateClick = (cateItem: CatalogItem) => {
-    const header = document.getElementById(cateItem.id) as HTMLElement;
-    header?.scrollIntoView();
-
-    useScrollTop.current = false;
-    toggleBlur('remove');
-    setCateActive(cateItem.id);
-    onCateClick?.(cateItem.id);
-    setTimeout(() => {
-      setShowCate(false);
-      useScrollTop.current = true;
-    }, 0);
-  };
-
-  const onCateListShow = () => {
-    toggleBlur('add');
-    setTimeout(() => setShowCate(true), 0);
-  };
-
-  const onHiddenCatalog = () => {
-    setShowCate(false);
-    toggleBlur('remove');
-  };
-
-  const toggleBlur = (type: 'add' | 'remove') => {
-    document.querySelector('#md-note')?.classList[type]('blur');
-  };
-
-  const renderCateItem = useCallback(
-    (cateItem: CatalogItem) => {
-      const className = `${styles['cate-item']} ${
-        cateActive === cateItem.id ? styles.active : ''
-      }`;
-      return (
-        <div
-          data-id={cateItem.id}
-          id={cateItem.header}
-          className={className}
-          onClick={() => cateClick(cateItem)}
-        >
-          {cateItem.label}
-        </div>
-      );
-    },
-    [cateActive]
-  );
-
-  const NoCate = () => (
-    <div className={styles.desc}>
-      <p>一级标题'#'为文章名，</p>
-      <p>二级标题'##'为一级目录，</p>
-      <p>三级标题'###'为三级目录</p>
-    </div>
-  );
-
-  const cateListTransition = useMemo(() => {
-    return showCate ? styles['cate-show'] : '';
-  }, [showCate]);
-
-  return (
-    <div id="catalog" className={styles.catalog}>
-      <FontAwesomeIcon
-        className="btn"
-        icon={faListUl}
-        onClick={onCateListShow}
-      />
-      <div
-        className={styles.bg}
-        style={{ display: showCate ? 'block' : 'none' }}
-      />
-      <div
-        className={`${styles.catelist} ${cateListTransition}`}
-        onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
-      >
-        {showCate && (
-          <span className={styles.close} onClick={onHiddenCatalog}>
-            <FontAwesomeIcon icon={faChevronRight} />
-          </span>
-        )}
-        <section className={styles.head} title={title}>
-          目录: {title}
-        </section>
-        <section className={styles['cate-content']}>
-          {cate.length > 0 ? (
-            cate.map((cate2: CatalogItem) => (
-              <ul key={cate2.id}>
-                {renderCateItem(cate2)}
-                {cate2.child &&
-                  cate2.child?.length > 0 &&
-                  cate2.child?.map((cate3: CatalogItem) => (
-                    <ul key={cate3.id}>{renderCateItem(cate3)}</ul>
-                  ))}
-              </ul>
-            ))
-          ) : (
-            <NoCate />
-          )}
-        </section>
-      </div>
-      {props.children}
-    </div>
-  );
-};
-
-export default MdCatalog;
 ```
 
 ### useFetchData
