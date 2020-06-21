@@ -24,44 +24,45 @@
 滚动位置恢复用 [这个库](https://www.npmjs.com/package/keep-alive-comp)，之前自己写的，已发布 `npm`;
 配合 `useScroll` 很简单
 
-### tag 是分类（目录名）
+### 1.1 tag 是分类（目录名）
 public/md/目录名
 
 public/md/
 ```
 .
 ├── demo
-│   ├── demo1.md
-│   └── promise_This_is.md
+│   └── demo1.md
 ├── js
-│   ├── amd-cmd.md
-│   ├── evt.md
-│   ├── js-review.md
-│   ├── promise.md
-│   └── scroll-load.md
+│   ├── amd-cmd.md
+│   ├── evt.md
+│   ├── js-review.md
+│   ├── promise.md
+│   └── scroll-load.md
 ├── mini-program
-│   └── movie-db.md
+│   └── movie-db.md
 ├── node.js
-│   ├── cmd-line.md
-│   ├── directory-1.md
-│   └── directory-2.md
+│   ├── cmd-line.md
+│   ├── directory-1.md
+│   ├── directory-2.md
+│   └── zr-deploy.md
 ├── others
-│   ├── create-react-app_single-spa.md
-│   ├── vue-cli3_single-spa.md
-│   └── web-component.md
+│   ├── create-react-app_single-spa.md
+│   ├── vue-cli3_single-spa.md
+│   └── web-component.md
 ├── react
-│   ├── React-Hook.md
-│   ├── keep-alive-comp.md
-│   ├── movie-db-web.md
-│   ├── next-js.md
-│   ├── react-keep-alive.md
-│   └── react-ts-template.md
+│   ├── React-Hook.md
+│   ├── keep-alive-comp.md
+│   ├── movie-db-web.md
+│   ├── next-js.md
+│   ├── react-keep-alive.md
+│   └── react-ts-template.md
 └── vue
     ├── calendar.md
+    ├── clock.md
     └── uni-app.md
 ```
 
-### md.json 是列表描述文件
+### 1.2 md.json 是列表描述文件
 ```json
 [
   {
@@ -73,109 +74,59 @@ public/md/
 ]
 ```
 
+### 1.3 状态恢复
+
 ```jsx
 // src/views/NoteList/index.tsx
-import React, { useEffect, useMemo } from 'react';
-import { KeepAliveAssist } from 'keep-alive-comp';
-import { Link } from 'react-router-dom';
-import useGlobalModel from '@/model/useGlobalModel';
-import useNoteModel from '@/model/useNoteModel';
-import useScroll from '@/utils/useScroll';
-import Header from '@/components/Header';
-import Tools from '@/components/Tools';
-import RightPanel from '@/components/RightPanel';
-import Scroll2Top from '@/components/Scroll2Top';
-import useDebounce from '@/utils/useDebounce';
-import styles from './styles.scss';
 
-interface NoteListProps extends KeepAliveAssist {}
+useEffect(() => {
+  restore();
+}, []);
 
-// 列表
-const NoteList: React.FC<NoteListProps> = (props) => {
-  const { loading, noteList } = useNoteModel();
-  const { scrollTop } = useScroll();
-  const { stickyRightStyle } = useGlobalModel((modal) => [
-    modal.stickyRightStyle,
-  ]);
-
-  useEffect(() => {
-    restore();
-  }, []);
-
-  const restore = () => {
-    const scTop = props.scrollRestore!();
-    setTimeout(() => {
-      document.body.scrollTop = scTop || 0;
-      document.documentElement.scrollTop = scTop || 0;
-    }, 0);
-  };
-
-  const toDetailClick = () => {
-    props.beforeRouteLeave!(scrollTop, {});
-  };
-
-  const showScroll2Top = useMemo(() => {
-    return scrollTop > window.innerHeight;
-  }, [scrollTop]);
-
-  const ReachBottom = () => (
-    <div className={styles['reach-bottom']}>
-      <span>到底了</span>
-    </div>
-  );
-
-  return (
-    <>
-      <Header className={styles.header}>
-        <div className="center-content content">
-          <div>
-            MD-NOTE
-            <span className={styles.desc}>：一个使用 markdown 的简易博客</span>
-          </div>
-          <Tools />
-        </div>
-      </Header>
-      <main className={`center-content ${styles['note-list']}`}>
-        <section
-          id={loading ? styles.skeleton : ''}
-          className={`container ${styles.container}`}
-        >
-          {noteList?.length > 0 ? (
-            <>
-              {noteList?.map?.((noteitem) => {
-                return (
-                  <Link
-                    to={`/detail/${noteitem.tag}/${noteitem.name}`}
-                    className={`link ${styles.item}`}
-                    key={`${noteitem.tag}-${noteitem.name}`}
-                    onClick={toDetailClick}
-                  >
-                    <div className={styles.title}>{noteitem.title}</div>
-                    <div className={styles.desc}>
-                      <span className={styles.tag}>
-                        标签：<span>{noteitem.tag}</span>
-                      </span>
-                      <span className={styles.time}>
-                        创建时间：{noteitem.create_time}
-                      </span>
-                    </div>
-                  </Link>
-                );
-              })}
-              <ReachBottom />
-            </>
-          ) : (
-            <div>没有数据</div>
-          )}
-        </section>
-        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
-      </main>
-      <RightPanel />
-    </>
-  );
+const restore = () => {
+  const scTop = props.scrollRestore!();
+  const _state = props.stateRestore!();
+  setNoteList(_state?.noteList || []);
+  setCurrentTag(_state?.currentTag);
+  setTimeout(() => {
+    document.body.scrollTop = scTop || 0;
+    document.documentElement.scrollTop = scTop || 0;
+  }, 0);
 };
 
-export default NoteList;
+// 离开前保存状态
+const toDetailClick = () => {
+  props.beforeRouteLeave!(scrollTop, {
+    noteList,
+    currentTag,
+  });
+};
+```
+
+### 1.4 标签提取
+```js
+// 标签
+const tags: TagItem[] = useMemo(() => {
+  if (!fullNoteList) return [];
+  const _tags: TagItem[] = [];
+  fullNoteList[0]?.name &&
+    fullNoteList?.forEach((noteItem) => {
+      const hasItem: TagItem | undefined = _tags.find(
+        (item) => item.name === noteItem.tag
+      );
+      if (hasItem) {
+        hasItem.count++;
+      } else {
+        _tags.push({ name: noteItem.tag, count: 1 });
+      }
+    });
+  return [{ name: '全部', count: fullNoteList.length }, ..._tags];
+}, [fullNoteList]);
+
+const onTagChange = (tag: TagItem | undefined) => {
+  setCurrentTag(tag);
+};
+
 ```
 
 
@@ -388,6 +339,8 @@ export default ChangeTheme;
 ### 3.1 内容获取
 直接异步请求 `public/md/` 下面的 `markdown` 文件
 
+> 注意需要使用 `HashRouter` 才能用相对路径获取到 `public` 下的东西
+
 ```js
 // src/model/useNoteModel.ts
 // 请求数据 tag: 标签；name：名称
@@ -424,7 +377,8 @@ const markedHighlight = () => {
   const renderer = new marked.Renderer();
   // 设置标题，生成目录跳转需要
   renderer.heading = function(text: string, level: number) {
-    return `<h${level} class="heading-h${level}" id="${text}" title="${text}"><span>${text}</span></h${level}>`;
+    const realId = text.replace('<code>', '`').replace('</code>', '`');
+    return `<h${level} class="heading-h${level}" id="${realId}" title="${realId}"><span>${text}</span></h${level}>`;
   };
   // 代码块
   renderer.code = function(src: string, tokens: string) {
@@ -436,7 +390,7 @@ const markedHighlight = () => {
     return `<pre>
       <div class="languange">
         <span>${tokens}</span>
-        <span class="copy-code" data-code="${codeCopyContent}">${iconContent}<span>
+        <span class="copy-code" data-code="${codeCopyContent}">${iconContent}</span>
       </div>
       <div class="code-wrapper"><code class="${tokens}">${highlight(
       src,
@@ -447,7 +401,7 @@ const markedHighlight = () => {
   // 设置链接
   renderer.link = function(href: string, title: string, text: string) {
     const _title = title || href || '';
-    return `<a href="${href}" class="link" title="${_title}" target="_blank">${text}
+    return `<a href="${href}" class="link" title="${_title}" target="_blank" rel="noopener noreferrer">${text}
     <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="external-link-alt" class="svg-inline--fa fa-external-link-alt fa-w-16 " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
     <path fill="currentColor" d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z">
     </path></svg>
@@ -474,10 +428,175 @@ const markedHighlight = () => {
 };
 ```
 
-### 3.3 目录
-- 对二级标题，三级标题生成目录
+### 3.3 目录生成
+- 对二级标题，三级标题，四级标题生成目录
 - 点击标题视图切换到响应标题下
-- 滚动屎，高亮响应目录标题
+- 滚动时，高亮响应目录标题
+
+生成目录
+```js
+// src/components/MdCatalog/index.tsx
+// 生成目录
+const generateCate = (
+  text: string,
+  splitChar: string = '\n##',
+  list: CatalogItem[] = []
+) => {
+  // 最多到四级标题h4 ####
+  if (splitChar === '\n#####') return [];
+  const cateList: CatalogItem[] = [];
+  const content = text.slice(text.indexOf('\n'), text.length);
+  const cateArr = content.split(`${splitChar} `);
+  cateArr.shift();
+
+  cateArr.forEach((cate) => {
+    const id = cate.substring(0, cate.indexOf('\n')).trim();
+    const cateItem: CatalogItem = {
+      id,
+      header: `catelog-${id}`,
+      label: id,
+      child: [],
+    };
+
+    const cateItemChild = generateCate(cate, `${splitChar}#`);
+    if (cateItemChild.length) cateItem.child = cateItemChild;
+
+    cateList.push(cateItem);
+  });
+  return list.concat(cateList);
+};
+```
+
+### 3.4 复制代码、图片处理
+```js
+// src/views/NoteDetail/index.tsx
+// 点击事件代理
+const onMdContentClick = () => {
+  const mdContent = document.querySelector('#md-content') as HTMLElement;
+  mdContent.onclick = function(e: any) {
+    onCopyCode(e);
+    onImgClick(e);
+  };
+  // 需要初始化一次，不然要点击两次才能复制
+  const copyCodeElems = document.querySelectorAll(
+    '#md-content .copy-code'
+  ) as NodeList;
+  Array.from(copyCodeElems).forEach((el: HTMLElement) => {
+    el.onmouseenter = function(e: any) {
+      onCopyCode(e);
+    };
+  });
+};
+
+
+// 复制代码
+const onCopyCode = (e: any) => {
+  const copyCodeEl: HTMLElement | null = e.target?.closest('.copy-code');
+  if (!copyCodeEl || !copyCodeEl.dataset.code) return;
+
+  const text = copyCodeEl.querySelector('span')!;
+  const realCode = decodeURI(copyCodeEl.dataset.code);
+
+  clipboard.current = new ClipboardJS(copyCodeEl, {
+    action: () => 'copy',
+    text: () => realCode,
+  });
+  clipboard.current.on('success', () => restoreText('复制成功'));
+  clipboard.current.on('error', () =>
+    restoreText('<span style="color:red;">复制失败</span>')
+  );
+
+  const restoreText = (innerHTML: string) => {
+    text.innerHTML = innerHTML;
+    clipboard.current?.destroy();
+    setTimeout(() => {
+      text.innerHTML = '复制代码';
+    }, 2000);
+  };
+};
+
+// 图片点击新窗口打开
+const onImgClick = (e: any) => {
+  const imgEl: HTMLImageElement | null = e.target?.closest('.md-img');
+  if (imgEl) {
+    window.open(imgEl.src);
+    // updatePicPreview({
+    //   show: true,
+    //   src: img.src,
+    //   alt: img.alt,
+    //   onClose: onClosePicPreview,
+    // });
+  }
+};
+
+```
+
+### 3.5 回顶部按钮
+`定时器`+自定义Hook `useWindowClick` 实现滚动可中断（滚动时，点击页面任意处就停止滚动）
+```js
+import React, { CSSProperties, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
+import useWindowClick from '@/utils/useWindowClick';
+import styles from './styles.scss';
+
+export interface Scroll2TopProps {
+  position?: CSSProperties;
+}
+
+// 回到顶部
+const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
+  const scrollTop = useRef(0);
+  const canScroll = useRef(false); // 允许滚动
+
+  // 全局点击
+  const onWindowClick = () => {
+    onRemoveClick();
+  };
+
+  const onRemoveClick = () => {
+    canScroll.current = false;
+    removeListener();
+  };
+
+  const { addListener, removeListener } = useWindowClick(onWindowClick);
+
+  const onScroll2oTop = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    scrollTop.current =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    canScroll.current = true;
+    addListener();
+    scrollHandler();
+  };
+
+  const scrollHandler = () => {
+    let scTop = document.body.scrollTop || document.documentElement.scrollTop;
+    if (scTop > 0) {
+      document.body.scrollTop -= 100;
+      document.documentElement.scrollTop -= 100;
+
+      if (canScroll.current) setTimeout(scrollHandler, 16);
+    } else {
+      onRemoveClick();
+    }
+  };
+
+  return (
+    <div className="gitter">
+      <div
+        style={position}
+        className={`btn ${styles.scroll2top}`}
+        onClick={(e: any) => onScroll2oTop(e)}
+      >
+        <FontAwesomeIcon icon={faAngleDoubleUp} />
+      </div>
+    </div>
+  );
+};
+
+export default Scroll2Top;
+```
 
 
 ## 4、一些自定义 Hook

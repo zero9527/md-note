@@ -11,6 +11,10 @@ import Scroll2Top from '@/components/Scroll2Top';
 import styles from './styles.scss';
 
 interface NoteListProps extends KeepAliveAssist {}
+export type TagItem = {
+  name: string;
+  count: number;
+};
 
 // 列表
 const NoteList: React.FC<NoteListProps> = (props) => {
@@ -22,11 +26,7 @@ const NoteList: React.FC<NoteListProps> = (props) => {
   // 当前noteList
   const [noteList, setNoteList] = useState<NoteItem[]>([]);
   // 当前标签
-  const [currentTag, setCurrentTag] = useState('');
-
-  useEffect(() => {
-    restore();
-  }, []);
+  const [currentTag, setCurrentTag] = useState<TagItem>();
 
   useEffect(() => {
     setNoteList(fullNoteList);
@@ -35,18 +35,22 @@ const NoteList: React.FC<NoteListProps> = (props) => {
   useEffect(() => {
     if (currentTag) {
       setNoteList(() => {
-        return fullNoteList.filter((note) => note.tag === currentTag);
+        return fullNoteList.filter((note) => note.tag === currentTag.name);
       });
     } else {
       setNoteList(fullNoteList);
     }
   }, [currentTag]);
 
+  useEffect(() => {
+    restore();
+  }, []);
+
   const restore = () => {
     const scTop = props.scrollRestore!();
     const _state = props.stateRestore!();
-    setNoteList(_state?.noteList || []);
-    setCurrentTag(_state?.currentTag || '');
+    setNoteList(_state?.noteList || fullNoteList);
+    setCurrentTag(_state?.currentTag);
     setTimeout(() => {
       document.body.scrollTop = scTop || 0;
       document.documentElement.scrollTop = scTop || 0;
@@ -54,20 +58,28 @@ const NoteList: React.FC<NoteListProps> = (props) => {
   };
 
   // 标签
-  const tags = useMemo(() => {
+  const tags: TagItem[] = useMemo(() => {
     if (!fullNoteList) return [];
-    const tags: string[] = [''];
+    const _tags: TagItem[] = [];
     fullNoteList[0]?.name &&
       fullNoteList?.forEach((noteItem) => {
-        if (!tags.includes(noteItem.tag)) tags.push(noteItem.tag);
+        const hasItem: TagItem | undefined = _tags.find(
+          (item) => item.name === noteItem.tag
+        );
+        if (hasItem) {
+          hasItem.count++;
+        } else {
+          _tags.push({ name: noteItem.tag, count: 1 });
+        }
       });
-    return tags;
+    return [{ name: '全部', count: fullNoteList.length }, ..._tags];
   }, [fullNoteList]);
 
-  const onTagChange = (tag: string) => {
+  const onTagChange = (tag: TagItem | undefined) => {
     setCurrentTag(tag);
   };
 
+  // 离开前保存状态
   const toDetailClick = () => {
     props.beforeRouteLeave!(scrollTop, {
       noteList,
@@ -106,9 +118,9 @@ const NoteList: React.FC<NoteListProps> = (props) => {
               {noteList?.map?.((noteitem) => {
                 return (
                   <Link
+                    key={`${noteitem.tag}-${noteitem.name}`}
                     to={`/detail/${noteitem.tag}/${noteitem.name}`}
                     className={`link ${styles.item}`}
-                    key={`${noteitem.tag}-${noteitem.name}`}
                     onClick={toDetailClick}
                   >
                     <div className={styles.title}>{noteitem.title}</div>

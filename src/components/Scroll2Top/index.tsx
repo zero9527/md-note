@@ -10,7 +10,6 @@ export interface Scroll2TopProps {
 
 // 回到顶部
 const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
-  const height = useRef(window.innerHeight);
   const scrollTop = useRef(0);
   const canScroll = useRef(false); // 允许滚动
 

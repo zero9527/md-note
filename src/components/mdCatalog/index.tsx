@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
+import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useScroll from '@/utils/useScroll';
@@ -32,6 +33,8 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   onGetTitle,
   ...props
 }) => {
+  const history = useHistory();
+  const location = useLocation();
   const { scrollTop, prevScrollTop } = useScroll();
   const useScrollTop = useRef(true);
   const [showCate, setShowCate] = useState(false);
@@ -48,9 +51,13 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   }, [title]);
 
   useEffect(() => {
-    generate();
-    if (defaultActive) setCateActive(defaultActive);
+    setTitle(mdtext.slice(2, mdtext.indexOf('\n')));
+    setCate(generateCate(mdtext));
   }, []);
+
+  useEffect(() => {
+    if (defaultActive) setCateActive(defaultActive);
+  }, [defaultActive]);
 
   useEffect(() => {
     if (showCate) {
@@ -83,7 +90,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
       const activeItem = allcate.reverse().find((item: CatalogItem) => {
         const el = document.getElementById(item.id) as HTMLElement;
         const bcr = el?.getBoundingClientRect();
-        return bcr?.top < 20 && bcr?.bottom > 0;
+        return bcr?.top < 30 && bcr?.bottom > 0;
       });
       if (activeItem) {
         setCateActive(activeItem.id);
@@ -94,79 +101,44 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     }
   };
 
-  // 生成目录 TODO：待优化逻辑
-  const generate = () => {
-    let allcateArr: string[] = [];
+  // 生成目录
+  const generateCate = (
+    text: string,
+    splitChar: string = '\n##',
+    list: CatalogItem[] = []
+  ) => {
+    // 最多到四级标题h4 ####
+    if (splitChar === '\n#####') return [];
     const cateList: CatalogItem[] = [];
-    const content = mdtext.slice(mdtext.indexOf('\n'), mdtext.length);
-    setTitle(mdtext.slice(2, mdtext.indexOf('\n')));
-    const cate2Arr = content.split('\n## ');
+    const content = text.slice(text.indexOf('\n'), text.length);
+    const cateArr = content.split(`${splitChar} `);
+    cateArr.shift();
 
-    cate2Arr.forEach((cate2) => {
-      // 二级目录
-      const tempcate2 = cate2.substring(0, cate2.indexOf('\n')).trim();
-      const cat3Arr = cate2.split('\n### ');
-      cat3Arr.shift();
-      const cat2Child: CatalogItem[] = [];
-      const cate2Item: CatalogItem = {
-        id: tempcate2,
-        header: `catelog-${tempcate2}`,
-        label: tempcate2,
+    cateArr.forEach((cate) => {
+      const id = cate.substring(0, cate.indexOf('\n')).trim();
+      const cateItem: CatalogItem = {
+        id,
+        header: `catelog-${id}`,
+        label: id,
         child: [],
       };
 
-      cat3Arr.forEach((cate3) => {
-        // 三级目录
-        const tempcate3 = cate3.substring(0, cate3.indexOf('\n')).trim();
-        const cat4Arr = cate3.split('\n#### ');
-        cat4Arr.shift();
-        const cat3Child: CatalogItem[] = [];
-        const cate3Item: CatalogItem = {
-          id: tempcate3,
-          header: `catelog-${tempcate3}`,
-          label: tempcate3,
-          child: [],
-        };
+      const cateItemChild = generateCate(cate, `${splitChar}#`);
+      if (cateItemChild.length) cateItem.child = cateItemChild;
 
-        cat4Arr.forEach((cate4) => {
-          // 四级目录
-          const tempcate4 = cate4.substring(0, cate4.indexOf('\n')).trim();
-          cat3Child.push({
-            id: tempcate4,
-            header: `catelog-${tempcate4}`,
-            label: tempcate4,
-          });
-        });
-
-        if (cat3Child.length) {
-          cate3Item.child = cat3Child;
-        }
-        cat2Child.push({ ...cate3Item });
-      });
-
-      allcateArr.push(tempcate2);
-      if (cat2Child.length > 0) {
-        cate2Item.child = cat2Child;
-        allcateArr = allcateArr.concat(cat2Child.map((i) => i.id));
-      }
-
-      cateList.push(cate2Item);
+      cateList.push(cateItem);
     });
-
-    setCate(() => cateList.filter((item) => Boolean(item.id)));
+    return list.concat(cateList);
   };
 
   const scroll2Item = (activeItem: CatalogItem) => {
     // if (!useScrollTop.current) return;
     const catelogItem = document.getElementById(`catelog-${activeItem.id}`);
     catelogItem?.scrollIntoView();
-    onCateClick?.(activeItem.id);
+    history.replace({ pathname: location.pathname, hash: activeItem.id });
   };
 
   const cateClick = (cateItem: CatalogItem) => {
-    const header = document.getElementById(cateItem.id) as HTMLElement;
-    header?.scrollIntoView();
-
     useScrollTop.current = false;
     toggleBlur('remove');
     setCateActive(cateItem.id);
@@ -255,7 +227,6 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
           marginTop: scrollTop > 50 && scrollTop > prevScrollTop ? '0' : '',
         }}
         className={`${styles.catelist} ${cateListTransition}`}
-        // onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
       >
         {showCate && (
           <span className={styles.close} onClick={onHiddenCatalog}>

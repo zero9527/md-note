@@ -69,6 +69,7 @@
     @include themeify {
       background: themed('bg-color');
     }
+
     &:hover {
       @include themeify {
         color: themed('base-color');

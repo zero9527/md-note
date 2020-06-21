@@ -9,6 +9,7 @@
 "single-spa-vue": "^1.8.2",
 ```
 
+
 ## 流程
 ### 主应用流程
 - 启动由 `system.js` 接管，配置 `webpack` 下 `out.libraryTarget` 为 `system`
@@ -33,7 +34,7 @@
 
 ## 1、主项目的配置
 - 例子1：Vue: [json-util](//github.com/zero9527/json-util)，路由 `/sub-app`
-- 例子2：React: [md-note](//github.com/zero9527/md-note)
+- 例子2：React: [md-note](//github.com/zero9527/md-note)，[在线](http://zero9527.site/md-note/)，首页的[时钟](https://github.com/zero9527/clock)/[日历](https://github.com/zero9527/vue-calendar)是`vue` 写的，使用 `single-spa` 加载的
 
 ### 1.1 下载依赖 
 
@@ -65,7 +66,7 @@ module.exports = [
     name: '@vue-mf/calendar',
     entry: isEnvDev
       ? '//localhost:2333/js/app.js'
-      : 'https://zero9527.github.io/vue-calendar/js/app.js', // 子应用的 hash
+      : 'https://zero9527.github.io/vue-calendar/js/app.js',
   },
 ];
 

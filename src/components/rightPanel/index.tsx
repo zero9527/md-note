@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import useScroll from '@/utils/useScroll';
+import { TagItem } from '@/views/NoteList';
 import StickyRight from '@/components/StickyRight';
 import { mountParcel } from '@/index';
 import styles from './styles.scss';
 
 export interface RightPanelProps {
-  tags: string[];
-  currentTag: string;
-  onTagChange: (tag: string) => void;
+  tags: TagItem[];
+  currentTag: TagItem | undefined;
+  onTagChange: (tag?: TagItem) => void;
 }
 
 const RightPanel: React.FC<RightPanelProps> = ({
@@ -28,17 +29,26 @@ const RightPanel: React.FC<RightPanelProps> = ({
     mountParcel(parcelConfig, { domElement });
   };
 
+  const getActiveTag = (tag: TagItem) => {
+    if (!currentTag && tag.name === '全部') return styles.active;
+    return tag.name === currentTag?.name ? styles.active : '';
+  };
+
   // 标签
   const Tags = () => (
     <div className={styles.tags}>
       <span>标签：</span>
-      {tags.map((tag: string, index: number) => (
+      {tags.map((tag: TagItem, index: number) => (
         <span
-          key={tag}
-          className={`${styles.tag} ${tag === currentTag ? styles.active : ''}`}
-          onClick={() => onTagChange(index === 0 ? '' : tag)}
+          key={tag.name}
+          className={`${styles.tag} ${getActiveTag(tag)}`}
+          title={`${tag.name}: ${tag.count}`}
+          onClick={() => onTagChange(index === 0 ? undefined : tag)}
         >
-          {index === 0 ? '全部' : tag}
+          <span>{tag.name || '全部'}</span>
+          <span className={styles.count}>
+            {tag.count > 99 ? '99+' : tag.count}
+          </span>
         </span>
       ))}
     </div>

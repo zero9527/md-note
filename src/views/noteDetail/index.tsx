@@ -88,7 +88,7 @@ const NoteDetail: React.FC = () => {
 
   // 点击目录标题
   const onCateClick = (hash: string) => {
-    history.replace({ pathname: location.pathname, hash });
+    scrollToView(hash);
   };
 
   // markdown 渲染好了
@@ -105,7 +105,7 @@ const NoteDetail: React.FC = () => {
     const mdContent = document.querySelector('#md-content') as HTMLElement;
     mdContent.onclick = function(e: any) {
       onCopyCode(e);
-      addImgHandler(e);
+      onImgClick(e);
     };
     // 需要初始化一次，不然要点击两次才能复制
     const copyCodeElems = document.querySelectorAll(
@@ -119,7 +119,7 @@ const NoteDetail: React.FC = () => {
   };
 
   // 图片点击新窗口打开
-  const addImgHandler = (e: any) => {
+  const onImgClick = (e: any) => {
     const imgEl: HTMLImageElement | null = e.target?.closest('.md-img');
     if (imgEl) {
       window.open(imgEl.src);
@@ -161,9 +161,12 @@ const NoteDetail: React.FC = () => {
   // 视图滚动到对应标题位置
   const scrollToView = (hash: string) => {
     if (!hash) return;
-    const el = document.getElementById(hash) as HTMLElement;
-    el?.scrollIntoView();
     setDefaultCateActive(hash);
+    const el = document.getElementById(hash) as HTMLElement;
+    if (el) {
+      const scTop = el.offsetTop - 10;
+      document.body.scrollTop = document.documentElement.scrollTop = scTop;
+    }
   };
 
   const onScroll = () => {

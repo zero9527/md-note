@@ -163,7 +163,8 @@ server.get('/detail/:id', (req: Req, res: http.ServerResponse) => {
 });
 ```
 
-#### prefetch（来自[文档](https://nextjs.org/docs#prefetching-pages)）：
+#### prefetch
+来自[文档](https://nextjs.org/docs#prefetching-pages)
 
 有些操作可能需要延迟，但可以使用 prefetch 预取数据
 
@@ -375,7 +376,7 @@ export default Home;
 
 ### 4.5 Router 事件
 
-#### 监听路由的内部事件：
+#### 监听路由的内部事件
 
 - routeChangeStart(url) - 路由开始变化的时候触发
 - routeChangeComplete(url) - 路由完成变化之后触发
@@ -462,7 +463,7 @@ export default myApp;
 
 ## 6、组件
 
-### 6.1 getInitialProps 属性：
+### 6.1 getInitialProps 属性
 
 接收一个方法，可以在这个方法里面获取数据，在服务端渲染；只能在 pages/ 下的组件使用 [文档](https://nextjs.org/docs#fetching-data-and-component-lifecycle)
 
