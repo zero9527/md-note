@@ -219,7 +219,7 @@ const Counter: React.FC = () => {
 export default Counter;
 ```
 
-## 4、一些自定义 Hook
+## 7、一些自定义 Hook
 
 ### usePrevState
 获取上一次的值

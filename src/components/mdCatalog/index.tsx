@@ -115,7 +115,11 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     cateArr.shift();
 
     cateArr.forEach((cate) => {
-      const id = cate.substring(0, cate.indexOf('\n')).trim();
+      // 替换前后空格，清除转义"\"反斜杠
+      const id = cate
+        .substring(0, cate.indexOf('\n'))
+        .replace(/\\/g, '')
+        .trim();
       const cateItem: CatalogItem = {
         id,
         header: `catelog-${id}`,
@@ -135,18 +139,23 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
     // if (!useScrollTop.current) return;
     const catelogItem = document.getElementById(`catelog-${activeItem.id}`);
     catelogItem?.scrollIntoView();
-    history.replace({ pathname: location.pathname, hash: activeItem.id });
+    replaceUrlHref(activeItem.id);
   };
 
   const cateClick = (cateItem: CatalogItem) => {
     useScrollTop.current = false;
     toggleBlur('remove');
     setCateActive(cateItem.id);
+    replaceUrlHref(cateItem.id);
     onCateClick?.(cateItem.id);
     setTimeout(() => {
       setShowCate(false);
       useScrollTop.current = true;
     }, 0);
+  };
+
+  const replaceUrlHref = (hash: string) => {
+    history.replace({ pathname: location.pathname, hash });
   };
 
   const onCateListShow = () => {

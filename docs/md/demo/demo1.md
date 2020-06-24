@@ -366,9 +366,10 @@ export function fileApi(uri: string, params: any = {}) {
 ### 3.2 内容渲染
 `marked` 设置自定义渲染
 
-默认：
-* 标题 id 会被去掉 `英文特殊字符`，
-* 链接不在新窗口打开
+- 标题 `id` 会被去掉 **英文特殊字符** `=>` **原样输出**
+- 链接不在新窗口打开 `=>` 在新窗口打开
+- 图片添加类名，方便查看操作
+- 代码块，修改渲染模板，添加复制图标（实现复制功能）
 
 ```typescript
 // marked 样式
@@ -432,6 +433,8 @@ const markedHighlight = () => {
 - 对二级标题，三级标题，四级标题生成目录
 - 点击标题视图切换到响应标题下
 - 滚动时，高亮响应目录标题
+- 还原转义字符的原始内容
+  >（去掉反斜杠 `\`，因为某些字符会被 `markdown` 识别成标签或者 `markdown` 语法而被编译；添加转义反斜杠后，就会原样输出，这个时候 `markdown` 字符串还是存在转义反斜杠 `\` 的，所以要去掉）
 
 生成目录
 ```js
@@ -450,7 +453,11 @@ const generateCate = (
   cateArr.shift();
 
   cateArr.forEach((cate) => {
-    const id = cate.substring(0, cate.indexOf('\n')).trim();
+    // 替换前后空格，清除转义"\"反斜杠
+    const id = cate
+      .substring(0, cate.indexOf('\n'))
+      .replace(/\\/g, '')
+      .trim();
     const cateItem: CatalogItem = {
       id,
       header: `catelog-${id}`,

@@ -12,7 +12,7 @@
 >    - 每一层文件夹都包含三个属性：`dir`文件夹路径，`childFiles`子文件，`childDir`子文件夹，存储为对象结构
 >    - 以上步骤重复，直到达到最底层空文件夹或该文件夹只有文件
 
-#### 改进：
+### 改进
 > * 添加目录过滤规则（正则表达式）;根据正则表达式，过滤(i)或只获取(c)；
 默认过滤`["/node_modules|.git/i"]`
 > * 过滤的正则表达式格式：`["regx"]`，如`["/node_modules|.git/i"]`、`["/components/"]`
@@ -22,7 +22,7 @@
 源码可以戳这里：[github地址](https://github.com/zero9527/node-test)
 
 ## 一、输出的内容
-* #### components-dir-tree.json
+### components-dir-tree.json
 
 ```json
 {
@@ -65,7 +65,7 @@
 }
 ```
 
-* #### components-dir-tree.json: output
+### output
 
 ```js
 "output": "D:\\node-test\n└─ components\n    ├─ components-dir-tree1.json\n    ├─ file.2.js\n    ├─ file.bakeup.js\n    ├─ file.js\n    ├─ index.js\n    ├─ log.js\n    ├─ node-test-dir-tree.json\n    ├─ run-sh.js\n    ├─ test\n      └─ aa\n        ├─ bb.js\n        └─ cc\n    └─ timeFormat.js\n"
@@ -103,7 +103,7 @@
 ![](../static/images/node.js-dir-1.png)
 
 
-## 二、主函数 `getDirTree`：
+## 二、主函数 `getDirTree`
 ```js
 //components/file.2.js:
 const fs = require('fs');
@@ -254,7 +254,7 @@ module.exports = {
 
 
 ## 四、调用
-* #### package.json:
+### package.json
 
 ```js
 {
@@ -268,7 +268,7 @@ module.exports = {
 }
 ```
 
-* #### 函数主体
+### 函数主体
 
 ```js
 // components/index.js
@@ -306,5 +306,4 @@ function getDirTreeInit() {
 }
 ```
 
-
-#### 到这里就结束了！
+## 到这里就结束了！

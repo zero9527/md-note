@@ -30,7 +30,7 @@
 * 喜欢CommonJS模块写法的，CMD倒是个不错的选择
 
 ## 一、AMD/require.js
-### 什么是AMD？
+### 什么是 AMD？
 * AMD: Asynchronous Module Definition，中文名是 **异步模块定义** 的意思
 * **依赖前置**，define的时候就引入，然后作为回调函数的参数使用
 * 第三方库支持较多，相对的CMD支持的就比较少，如这里使用的 [lodash.js](https://www.lodashjs.com/) 库（或者我没配置对。。。）
@@ -40,7 +40,7 @@
 
 ![](../static/images/js-amd-cmd-1.png)
 
-### 目录结构：
+### AMD 目录结构
 ```
 ...\require.js-AMD
     ├─ index.html
@@ -52,12 +52,12 @@
     └─ require.js
 ```
 
-### HTML
+### AMD HTML
 ```html
 <script src="./require.js" data-main="./main.js"></script>
 ```
 
-### 入口 main.js
+### AMD 入口 main.js
 ```js
 // js/mian.js
 // 全局配置
@@ -86,7 +86,7 @@ define('main', function() {
 
 ```
 
-### 模块定义
+### AMD 模块定义
 define函数格式： `define(id?, dependencies?, factory);`
 ```js
 // js/m1.js
@@ -113,7 +113,7 @@ define('m1', ['lodash', 'm2'], function(_, m2) {
 
 
 ## 二、CMD/sea.js
-### 什么是CMD？
+### 什么是 CMD？
 * 在浏览器端的`CommonJS`（除去某些Node.js环境特有的API）；同步、动态加载;
 * **依赖就近**，哪里需要哪里`require`；
 * 异步引入 `require.async([dependencies], callback)`；
@@ -123,7 +123,7 @@ define('m1', ['lodash', 'm2'], function(_, m2) {
 
 ![](../static/images/js-amd-cmd-2.png)
 
-### 目录结构：
+### CMD 目录结构
 ```
 ...\sea.js--CMD
     ├─ index.html
@@ -135,7 +135,7 @@ define('m1', ['lodash', 'm2'], function(_, m2) {
     └─ sea.js
 ```
 
-### HTML
+### CMD HTML
 ```html
   <script src="./js/lodash.js"></script>
   <script src="./sea.js"></script>
@@ -159,7 +159,7 @@ define('m1', ['lodash', 'm2'], function(_, m2) {
   </script>
 ```
 
-### 入口 main.js
+### CMD 入口 main.js
 ```js
 // js/mian.js
 define(function(require, exports, module) {
@@ -182,7 +182,7 @@ define(function(require, exports, module) {
 
 ```
 
-### 模块定义
+### CMD 模块定义
 define函数格式： `define(function(require, exports, module) {})`
 ```js
 // js/m1.js

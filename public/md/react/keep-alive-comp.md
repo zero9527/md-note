@@ -46,28 +46,25 @@ export interface KeepAliveAssist {
 
 ### 2.2 组件参数
 * `name`：组件标记，如组件名称
-* `store`：缓存存储的地方，默认 `window`
-* `maxLength`：最大的缓存组件数，默认 `5`
 * `children`：组件子元素，如  
     `<KeepAlive name="list">{(props) => <List {...props} />}</KeepAlive>`
 
 ```typescript
 export interface KeepAliveProps {
   name: string;
-  store?: any;
-  maxLength?: number;
   children: (cacheProps: KeepAliveAssist) => React.ReactElement;
 }
 ```
 
 ### 2.3 主体代码
+#### KeepAlive
 ```typescript
-import React, { useEffect } from 'react';
+// src/index.ts
+import { useEffect } from 'react';
+import useKeepAliveCache from './useKeepAliveCache';
 
 export interface KeepAliveProps {
   name: string;
-  store?: any;
-  maxLength?: number;
   children: (cacheProps: KeepAliveAssist) => React.ReactElement;
 }
 
@@ -80,22 +77,20 @@ export interface KeepAliveAssist {
   getKeepAlive?: () => void;
 }
 
-interface CacheItem {
+export interface CacheItem {
   name: string;
-  cache: any;
-  scrollTop?: number;
   state?: any;
+  scrollTop?: number;
 }
 
-// 组件 keep-alive
-const KeepAlive: React.FC<KeepAliveProps> = ({
-  name,
-  maxLength = 5,
-  store = window,
-  children,
-}) => {
-  const cacheName = `__keep_alive_cache__`;
+/**
+ * 组件 keep-alive
+ * @param {*} name
+ * @param {*} children
+ */
+const KeepAlive: React.FC<KeepAliveProps> = ({ name, children }) => {
   const isChildrenFunction = typeof children === 'function';
+  const { getItem, updateCache, deleteCache } = useKeepAliveCache();
 
   useEffect(() => {
     if (!isChildrenFunction) {
@@ -106,78 +101,223 @@ const KeepAlive: React.FC<KeepAliveProps> = ({
   }, []);
 
   const getKeepAlive = () => {
-    return getItem();
-  };
-
-  const getCache = () => {
-    if (!store[cacheName]) store[cacheName] = [];
-    const item = store[cacheName].find((i: CacheItem) => i.name === name);
-    return item?.cache() || null;
-  };
-
-  // 新增/更新缓存
-  const updateCache = (newCache: any, scrollTop: number, state: any) => {
-    let index = store[cacheName].findIndex((i: CacheItem) => i.name === name);
-    if (index !== -1) {
-      store[cacheName].splice(index, 1, {
-        name,
-        cache: newCache,
-        scrollTop,
-        state,
-      });
-    } else {
-      store[cacheName].unshift({ name, cache: newCache, scrollTop, state });
-    }
-
-    // 最大缓存 maxLength，默认5条
-    if (store[cacheName].length > maxLength) store[cacheName].pop();
+    return getItem(name);
   };
 
   // 组件在路由变化前调用
   const beforeRouteLeave = (scrollTop: number = 0, state: any) => {
-    updateCache(() => children(cacheProps), scrollTop, state);
-  };
-
-  const getItem = (): CacheItem => {
-    if (!store[cacheName]) store[cacheName] = [];
-    const item = store[cacheName].find((i: CacheItem) => i.name === name);
-    return item || null;
+    updateCache({
+      name,
+      state,
+      scrollTop,
+    });
   };
 
   // 返回滚动位置
   const scrollRestore = () => {
-    const item = getItem();
+    const item = getItem(name);
     return item?.scrollTop || null;
   };
 
   // 返回组件的state
   const stateRestore = () => {
-    const item = getItem();
+    const item = getItem(name);
     return item?.state || null;
-  };
-
-  const deleteCache = () => {
-    let index = store[cacheName].findIndex((i: CacheItem) => i.name === name);
-    if (index !== -1) {
-      store[cacheName].splice(index, 1);
-      console.log(`deleteCache-name: ${name}`);
-    }
   };
 
   const cacheProps: KeepAliveAssist = {
     beforeRouteLeave,
     scrollRestore,
     stateRestore,
-    deleteCache,
+    deleteCache: () => deleteCache(name),
     getKeepAlive,
   };
 
-  return getCache() ?? (isChildrenFunction && children(cacheProps));
+  return isChildrenFunction ? children(cacheProps) : null;
 };
 
 export default KeepAlive;
 ```
 
+#### configKeepAlive
+```typescript
+// src/configKeepAlive.ts
+export interface ConfigProps {
+  store: any;
+  maxLength: number;
+  useStorage?: 'sessionStorage' | 'localStorage';
+}
+
+const CACHE_NAME = `__keep_alive_cache__`;
+let DEFAULT_CONFIG: ConfigProps = {
+  store: window,
+  maxLength: 5,
+  useStorage: undefined,
+};
+
+// 配置
+const configKeepAlive = (props: Partial<ConfigProps> = {}) => {
+  const init = () => {
+    DEFAULT_CONFIG = { ...DEFAULT_CONFIG, ...props };
+    const { store, maxLength, useStorage } = DEFAULT_CONFIG;
+    store[CACHE_NAME] = {
+      maxLength,
+      useStorage,
+      cacheList: store[CACHE_NAME]?.cacheList || [],
+    };
+  };
+
+  init();
+
+  return {
+    cacheName: CACHE_NAME,
+    ...DEFAULT_CONFIG,
+  };
+};
+
+export default configKeepAlive;
+```
+
+#### useKeepAliveCache
+```typescript
+// src/useKeepAliveCache.ts
+import { useEffect } from 'react';
+import { CacheItem } from '.';
+import configKeepAlive from './configKeepAlive';
+
+type UpdateStorageCache = {
+  _store: any;
+  _cacheName: string;
+};
+
+export type UpdateCache = {
+  name: string;
+  state: any;
+  scrollTop: number;
+};
+
+// 缓存
+const useKeepAliveCache = () => {
+  const { cacheName, maxLength, store, useStorage } = configKeepAlive();
+  const useStorageError = 'useStorage只能为："sessionStorage","localStorage"';
+
+  useEffect(() => {
+    if (useStorage) restoreCache();
+    else clearOldStoraCache();
+  }, []);
+
+  const clearOldStoraCache = () => {
+    store.sessionStorage?.removeItem(cacheName);
+    store.localStorage?.removeItem(cacheName);
+  };
+
+  // 从storage从恢复缓存，如果有传 useStorage 的话
+  const restoreCache = () => {
+    const storageCache = getStorageCache();
+    if (storageCache) store[cacheName] = storageCache;
+  };
+
+  // 无效的 useStorage
+  const inValidUseStorage = (): boolean => {
+    return (
+      Boolean(useStorage) !== false &&
+      useStorage !== 'sessionStorage' &&
+      useStorage !== 'localStorage'
+    );
+  };
+
+  // 获取storage中缓存
+  const getStorageCache = (
+    { _store, _cacheName }: UpdateStorageCache = {
+      _store: store,
+      _cacheName: cacheName,
+    }
+  ) => {
+    if (inValidUseStorage()) return console.warn(useStorageError);
+    let parsedCache: any = '';
+    const cache = _store[useStorage!]?.getItem(_cacheName);
+
+    if (cache) {
+      try {
+        parsedCache = JSON.parse(cache);
+      } catch (err) {
+        clearOldStoraCache();
+        console.error('从storage中恢复缓存出错，已删除storage缓存！', err);
+      }
+    }
+
+    return parsedCache;
+  };
+
+  // 更新storage中缓存
+  const updateStorageCache = (
+    { _store, _cacheName }: UpdateStorageCache = {
+      _store: store,
+      _cacheName: cacheName,
+    }
+  ) => {
+    if (inValidUseStorage()) return console.warn(useStorageError);
+    _store[useStorage!]?.setItem(
+      _cacheName,
+      JSON.stringify({ ..._store[_cacheName], maxLength, useStorage })
+    );
+  };
+
+  const getCacheList = (): CacheItem[] => {
+    const storeCache = store[cacheName];
+    return storeCache.cacheList;
+  };
+
+  const getItem = (name: string) => {
+    let cacheList = getCacheList();
+    const item = cacheList.find((i: CacheItem) => i.name === name);
+    return item || null;
+  };
+
+  // 新增/更新缓存
+  const updateCache = ({ name, scrollTop, state }: UpdateCache) => {
+    let cacheList = getCacheList();
+    let index = cacheList.findIndex((i: CacheItem) => i.name === name);
+    if (index !== -1) {
+      cacheList.splice(index, 1, {
+        name,
+        state,
+        scrollTop,
+      });
+    } else {
+      cacheList.unshift({
+        name,
+        state,
+        scrollTop,
+      });
+    }
+
+    // 最大缓存 maxLength，默认5条
+    if (cacheList.length > maxLength) cacheList.pop();
+    // 更新storage
+    if (useStorage) updateStorageCache();
+  };
+
+  const deleteCache = (name: string) => {
+    let cacheList = getCacheList();
+    let index = cacheList.findIndex((i: CacheItem) => i.name === name);
+    if (index !== -1) {
+      cacheList.splice(index, 1);
+      // 更新storage
+      if (useStorage) updateStorageCache();
+    }
+  };
+
+  return {
+    getItem,
+    updateCache,
+    deleteCache,
+    getStorageCache,
+  };
+};
+
+export default useKeepAliveCache;
+```
 
 ## 3、测试
 使用 `jest` + `enzyme` 测试
@@ -211,19 +351,29 @@ module.exports = {
 };
 ```
 
-### 3.4 index.test.js
+### 3.4 \_\_test\_\_
+#### index.test.js
 ```js
-// src/index.test.js
+// __test__/index.test.js
 import React from 'react';
 import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import KeepAlive from './index';
+import KeepAlive from '../src/index';
+import configKeepAliveTest from './configKeepAliveTest';
+import useKeepAliveCacheTest from './useKeepAliveCacheTest';
 
 configure({ adapter: new Adapter() });
 
 const Child = (props) => <div className="child">ccccaaaa</div>;
 
 describe('============= keep-alive test =============', () => {
+  configKeepAliveTest({
+    store: global,
+    maxLength: 2,
+    useStorage: 'sessionStorage',
+  });
+  useKeepAliveCacheTest('child');
+
   const wrapper1 = shallow(
     <KeepAlive name="child">{(props) => <Child {...props} />}</KeepAlive>
   );
@@ -267,7 +417,7 @@ describe('============= keep-alive test =============', () => {
   let count = 0;
   // 附加属性 KeepAliveAssist 返回有效值
   const propsValid = () => {
-    if (count > 2) return;
+    if (count > 1) return;
     count++;
 
     const {
@@ -282,16 +432,24 @@ describe('============= keep-alive test =============', () => {
     expect(scrollRestore()).toBe(10);
     expect(stateRestore()).toEqual(['1', '2']);
 
-    const { name, scrollTop, state, cache } = getKeepAlive();
+    const { name, scrollTop, state } = getKeepAlive();
     expect(name).toBe('child');
     expect(scrollTop).toBe(10);
     expect(state).toEqual(['1', '2']);
-    const _wrapper = shallow(<KeepAlive name="child">{cache()}</KeepAlive>);
 
     // 第二次
-    renderSuccess(_wrapper);
-    addPropsSuccess(_wrapper);
-    propsValid(_wrapper);
+    beforeRouteLeave(100, ['11', '22']);
+    expect(scrollRestore()).toBe(100);
+    expect(stateRestore()).toEqual(['11', '22']);
+
+    const {
+      name: name2,
+      scrollTop: scrollTop2,
+      state: state2,
+    } = getKeepAlive();
+    expect(name2).toBe('child');
+    expect(scrollTop2).toBe(100);
+    expect(state2).toEqual(['11', '22']);
 
     deleteCache();
     expect(getKeepAlive()).toBe(null);
@@ -299,34 +457,173 @@ describe('============= keep-alive test =============', () => {
 });
 ```
 
+#### configKeepAliveTest.js
+```js
+// __test__/configKeepAliveTest.js
+import configKeepAlive from '../src/configKeepAlive';
+
+function configKeepAliveTest(config) {
+  const { cacheName, store, maxLength, useStorage } = configKeepAlive(config);
+
+  it('-- configKeepAlive 测试 --', () => {
+    expect(cacheName).toBe('__keep_alive_cache__');
+    expect(store).toBe(global);
+    expect(maxLength).toBe(config.maxLength);
+    expect(useStorage).toBe(config.useStorage);
+  });
+}
+
+export default configKeepAliveTest;
+```
+
+#### useKeepAliveCacheTest.js
+```js
+// __test__/useKeepAliveCacheTest.js
+import { renderHook } from '@testing-library/react-hooks';
+import useKeepAliveCache from '../src/useKeepAliveCache';
+import configKeepAlive from '../src/configKeepAlive';
+
+function useKeepAliveCacheTest(name) {
+  it('-- useStorage: undefined 测试 --', () => {
+    const useStorageValue = undefined;
+    const configKeepAliveProps = renderHook(() =>
+      configKeepAlive({ store: global, useStorage: useStorageValue })
+    ).result.current;
+    const useKeepAliveCacheProps = renderHook(() => useKeepAliveCache()).result
+      .current;
+
+    testHandler({
+      name,
+      ...configKeepAliveProps,
+      ...useKeepAliveCacheProps,
+      useStorageValue,
+    });
+  });
+
+  it('-- useStorage: "sessionStorage" 测试 --', () => {
+    const useStorageValue = 'sessionStorage';
+    const configKeepAliveProps = renderHook(() =>
+      configKeepAlive({ store: global, useStorage: useStorageValue })
+    ).result.current;
+    const useKeepAliveCacheProps = renderHook(() => useKeepAliveCache()).result
+      .current;
+
+    testHandler({
+      name,
+      ...configKeepAliveProps,
+      ...useKeepAliveCacheProps,
+      useStorageValue,
+    });
+  });
+}
+
+function testHandler({
+  name,
+  cacheName,
+  store,
+  useStorage,
+  getItem,
+  updateCache,
+  deleteCache,
+  getStorageCache,
+  useStorageValue,
+}) {
+  expect(useStorage).toBe(useStorageValue);
+
+  expect(getItem(name)).toBe(null);
+
+  const cache1 = { name, scrollTop: 10, state: { a: 'aa' } };
+  updateCache(cache1);
+  expect(getItem(name)).toEqual(cache1);
+
+  if (useStorageValue) {
+    const cache1 = getStorageCache({ _store: store, _cacheName: cacheName });
+    expect(Boolean(cache1)).not.toBeFalsy();
+
+    // 非 JSON 格式数据
+    store[useStorageValue].setItem(cacheName, 'dd');
+    const cache2 = getStorageCache({ _store: store, _cacheName: cacheName });
+    expect(cache2).toBe('');
+
+    const storeCache = store[useStorageValue].getItem(cacheName);
+    expect(storeCache).toBe(null);
+
+    // useStorage 不按要求传递
+  } else {
+    const cache = getStorageCache();
+    expect(Boolean(cache)).toBeFalsy();
+  }
+
+  const cache2 = {
+    name,
+    scrollTop: 100,
+    state: { a1: 'aa1' },
+  };
+  updateCache(cache2);
+  expect(getItem(name)).toEqual(cache2);
+
+  deleteCache(name);
+
+  expect(getItem(name)).toBe(null);
+}
+
+export default useKeepAliveCacheTest;
+```
+
 ### 3.5 yarn test
 执行 `yarn test`
-```shell
-PS F:\code\keep-alive> yarn test
-yarn run v1.17.3
+```sh
+zero9527@zero9527deMBP keep-alive (master) $ yarn test
+yarn run v1.22.1
 $ cross-env NODE_ENV=test jest --config jest.config.js
- PASS  src/index.test.js
+ PASS  __test__/index.test.js
   ============= keep-alive test =============
-    √ -- children 非函数不渲染 -- (3ms)
-    √ -- 成功渲染 -- (18ms)
-    √ -- 成功附加属性 KeepAliveAssist 到子组件 children --
-    √ -- 子组件, 附加属性 KeepAliveAssist 返回有效值 -- (24ms)
+    ✓ -- configKeepAlive 测试 -- (4ms)
+    ✓ -- useStorage: undefined 测试 -- (14ms)
+    ✓ -- useStorage: "sessionStorage" 测试 -- (31ms)
+    ✓ -- children 非函数不渲染 -- (2ms)
+    ✓ -- 成功渲染 -- (11ms)
+    ✓ -- 成功附加属性 KeepAliveAssist 到子组件 children -- (4ms)
+    ✓ -- 子组件, 附加属性 KeepAliveAssist 返回有效值 -- (7ms)
 
-  console.log src/index.tsx:99
-    deleteCache-name: child
+  console.error
+    从storage中恢复缓存出错，已删除storage缓存！ SyntaxError: Unexpected token d in JSON at position 0
+        at JSON.parse (<anonymous>)
+        at getStorageCache (/Users/zero9527/Desktop/FE/keep-alive/src/useKeepAliveCache.ts:59:28)
+        at testHandler (/Users/zero9527/Desktop/FE/keep-alive/__test__/useKeepAliveCacheTest.js:64:20)
+        at Object.<anonymous> (/Users/zero9527/Desktop/FE/keep-alive/__test__/useKeepAliveCacheTest.js:30:5)
+        at Object.asyncJestTest (/Users/zero9527/Desktop/FE/keep-alive/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+        at resolve (/Users/zero9527/Desktop/FE/keep-alive/node_modules/jest-jasmine2/build/queueRunner.js:45:12)
+        at new Promise (<anonymous>)
+        at mapper (/Users/zero9527/Desktop/FE/keep-alive/node_modules/jest-jasmine2/build/queueRunner.js:28:19)
+        at promise.then (/Users/zero9527/Desktop/FE/keep-alive/node_modules/jest-jasmine2/build/queueRunner.js:75:41)
 
------------|---------|----------|---------|---------|-------------------
-File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
------------|---------|----------|---------|---------|-------------------
-All files  |   91.11 |    73.08 |   93.33 |   94.59 |
- index.tsx |   91.11 |    73.08 |   93.33 |   94.59 | 37-38
------------|---------|----------|---------|---------|-------------------
+      60 |       } catch (err) {
+      61 |         clearOldStoraCache();
+    > 62 |         console.error('从storage中恢复缓存出错，已删除storage缓存！', err);
+         |                 ^
+      63 |       }
+      64 |     }
+      65 | 
+
+      at getStorageCache (src/useKeepAliveCache.ts:62:17)
+      at testHandler (__test__/useKeepAliveCacheTest.js:64:20)
+      at Object.<anonymous> (__test__/useKeepAliveCacheTest.js:30:5)
+
+----------------------|---------|----------|---------|---------|---------------------
+File                  | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s   
+----------------------|---------|----------|---------|---------|---------------------
+All files             |    93.1 |    71.79 |   95.65 |    97.4 |                     
+ configKeepAlive.ts   |     100 |      100 |     100 |     100 |                     
+ index.ts             |   89.47 |    44.44 |   85.71 |   89.47 | 34-35               
+ useKeepAliveCache.ts |   93.22 |    77.78 |     100 |     100 | 34-40,53,76,113,121 
+----------------------|---------|----------|---------|---------|---------------------
 Test Suites: 1 passed, 1 total
-Tests:       4 passed, 4 total
+Tests:       7 passed, 7 total
 Snapshots:   0 total
-Time:        3.185s
+Time:        2.399s, estimated 8s
 Ran all test suites.
-Done in 4.14s.
+✨  Done in 4.08s.
 ```
 
 ## 4、使用例子

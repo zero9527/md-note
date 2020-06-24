@@ -23,6 +23,7 @@ D:\node-test
 |     ├─run-sh.js
 ...
 ```
+
 ```
  D:\node-test
 ├─ components
@@ -53,9 +54,9 @@ D:\node-test
 
 ```
 
-## 一、生成文件：
+## 一、生成文件
 
-#### npm命令：
+### npm 命令 create:comp
 ```json
 package.json:
 {
@@ -67,7 +68,8 @@ package.json:
 }
 ```
 
-#### --path 这个参数的值可以通过下面获取到:
+### 参数 --path 
+这个参数的值可以通过下面获取到:
 > `--path` 可以自行设置，获取的时候`[path]`将作为`key`存到`program`
 
 ```js
@@ -82,7 +84,9 @@ const inputName = program.path;
 log('\ninputName: ',inputName);
 ```
 
-#### 命令行交互 inquirer.js 简单使用：
+### 命令行交互 
+inquirer.js 简单使用：
+
 * `name`：字段名, 调用then的回调参数值里可以找到匹配的name，<br />
 * `message`：提示信息，<br />
 * 其他的就是一些选项数据、默认值、过滤规则、校验、配置等
@@ -147,7 +151,8 @@ inquirer.prompt(questions).then(res => {
 }
 ```
 
-#### 生成文件 scripts/generateComponent.js:
+### 生成文件 
+scripts/generateComponent.js:
 ```js
 const fs = require('fs');
 const path = require('path');
@@ -234,7 +239,7 @@ module.export = {
 
 ```
 
-#### 命令行打印的提示
+### 命令行打印的提示
 * 新文件
 
 ```shell
@@ -271,7 +276,7 @@ D:\node-test\components\aa: 文件夹已存在
 ```
 
 
-## 二、执行脚本：
+## 二、执行脚本
 > 使用`child_process`子进程的`exec`执行脚本
 
 > #### 以下内容，摘抄自[Node.js 中文网](http://nodejs.cn/api/child_process.html#child_process_child_process)
@@ -287,7 +292,7 @@ D:\node-test\components\aa: 文件夹已存在
 > * `child_process.execFileSync()`: `child_process.execFile()` 的同步版本，会阻塞 `Node.js` 事件循环。
 对于某些用例，例如自动化的 `shell` 脚本，同步的方法可能更方便。 但是在大多数情况下，同步的方法会对性能产生重大影响，因为它会停止事件循环直到衍生的进程完成。
 
-#### npm命令：
+### npm 命令 sh
 ```js
 package.json:
 {
@@ -299,7 +304,7 @@ package.json:
 }
 ```
 
-* 命令生成 sh/sh1.js:
+### 命令生成 sh/sh1.js
 
 > 使用npm命令时，需如上所示，在上面`package.json`中`scripts`配置好
 
@@ -338,7 +343,8 @@ module.exports = {
 }
 ```
 
-* 执行脚本 components/run-sh.js
+### 执行脚本 
+components/run-sh.js
 
 ```js
 // exec 执行shell命令
@@ -380,7 +386,7 @@ exec(buildFE('/code/react-t1', 'npm run build'), (err, stdout, stderr) => {
 
 ```
 
-* 命令行打印：
+### 命令行打印
 
 ```shell
 $ npm run sh

@@ -51,7 +51,7 @@ src结构：
 
 
 ## 2、typescript
-### tsconfig.json:
+### tsconfig.json
 ```json
 {
   "compilerOptions": {
@@ -104,7 +104,7 @@ src结构：
 webpack.config.dev.js中添加`mode`字段：`mode: 'development'`<br>
 webpack.config.prod.js中添加`mode`字段：`mode: 'production'`<br>
 
-### 需要升级的相关模块：
+### 需要升级的相关模块
 
 `yarn upgrade **` 升级或者直接 `yarn add ** -D` 也可以
 * `file-loader`
