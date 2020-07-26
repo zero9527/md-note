@@ -45,6 +45,13 @@
   }
 }
 
+.tags {
+  width: 100%;
+  margin: 0;
+  margin-top: 10px;
+  padding: 0 12px;
+}
+
 .container {
   padding-bottom: 12px;
 
@@ -178,5 +185,11 @@
     .desc {
       display: none;
     }
+  }
+}
+
+@media screen and (min-width: 980px) {
+  .tags {
+    display: none;
   }
 }

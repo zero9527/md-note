@@ -42,6 +42,7 @@ const useNoteModel = () => {
   useEffect(() => {
     if (noteList[0]?.name === '') {
       setLoading(true);
+      // TODO: 改为typescript，可以在新增的时候有类型提示
       getNoteListConfig().then((res: any) => {
         updateNoteList(FastSort<NoteItem>(res, 'create_time').reverse());
         setLoading(false);

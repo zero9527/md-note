@@ -1,0 +1,61 @@
+.tags {
+  margin-bottom: 20px;
+  overflow: hidden;
+
+  > span {
+    @include themeify {
+      color: themed('desc-color');
+    }
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+    word-break: break-word;
+    cursor: pointer;
+    @include themeify {
+      color: themed('gray-color');
+    }
+
+    &:hover {
+      @include themeify {
+        color: themed('primary-color');
+      }
+      .count {
+        @include themeify {
+          color: themed('border-color');
+          background-color: themed('primary-color');
+        }
+      }
+    }
+
+    &.active {
+      @include themeify {
+        color: themed('primary-color');
+      }
+
+      .count {
+        @include themeify {
+          color: themed('border-color');
+          background-color: themed('primary-color');
+        }
+      }
+    }
+
+    .count {
+      display: inline-block;
+      margin-left: 2px;
+      padding: 0 4px;
+      line-height: 1;
+      border-radius: 4px;
+      font-size: 12px;
+      transition: none;
+
+      @include themeify {
+        color: themed('gray-color');
+        background-color: themed('border-color');
+      }
+    }
+  }
+}

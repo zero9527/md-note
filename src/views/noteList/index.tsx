@@ -9,6 +9,7 @@ import Tools from '@/components/Tools';
 import RightPanel from '@/components/RightPanel';
 import Scroll2Top from '@/components/Scroll2Top';
 import styles from './styles.scss';
+import ArticleTag from '@/components/ArticleTag';
 
 interface NoteListProps extends KeepAliveAssist {}
 export type TagItem = {
@@ -35,7 +36,9 @@ const NoteList: React.FC<NoteListProps> = (props) => {
   useEffect(() => {
     if (currentTag) {
       setNoteList(() => {
-        return fullNoteList.filter((note) => note.tag === currentTag.name);
+        return fullNoteList.filter((note) =>
+          note.tag.split(',').some((tag) => tag.trim() === currentTag.name)
+        );
       });
     } else {
       setNoteList(fullNoteList);
@@ -58,21 +61,27 @@ const NoteList: React.FC<NoteListProps> = (props) => {
   };
 
   // 标签
+  // TODO: 拆分到外部
   const tags: TagItem[] = useMemo(() => {
-    if (!fullNoteList) return [];
-    const _tags: TagItem[] = [];
-    fullNoteList[0]?.name &&
-      fullNoteList?.forEach((noteItem) => {
-        const hasItem: TagItem | undefined = _tags.find(
-          (item) => item.name === noteItem.tag
-        );
-        if (hasItem) {
-          hasItem.count++;
+    if (!fullNoteList[0]?.name) {
+      return [{ name: '全部', count: fullNoteList.length }];
+    }
+    let allTags = fullNoteList.reduce<TagItem[]>((acc, cur) => {
+      // 多个tag
+      const multiTags = cur.tag.split(',').map((item) => item.trim());
+      multiTags.forEach((name) => {
+        const hasItems = acc.filter((item) => item.name === name);
+        if (hasItems.length) {
+          hasItems.forEach((item) => item.count++);
         } else {
-          _tags.push({ name: noteItem.tag, count: 1 });
+          acc.push({ name, count: 1 });
         }
       });
-    return [{ name: '全部', count: fullNoteList.length }, ..._tags];
+      return acc;
+    }, []);
+    // 降序排序
+    allTags.sort((x, y) => y.count - x.count);
+    return [{ name: '全部', count: fullNoteList.length }, ...allTags];
   }, [fullNoteList]);
 
   const onTagChange = (tag: TagItem | undefined) => {
@@ -109,6 +118,12 @@ const NoteList: React.FC<NoteListProps> = (props) => {
         </div>
       </Header>
       <main className={`center-content ${styles['note-list']}`}>
+        <ArticleTag
+          className={styles.tags}
+          tags={tags}
+          currentTag={currentTag}
+          onTagChange={onTagChange}
+        />
         <section
           id={loading ? styles.skeleton : ''}
           className={`container ${styles.container}`}
@@ -119,7 +134,9 @@ const NoteList: React.FC<NoteListProps> = (props) => {
                 return (
                   <Link
                     key={`${noteitem.tag}-${noteitem.name}`}
-                    to={`/detail/${noteitem.tag}/${noteitem.name}`}
+                    to={`/detail/${noteitem.tag.split(',')[0]}/${
+                      noteitem.name
+                    }`}
                     className={`link ${styles.item}`}
                     onClick={toDetailClick}
                   >

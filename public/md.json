@@ -54,7 +54,7 @@
     "create_time": "2019/10/01"
   },
   {
-    "tag": "node.js",
+    "tag": "node.js, npm",
     "name": "zr-deploy.md",
     "title": "node.js写一个前端项目部署脚本",
     "create_time": "2020/06/01"
@@ -78,7 +78,7 @@
     "create_time": "2020/06/01"
   },
   {
-    "tag": "react",
+    "tag": "react, npm",
     "name": "keep-alive-comp.md",
     "title": "简单实现一个React组件Keep-Alive",
     "create_time": "2020/04/14"
@@ -126,7 +126,7 @@
     "create_time": "2020/06/01"
   },
   {
-    "tag": "react",
+    "tag": "react, npm",
     "name": "zr-virtual-list.md",
     "title": "React长列表虚拟滚动",
     "create_time": "2020/07/25"

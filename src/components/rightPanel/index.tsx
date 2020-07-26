@@ -4,6 +4,7 @@ import { TagItem } from '@/views/NoteList';
 import StickyRight from '@/components/StickyRight';
 import { mountParcel } from '@/index';
 import styles from './styles.scss';
+import ArticleTag from '../ArticleTag';
 
 export interface RightPanelProps {
   tags: TagItem[];
@@ -29,31 +30,6 @@ const RightPanel: React.FC<RightPanelProps> = ({
     mountParcel(parcelConfig, { domElement });
   };
 
-  const getActiveTag = (tag: TagItem) => {
-    if (!currentTag && tag.name === '全部') return styles.active;
-    return tag.name === currentTag?.name ? styles.active : '';
-  };
-
-  // 标签
-  const Tags = () => (
-    <div className={styles.tags}>
-      <span>标签：</span>
-      {tags.map((tag: TagItem, index: number) => (
-        <span
-          key={tag.name}
-          className={`${styles.tag} ${getActiveTag(tag)}`}
-          title={`${tag.name}: ${tag.count}`}
-          onClick={() => onTagChange(index === 0 ? undefined : tag)}
-        >
-          <span>{tag.name || '全部'}</span>
-          <span className={styles.count}>
-            {tag.count > 99 ? '99+' : tag.count}
-          </span>
-        </span>
-      ))}
-    </div>
-  );
-
   const Beian = () => (
     <a href="http://www.beian.miit.gov.cn/" target="__blank" title="备案号">
       粤ICP备20014593号-1
@@ -78,7 +54,11 @@ const RightPanel: React.FC<RightPanelProps> = ({
     >
       <div id="app-clock" className={styles['single-spa-clock']} />
       <div id="app-calendar" className={styles['single-spa-calendar']} />
-      <Tags />
+      <ArticleTag
+        tags={tags}
+        currentTag={currentTag}
+        onTagChange={onTagChange}
+      />
       <div className={styles.footer}>
         <Beian />
         <CopyRight />
