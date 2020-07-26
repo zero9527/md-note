@@ -45,6 +45,21 @@ a {
   }
 }
 
+@mixin keyframes($animationName) {
+  @-webkit-keyframes #{$animationName} {
+    @content;
+  }
+  @-moz-keyframes #{$animationName} {
+    @content;
+  }
+  @-o-keyframes #{$animationName} {
+    @content;
+  }
+  @keyframes #{$animationName} {
+    @content;
+  }
+}
+
 @media screen and (min-width: 800px) {
   html {
     font-size: 15px;
@@ -140,5 +155,15 @@ a {
     left: 0;
     right: 0;
     margin: 0 auto;
+    animation: show 0.2s ease-in-out;
+  }
+}
+
+@keyframes :global(show) {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

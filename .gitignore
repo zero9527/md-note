@@ -7,7 +7,7 @@
 /coverage
 
 # production
-/build
+/docs
 
 # 部署配置
 zr-deploy-config.json
