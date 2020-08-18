@@ -218,7 +218,7 @@
     .catelist {
       height: 100vh;
       width: max-content;
-      max-width: 260px;
+      max-width: 80vw;
       position: absolute;
       top: 0;
       right: 0;
@@ -231,6 +231,10 @@
       transform: translateX(100%);
       @include themeify {
         background: themed('bg-color-light');
+      }
+
+      .cate-content {
+        padding: 8px;
       }
 
       .close {
