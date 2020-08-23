@@ -24,7 +24,7 @@
     margin-right: 5px;
     animation: load 1.04s ease infinite;
     @include themeify {
-      background: themed('primary-color');
+      background-color: themed('primary-color');
     }
 
     &:last-child {

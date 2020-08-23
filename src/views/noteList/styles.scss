@@ -7,7 +7,7 @@
     animation: loading 0.5s infinite alternate;
     @include themeify {
       color: themed('bg-color-light');
-      background: themed('bg-color-light');
+      background-color: themed('bg-color-light');
     }
   }
 }
@@ -73,20 +73,23 @@
     -webkit-tap-highlight-color: transparent;
     border-radius: 4px;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+    transform: scale(0.98);
+    transition: transform 0.3s ease;
     @include themeify {
-      background: themed('bg-color');
+      background-color: themed('bg-color-o8');
     }
 
     &:hover {
+      transform: scale(1);
       @include themeify {
         color: themed('base-color');
-        background: themed('bg-color-light');
+        background-color: themed('bg-color-o6');
       }
     }
     &:active {
       @include themeify {
         color: themed('primary-color');
-        background: themed('bg-color-heavy');
+        background-color: themed('bg-color-o6');
       }
     }
 
@@ -165,13 +168,13 @@
   from {
     @include themeify {
       color: themed('bg-color-light');
-      background: themed('bg-color-light');
+      background-color: themed('bg-color-light');
     }
   }
   to {
     @include themeify {
       color: themed('bg-color-heavy');
-      background: themed('bg-color-heavy');
+      background-color: themed('bg-color-heavy');
     }
   }
 }

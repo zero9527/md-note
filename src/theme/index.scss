@@ -5,15 +5,19 @@ $base: (
   base-color: #3e3e3e,
   desc-color: #666,
   second-color: #999,
-  gray-color: #cccccc,
+  gray-color: #aaa,
   border-color: #e9e9e9,
   bg-color: #fefefe,
   bg-color-light: #f6f6f6,
   bg-color-heavy: #f1f1f1,
+  bg-color-o6: rgba(255, 255, 255, 0.6),
+  bg-color-o8: rgba(255, 255, 255, 0.8),
+  border-color-o8: rgba(233, 233, 233, 0.5),
   linear-background-0:
     linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
   linear-background-180:
     linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
+  bg-image: url('https://s1.ax1x.com/2020/08/20/dJ97PU.th.jpg'),
 );
 
 $blue: (
@@ -64,10 +68,14 @@ $dark: (
   bg-color: #232426,
   bg-color-light: #292b2d,
   bg-color-heavy: #1e1f21,
+  bg-color-o6: #1e1f21,
+  bg-color-o8: #292b2d,
+  border-color-o8: #2e2e2e,
   linear-background-0:
     linear-gradient(0deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
   linear-background-180:
     linear-gradient(180deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
+  bg-image: '',
 );
 
 $themes: (

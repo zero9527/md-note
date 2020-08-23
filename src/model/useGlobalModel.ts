@@ -10,7 +10,7 @@ const useGlobalModel = () => {
   useEffect(() => {
     setHeight(window.innerHeight);
     const _theme = localStorage.getItem('theme');
-    if (_theme) setTheme(_theme);
+    setTheme(_theme || 'blue');
   }, []);
 
   const setTheme = (_theme: string) => {

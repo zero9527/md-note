@@ -1,6 +1,6 @@
 html[data-theme='dark'] {
   color: #ccc;
-  background: #232426;
+  background-color: #232426;
 }
 html {
   font-size: 14px;
@@ -12,7 +12,7 @@ body {
   font-family: sans-serif;
   @include themeify {
     color: themed('base-color');
-    background: themed('bg-color');
+    background-color: themed('bg-color');
   }
 }
 * {
@@ -72,8 +72,25 @@ a {
 
 @media screen and (min-width: 980px) {
   :global {
+    #md-note {
+      &::before {
+        background-position: 100% center;
+        background-size: 100% 100%;
+      }
+    }
     .container {
       max-width: 710px;
+    }
+  }
+}
+
+@media screen and (max-width: 979px) {
+  :global {
+    #md-note {
+      &::before {
+        background-position: 100% 100%;
+        background-size: auto 120%;
+      }
     }
   }
 }
@@ -81,9 +98,27 @@ a {
 :global {
   #md-note {
     min-height: 100vh;
+    z-index: 1;
     @include themeify {
       color: themed('base-color');
-      background: themed('bg-color-heavy');
+      // background-color: themed('bg-color-light');
+    }
+
+    &::before {
+      content: '';
+      width: 100%;
+      height: 120%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      z-index: -1;
+      @include themeify {
+        // color: themed('base-color');
+        background-color: themed('bg-color-light');
+        background-image: themed('bg-image');
+      }
     }
   }
 
@@ -113,7 +148,7 @@ a {
     @include themeify {
       color: themed('base-color');
       border-color: themed('border-color');
-      background: themed('bg-color');
+      background-color: themed('bg-color');
     }
 
     &:hover {
@@ -122,7 +157,7 @@ a {
     &:active {
       outline: none;
       @include themeify {
-        background: themed('bg-color-light');
+        background-color: themed('bg-color-light');
       }
     }
     &:focus {
@@ -145,7 +180,7 @@ a {
       bottom: 0;
       transform: scale(1, 0.5);
       @include themeify {
-        background: themed('gray-color');
+        background-color: themed('gray-color');
       }
     }
   }

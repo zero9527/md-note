@@ -399,7 +399,7 @@ this.saleList = [
       left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 50px;
-      background: linear-gradient(right, #F87D72, #F29E97);
+      background-color: linear-gradient(right, #F87D72, #F29E97);
       box-shadow: 0 6upx 16upx -6upx #F97C71;
       z-index: -1;
     }

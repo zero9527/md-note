@@ -23,7 +23,7 @@
       background-position: 10px 10px;
       background-size: 100%;
       @include themeify {
-        background-color: themed('bg-color-light');
+        background-color: themed('bg-color-o8');
       }
     }
 
@@ -42,14 +42,14 @@
     min-height: 358px;
     margin-bottom: 20px;
     @include themeify {
-      background: themed('bg-color');
+      background-color: themed('bg-color-o8');
     }
 
     :global {
       .calendar {
         @include themeify {
           color: themed('base-color');
-          background: themed('bg-color');
+          background-color: themed('bg-color-o8');
         }
 
         .body {
@@ -81,7 +81,7 @@
                 &:after {
                   @include themeify {
                     border-color: themed('primary-color');
-                    background: themed('primary-color');
+                    background-color: themed('primary-color');
                     box-shadow: 2px 2px 10px -2px themed('primary-color');
                   }
                 }
@@ -114,24 +114,24 @@
           .content {
             @include themeify {
               color: themed('base-color');
-              background: themed('bg-color');
+              background-color: themed('bg-color');
             }
 
             .up {
               @include themeify {
-                background: themed('linear-background-0');
+                background-color: themed('linear-background');
               }
             }
 
             .down {
               @include themeify {
-                background: themed('linear-background-180');
+                background-color: themed('linear-background-180');
               }
             }
 
             .active {
               @include themeify {
-                background: themed('primary-color');
+                background-color: themed('primary-color');
               }
             }
           }

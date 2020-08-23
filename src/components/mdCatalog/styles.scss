@@ -10,7 +10,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    background: $mask-bg;
+    background-color: $mask-bg;
     z-index: 30;
   }
 
@@ -21,16 +21,8 @@
     z-index: 40;
     transition: margin-top 0.3s;
     -webkit-tap-highlight-color: transparent;
-
-    &::before {
-      content: '';
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0px;
-      @include themeify {
-        border-left: 1px solid themed('border-color');
-      }
+    @include themeify {
+      background-color: themed('bg-color-o6');
     }
 
     .close {
@@ -50,13 +42,13 @@
       cursor: pointer;
       @include themeify {
         color: themed('base-color');
-        background: themed('bg-color-heavy');
+        background-color: themed('bg-color-heavy');
       }
 
       &:hover,
       &:active {
         @include themeify {
-          background: themed('bg-color');
+          background-color: themed('bg-color');
         }
       }
     }
@@ -130,7 +122,7 @@
 
         &:hover {
           @include themeify {
-            background: themed('border-color');
+            background-color: themed('border-color-o8');
           }
 
           &::before {
@@ -149,7 +141,7 @@
         &:active {
           @include themeify {
             color: themed('primary-color');
-            background: themed('border-color');
+            background-color: themed('border-color-o8');
           }
         }
       }
@@ -157,7 +149,7 @@
       .active {
         @include themeify {
           color: themed('primary-color');
-          background: themed('border-color');
+          background-color: themed('border-color-o8');
         }
 
         &::before {
@@ -230,7 +222,7 @@
       transition: 0.3s;
       transform: translateX(100%);
       @include themeify {
-        background: themed('bg-color-light');
+        background-color: themed('bg-color-light');
       }
 
       .cate-content {

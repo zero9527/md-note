@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 100;
 
   .content {
@@ -18,7 +18,7 @@
     transform: translate(-50%, -50%);
     @include themeify {
       color: themed('base-color');
-      background: themed('bg-color');
+      background-color: themed('bg-color');
     }
 
     .close {

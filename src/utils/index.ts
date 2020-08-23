@@ -18,7 +18,7 @@ export function loading() {
   wrapper.setAttribute('id', 'loading-wrapper');
   wrapper.setAttribute(
     'style',
-    `width: 100%;height: 2px;position: absolute;top: 0;transform: translateX(-100%);background: #2196F3;transition: .1s ease;z-index: 99;`
+    `width: 100%;height: 2px;position: absolute;top: 0;transform: translateX(-100%);background-color: #2196F3;transition: .1s ease;z-index: 99;`
   );
 
   let endFlag = false; // 结束标志

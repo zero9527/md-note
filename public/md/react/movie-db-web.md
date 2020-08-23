@@ -395,11 +395,11 @@ export default [
   bottom: 20px;
   border-radius: 100px;
   border: 1px solid #eee;
-  background: #fff;
+  background-color: #fff;
   box-shadow: 0 2px 10px -1px rgba(0, 0, 0, 0.1);
   z-index: 9;
   &:active {
-    background: #eee;
+    background-color: #eee;
   }
 }
 .top-btn-fixed {

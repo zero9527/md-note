@@ -45,7 +45,7 @@ $padding-edge: 16px;
           opacity: 0.6;
           z-index: -1;
           @include themeify {
-            background: themed('primary-color');
+            background-color: themed('primary-color');
           }
         }
       }
@@ -80,7 +80,7 @@ $padding-edge: 16px;
         monospace;
       @include themeify {
         color: themed('primary-color');
-        background: themed('bg-color-light');
+        background-color: themed('bg-color-light');
       }
     }
 
@@ -162,7 +162,7 @@ $padding-edge: 16px;
             font-size: 94%;
             font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
               monospace;
-            background: transparent;
+            background-color: transparent;
 
             .hljs-comment {
               @include themeify {
@@ -209,7 +209,7 @@ $padding-edge: 16px;
         z-index: -1;
         @include themeify {
           opacity: 0.1;
-          background: themed('primary-color-light');
+          background-color: themed('primary-color-light');
         }
       }
     }
@@ -220,7 +220,7 @@ $padding-edge: 16px;
 
       thead {
         @include themeify {
-          background: themed('bg-color-heavy');
+          background-color: themed('bg-color-heavy');
         }
       }
 
@@ -303,7 +303,7 @@ $padding-edge: 16px;
         width: 3px;
         height: 40px;
         display: block;
-        background: #999;
+        background-color: #999;
         box-shadow: 0 0 2px rgba(250, 250, 250, 0.8);
       }
     }
