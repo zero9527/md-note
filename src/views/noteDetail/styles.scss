@@ -1,7 +1,7 @@
 .note-detail {
   height: 100%;
   position: relative;
-  padding-top: 50px;
+  margin-top: 12px;
   overflow-x: hidden;
 
   .article-404 {
@@ -20,15 +20,28 @@
     text-overflow: ellipsis;
   }
 
-  :global {
-    .center-content {
-      display: flex;
-      align-items: center;
-    }
+  .content {
+    display: inline-flex;
+    align-items: center;
+    padding: 20px 0;
+    cursor: pointer;
   }
 
   .back {
     padding: 0 4px;
-    cursor: pointer;
+  }
+
+  :global {
+    .center-content {
+      padding-top: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 979px) {
+  .header {
+    .content {
+      padding: 16px 0;
+    }
   }
 }

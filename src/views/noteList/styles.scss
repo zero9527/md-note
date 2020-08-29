@@ -15,7 +15,6 @@
 .note-list {
   width: 100%;
   height: 100%;
-  padding-top: 46px;
   overflow: auto;
 
   .add {
@@ -32,27 +31,15 @@
   }
 }
 
-.header {
-  .desc {
-    font-size: 85%;
-    @include themeify {
-      color: themed('desc-color');
-    }
-  }
-  :global .content {
-    display: flex;
-    justify-content: space-between;
-  }
-}
-
 .tags {
   width: 100%;
   margin: 0;
   margin-top: 10px;
-  padding: 0 12px;
+  padding: 0 16px;
 }
 
 .container {
+  padding-left: 1px;
   padding-bottom: 12px;
 
   :global .link {
@@ -71,25 +58,22 @@
     user-select: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    border-radius: 4px;
+    border-radius: 2px;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
-    transform: scale(0.98);
-    transition: transform 0.3s ease;
     @include themeify {
       background-color: themed('bg-color-o8');
     }
 
     &:hover {
-      transform: scale(1);
       @include themeify {
         color: themed('base-color');
-        background-color: themed('bg-color-o6');
+        background-color: themed('bg-color-heavy');
       }
     }
     &:active {
       @include themeify {
         color: themed('primary-color');
-        background-color: themed('bg-color-o6');
+        background-color: themed('bg-color-heavy');
       }
     }
 
@@ -182,12 +166,6 @@
 @media screen and (max-width: 979px) {
   .container {
     padding: 0 12px 12px;
-  }
-
-  .header {
-    .desc {
-      display: none;
-    }
   }
 }
 

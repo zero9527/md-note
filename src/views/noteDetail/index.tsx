@@ -181,14 +181,15 @@ const NoteDetail: React.FC = () => {
     <>
       <Header className={styles.header}>
         <div className="center-content">
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            className={styles.back}
-            title="返回首页"
-            onClick={onBack}
-          />
-          <span className={styles.title} title="文章标题">
-            &nbsp;{title}
+          <span className={styles.content} onClick={onBack}>
+            <FontAwesomeIcon
+              icon={faChevronLeft}
+              className={styles.back}
+              title="返回首页"
+            />
+            <span className={styles.title} title="title">
+              &nbsp;{title}
+            </span>
           </span>
         </div>
       </Header>

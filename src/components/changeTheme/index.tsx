@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useGlobalModel from '@/model/useGlobalModel';
 import styles from './styles.scss';
 
@@ -39,8 +39,21 @@ const ChangeTheme = () => {
     },
   ];
 
+  useEffect(() => {
+    scrollIntoView();
+  }, []);
+
   const onThemeChange = (color: string) => {
     setTheme(color);
+    scrollIntoView();
+  };
+
+  const scrollIntoView = () => {
+    setTimeout(() => {
+      const themeColor = document.querySelector(`.${styles.theme}`);
+      console.log(themeColor);
+      themeColor?.scrollIntoView();
+    }, 0);
   };
 
   return (

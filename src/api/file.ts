@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 export function getNoteListConfig() {
-  return axios.get('./md.json');
+  return axios.get('/md.json');
 }
 
 // 获取文件
 export function fileApi(uri: string, params: any = {}) {
-  return axios.get(`./md${uri}`, {
+  return axios.get(`/md${uri}.md`, {
     data: { ...params },
   });
 }

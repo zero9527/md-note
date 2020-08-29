@@ -40,6 +40,7 @@ ol {
   padding-right: 16px;
 }
 a {
+  text-decoration: none;
   @include themeify {
     color: themed('primary-color');
   }
@@ -70,20 +71,6 @@ a {
   }
 }
 
-@media screen and (min-width: 980px) {
-  :global {
-    #md-note {
-      &::before {
-        background-position: 100% center;
-        background-size: 100% 100%;
-      }
-    }
-    .container {
-      max-width: 710px;
-    }
-  }
-}
-
 @media screen and (max-width: 979px) {
   :global {
     #md-note {
@@ -91,6 +78,50 @@ a {
         background-position: 100% 100%;
         background-size: auto 120%;
       }
+    }
+
+    .center-content {
+      padding-top: 52px;
+    }
+  }
+}
+
+@media screen and (min-width: 980px) and (max-width: 1399px) {
+  :global {
+    #md-note {
+      &::before {
+        background-position: 100% center;
+        background-size: 100% 100%;
+      }
+    }
+
+    .center-content {
+      max-width: 980px;
+      padding-top: 62px;
+    }
+
+    .container {
+      max-width: calc(100% - 266px); // 250+16
+    }
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  :global {
+    #md-note {
+      &::before {
+        background-position: 100% center;
+        background-size: 100% 100%;
+      }
+    }
+
+    .center-content {
+      max-width: 1200px;
+      padding-top: 62px;
+    }
+
+    .container {
+      max-width: calc(100% - 266px); // 250+16
     }
   }
 }
@@ -101,7 +132,6 @@ a {
     z-index: 1;
     @include themeify {
       color: themed('base-color');
-      // background-color: themed('bg-color-light');
     }
 
     &::before {
@@ -115,27 +145,19 @@ a {
       background-attachment: fixed;
       z-index: -1;
       @include themeify {
-        // color: themed('base-color');
         background-color: themed('bg-color-light');
-        background-image: themed('bg-image');
       }
+    }
+  }
+
+  .link {
+    @include themeify {
+      color: themed('primary-color');
     }
   }
 
   .blur {
     filter: blur(2px);
-  }
-
-  .gitter {
-    float: right;
-
-    &::after {
-      content: '';
-      display: block;
-      opacity: 0;
-      visibility: hidden;
-      clear: both;
-    }
   }
 
   .btn {
@@ -186,7 +208,6 @@ a {
   }
 
   .center-content {
-    max-width: 980px;
     left: 0;
     right: 0;
     margin: 0 auto;

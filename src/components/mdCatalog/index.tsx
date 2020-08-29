@@ -223,7 +223,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   return (
     <div id="catalog" className={styles.catalog}>
       <FontAwesomeIcon
-        className="btn"
+        className={styles.icon}
         icon={faListUl}
         onClick={onCateListShow}
       />

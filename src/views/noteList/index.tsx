@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { KeepAliveAssist } from 'keep-alive-comp';
 import { Link } from 'react-router-dom';
-import useGlobalModel from '@/model/useGlobalModel';
 import useNoteModel, { NoteItem } from '@/model/useNoteModel';
 import useScroll from '@/utils/useScroll';
 import Header from '@/components/Header';
-import Tools from '@/components/Tools';
 import RightPanel from '@/components/RightPanel';
 import Scroll2Top from '@/components/Scroll2Top';
-import styles from './styles.scss';
 import ArticleTag from '@/components/ArticleTag';
+import styles from './styles.scss';
 
 interface NoteListProps extends KeepAliveAssist {}
 export type TagItem = {
@@ -21,17 +19,14 @@ export type TagItem = {
 const NoteList: React.FC<NoteListProps> = (props) => {
   const { scrollTop } = useScroll();
   const { loading, noteList: fullNoteList } = useNoteModel();
-  const { stickyRightStyle } = useGlobalModel((modal) => [
-    modal.stickyRightStyle,
-  ]);
   // 当前noteList
   const [noteList, setNoteList] = useState<NoteItem[]>([]);
   // 当前标签
   const [currentTag, setCurrentTag] = useState<TagItem>();
 
   useEffect(() => {
-    setNoteList(fullNoteList);
-  }, [fullNoteList]);
+    if (!loading) setNoteList(fullNoteList);
+  }, [loading]);
 
   useEffect(() => {
     if (currentTag) {
@@ -100,23 +95,16 @@ const NoteList: React.FC<NoteListProps> = (props) => {
     return scrollTop > window.innerHeight;
   }, [scrollTop]);
 
-  const ReachBottom = () => (
-    <div className={styles['reach-bottom']}>
-      <span>到底了</span>
-    </div>
-  );
+  const ReachBottom = () =>
+    loading ? null : (
+      <div className={styles['reach-bottom']}>
+        <span>到底了</span>
+      </div>
+    );
 
   return (
     <>
-      <Header className={styles.header}>
-        <div className="center-content content">
-          <div>
-            MD-NOTE
-            <span className={styles.desc}>：一个使用 markdown 的简易博客</span>
-          </div>
-          <Tools />
-        </div>
-      </Header>
+      <Header />
       <main className={`center-content ${styles['note-list']}`}>
         <ArticleTag
           className={styles.tags}
@@ -128,37 +116,31 @@ const NoteList: React.FC<NoteListProps> = (props) => {
           id={loading ? styles.skeleton : ''}
           className={`container ${styles.container}`}
         >
-          {noteList?.length > 0 ? (
-            <>
-              {noteList?.map?.((noteitem) => {
-                return (
-                  <Link
-                    key={`${noteitem.tag}-${noteitem.name}`}
-                    to={`/detail/${noteitem.tag.split(',')[0]}/${
-                      noteitem.name
-                    }`}
-                    className={`link ${styles.item}`}
-                    onClick={toDetailClick}
-                  >
-                    <div className={styles.title}>{noteitem.title}</div>
-                    <div className={styles.desc}>
-                      <span className={styles.tag}>
-                        标签：<span>{noteitem.tag}</span>
-                      </span>
-                      <span className={styles.time}>
-                        创建时间：{noteitem.create_time}
-                      </span>
-                    </div>
-                  </Link>
-                );
-              })}
-              <ReachBottom />
-            </>
-          ) : (
-            <ReachBottom />
-          )}
+          {noteList?.length > 0 &&
+            noteList?.map?.((noteitem, index) => (
+              <Link
+                key={index}
+                to={`/detail/${noteitem.tag.split(',')[0]}/${
+                  noteitem.name.split('.')[0]
+                }`}
+                title={noteitem.title}
+                className={`link ${styles.item}`}
+                onClick={toDetailClick}
+              >
+                <div className={styles.title}>{noteitem.title}</div>
+                <div className={styles.desc}>
+                  <span className={styles.tag}>
+                    标签：<span>{noteitem.tag}</span>
+                  </span>
+                  <span className={styles.time}>
+                    创建时间：{noteitem.create_time}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          <ReachBottom />
         </section>
-        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
+        {showScroll2Top && <Scroll2Top />}
       </main>
       <RightPanel
         tags={tags}

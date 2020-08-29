@@ -47,14 +47,11 @@ const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
   };
 
   return (
-    <div className="gitter">
-      <div
-        style={position}
-        className={`btn ${styles.scroll2top}`}
-        onClick={(e: any) => onScroll2oTop(e)}
-      >
-        <FontAwesomeIcon icon={faAngleDoubleUp} />
-      </div>
+    <div
+      className={`btn ${styles.scroll2top}`}
+      onClick={(e: any) => onScroll2oTop(e)}
+    >
+      <FontAwesomeIcon icon={faAngleDoubleUp} />
     </div>
   );
 };

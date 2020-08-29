@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { lazy } from '@loadable/component';
 import Loading from '@/components/Loading';
 import Page404 from '@/components/Page404';
@@ -11,7 +11,7 @@ const Detail = lazy(() =>
 );
 
 const Router = () => (
-  <HashRouter>
+  <BrowserRouter>
     <Switch>
       <Route
         key="home"
@@ -34,7 +34,7 @@ const Router = () => (
       />
       <Route key="404" path="*" component={Page404} />
     </Switch>
-  </HashRouter>
+  </BrowserRouter>
 );
 
 export default Router;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
+import Tools from '@/components/Tools';
 import useScroll from '@/utils/useScroll';
 import styles from './styles.scss';
 
@@ -30,7 +31,24 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className={`${styles.header} ${className || ''} ${toggleVisible}`}>
-      {props.children}
+      {props.children ? (
+        props.children
+      ) : (
+        <div className={`center-content ${styles.content}`}>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/zero9527"
+            title="https://github.com/zero9527"
+            className={styles.title}
+          >
+            ZERO9527的小站
+          </a>
+          <div className={styles.tools}>
+            <Tools />
+          </div>
+        </div>
+      )}
     </header>
   );
 };

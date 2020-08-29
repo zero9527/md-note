@@ -31,14 +31,14 @@ const StickyRight: React.FC<StickyRightProps> = ({
 
   const resize = useThrottle(() => {
     const bodyWidth = document.body.clientWidth;
-    const MAX_VIEW_WIDTH = 979;
-    const CONTENT_WIDTH = 710;
-    const style =
-      bodyWidth > MAX_VIEW_WIDTH
-        ? {
-            left: `${(bodyWidth - MAX_VIEW_WIDTH) / 2 + CONTENT_WIDTH + 16}px`,
-          }
-        : { right: '12px' };
+    const MAX_VIEW_WIDTH = document.querySelector('.center-content')!
+      .clientWidth;
+    const style = {
+      marginRight:
+        bodyWidth > MAX_VIEW_WIDTH
+          ? `${(bodyWidth - MAX_VIEW_WIDTH) / 2}px`
+          : '6px',
+    };
     setStickyRightStyle(style);
     if (onResize) onResize(style);
   }, 16);

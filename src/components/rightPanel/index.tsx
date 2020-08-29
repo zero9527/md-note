@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import useScroll from '@/utils/useScroll';
 import { TagItem } from '@/views/NoteList';
 import StickyRight from '@/components/StickyRight';
+import ArticleTag from '../ArticleTag';
 import { mountParcel } from '@/index';
 import styles from './styles.scss';
-import ArticleTag from '../ArticleTag';
 
 export interface RightPanelProps {
   tags: TagItem[];

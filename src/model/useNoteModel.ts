@@ -32,6 +32,11 @@ type MaxAge = keyof typeof maxAgeConfig;
 
 const NoteSkeleton: NoteItem[] = [
   { create_time: '', tag: '', name: '', desc: '', data: '', title: '' },
+  { create_time: '', tag: '', name: '', desc: '', data: '', title: '' },
+  { create_time: '', tag: '', name: '', desc: '', data: '', title: '' },
+  { create_time: '', tag: '', name: '', desc: '', data: '', title: '' },
+  { create_time: '', tag: '', name: '', desc: '', data: '', title: '' },
+  { create_time: '', tag: '', name: '', desc: '', data: '', title: '' },
 ];
 
 // 管理 NoteList

@@ -4,7 +4,7 @@ const isEnvDev = process.env.NODE_ENV === 'development';
 const maplist = [
   {
     name: 'root-config',
-    entry: './js/app.js',
+    entry: '/js/app.js',
   },
   {
     name: '@vue-mf/calendar',
@@ -24,19 +24,19 @@ if (!isEnvDev) {
   const libs = [
     {
       name: 'react',
-      entry: './libs/react-16.13.1.min.js',
+      entry: '/libs/react-16.13.1.min.js',
     },
     {
       name: 'react-dom',
-      entry: './libs/react-dom-16.13.1.min.js',
+      entry: '/libs/react-dom-16.13.1.min.js',
     },
     {
       name: 'react-router',
-      entry: './libs/react-router-5.1.2.min.js',
+      entry: '/libs/react-router-5.1.2.min.js',
     },
     {
       name: 'highlight.js',
-      entry: './libs/highlight.js-10.1.0.min.js',
+      entry: '/libs/highlight.js-10.1.0.min.js',
     },
   ];
   maplist.push(...libs);
