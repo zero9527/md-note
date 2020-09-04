@@ -88,13 +88,6 @@ a {
 
 @media screen and (min-width: 980px) and (max-width: 1399px) {
   :global {
-    #md-note {
-      &::before {
-        background-position: 100% center;
-        background-size: 100% 100%;
-      }
-    }
-
     .center-content {
       max-width: 980px;
       padding-top: 62px;
@@ -108,13 +101,6 @@ a {
 
 @media screen and (min-width: 1400px) {
   :global {
-    #md-note {
-      &::before {
-        background-position: 100% center;
-        background-size: 100% 100%;
-      }
-    }
-
     .center-content {
       max-width: 1200px;
       padding-top: 62px;
@@ -132,21 +118,7 @@ a {
     z-index: 1;
     @include themeify {
       color: themed('base-color');
-    }
-
-    &::before {
-      content: '';
-      width: 100%;
-      height: 120%;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      z-index: -1;
-      @include themeify {
-        background-color: themed('bg-color-light');
-      }
+      background-color: themed('bg-color-light');
     }
   }
 

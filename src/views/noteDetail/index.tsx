@@ -9,7 +9,6 @@ import useScroll from '@/utils/useScroll';
 import Loading from '@/components/Loading';
 import Header from '@/components/Header';
 import Scroll2Top from '@/components/Scroll2Top';
-import StickyRight from '@/components/StickyRight';
 import MdPreview from '@/components/MdPreview';
 import MdCatalog from '@/components/MdCatalog';
 import PicPreview from '@/components/PicPreview';
@@ -160,7 +159,10 @@ const NoteDetail: React.FC = () => {
 
   // 视图滚动到对应标题位置
   const scrollToView = (hash: string) => {
-    if (!hash) return;
+    if (!hash) {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+      return;
+    }
     setDefaultCateActive(hash);
     const el = document.getElementById(hash) as HTMLElement;
     if (el) {
@@ -198,14 +200,12 @@ const NoteDetail: React.FC = () => {
           <>
             <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
             <PicPreview {...picPreview} />
-            <StickyRight>
-              <MdCatalog
-                mdtext={mdtext}
-                defaultActive={defaultCateActive}
-                onCateClick={onCateClick}
-                onGetTitle={onGetTitle}
-              />
-            </StickyRight>
+            <MdCatalog
+              mdtext={mdtext}
+              defaultActive={defaultCateActive}
+              onCateClick={onCateClick}
+              onGetTitle={onGetTitle}
+            />
           </>
         ) : (
           !is404 && <Loading />

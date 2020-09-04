@@ -8,6 +8,7 @@ import React, {
 import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import StickyRight from '@/components/StickyRight';
 import useScroll from '@/utils/useScroll';
 import styles from './styles.scss';
 
@@ -138,7 +139,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   const scroll2Item = (activeItem: CatalogItem) => {
     // if (!useScrollTop.current) return;
     const catelogItem = document.getElementById(`catelog-${activeItem.id}`);
-    catelogItem?.scrollIntoView();
+    catelogItem?.scrollIntoView({ block: 'center' });
     replaceUrlHref(activeItem.id);
   };
 
@@ -221,7 +222,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
   }, [showCate]);
 
   return (
-    <div id="catalog" className={styles.catalog}>
+    <StickyRight id="catalog" className={styles.catalog}>
       <FontAwesomeIcon
         className={styles.icon}
         icon={faListUl}
@@ -250,7 +251,7 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         </section>
       </div>
       {props.children}
-    </div>
+    </StickyRight>
   );
 };
 

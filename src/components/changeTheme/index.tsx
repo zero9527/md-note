@@ -51,7 +51,6 @@ const ChangeTheme = () => {
   const scrollIntoView = () => {
     setTimeout(() => {
       const themeColor = document.querySelector(`.${styles.theme}`);
-      console.log(themeColor);
       themeColor?.scrollIntoView();
     }, 0);
   };

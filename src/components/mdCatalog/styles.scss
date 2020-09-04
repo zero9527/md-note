@@ -1,4 +1,6 @@
 .catalog {
+  height: 100%;
+
   .icon {
     margin-right: -12px;
     padding: 10px;
@@ -23,6 +25,7 @@
   }
 
   .catelist {
+    height: 100%;
     position: relative;
     padding: 4px 0;
     margin-top: 62px;
@@ -192,7 +195,6 @@
 
       .cate-content {
         width: calc(100% + 20px);
-        max-height: calc(100vh - 226px);
       }
     }
 
