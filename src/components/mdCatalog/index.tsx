@@ -233,10 +233,10 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
         style={{ display: showCate ? 'block' : 'none' }}
       />
       <div
+        className={`${styles.catelist} ${cateListTransition}`}
         style={{
           marginTop: scrollTop > 50 && scrollTop > prevScrollTop ? '0' : '',
         }}
-        className={`${styles.catelist} ${cateListTransition}`}
       >
         {showCate && (
           <span className={styles.close} onClick={onHiddenCatalog}>

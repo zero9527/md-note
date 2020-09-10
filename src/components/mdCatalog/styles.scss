@@ -212,8 +212,6 @@
 
 @media screen and (max-width: 979px) {
   .catalog {
-    margin-top: 8px;
-
     .catelist {
       height: 100vh;
       width: max-content;
@@ -244,6 +242,7 @@
     :global {
       .fa-list-ul {
         display: block;
+        margin-top: 60px;
       }
     }
   }
