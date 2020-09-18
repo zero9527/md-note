@@ -61,7 +61,7 @@
     border-radius: 2px;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
     @include themeify {
-      background-color: themed('bg-color-o8');
+      background-color: themed('bg-color');
     }
 
     &:hover {

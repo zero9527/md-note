@@ -52,16 +52,18 @@ const RightPanel: React.FC<RightPanelProps> = ({
         marginTop: scrollTop > 50 && scrollTop > prevScrollTop ? '0' : '',
       }}
     >
-      <div id="app-clock" className={styles['single-spa-clock']} />
-      <div id="app-calendar" className={styles['single-spa-calendar']} />
-      <ArticleTag
-        tags={tags}
-        currentTag={currentTag}
-        onTagChange={onTagChange}
-      />
-      <div className={styles.footer}>
-        <Beian />
-        <CopyRight />
+      <div className={styles.wrapper}>
+        <div id="app-clock" className={styles['single-spa-clock']} />
+        <div id="app-calendar" className={styles['single-spa-calendar']} />
+        <ArticleTag
+          tags={tags}
+          currentTag={currentTag}
+          onTagChange={onTagChange}
+        />
+        <div className={styles.footer}>
+          <Beian />
+          <CopyRight />
+        </div>
       </div>
     </StickyRight>
   );
