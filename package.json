@@ -20,7 +20,7 @@
     "clipboard": "^2.0.6",
     "highlight.js": "^10.1.0",
     "hox": "^1.0.2",
-    "immer": "^6.0.1",
+    "immer": "^8.0.1",
     "keep-alive-comp": "^0.0.6",
     "lodash": "^4.17.19",
     "marked": "^1.1.0",
