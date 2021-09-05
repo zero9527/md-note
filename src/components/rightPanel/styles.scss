@@ -7,7 +7,7 @@
 
   .wrapper {
     height: 100%;
-    width: calc(100% + 6px);
+    width: calc(100% + 8px);
     overflow-y: auto;
   }
 
@@ -30,9 +30,7 @@
       border-radius: 50%;
       background-position: 10px 10px;
       background-size: 100%;
-      @include themeify {
-        background-color: themed('bg-color-o8');
-      }
+      background-color: var(--bgColorO8);
     }
 
     :global {
@@ -49,29 +47,21 @@
     width: 250px;
     min-height: 358px;
     margin-bottom: 20px;
-    @include themeify {
-      background-color: themed('bg-color-o8');
-    }
+    background-color: var(--bgColorO8);
 
     :global {
       .calendar {
-        @include themeify {
-          color: themed('base-color');
-          background-color: themed('bg-color-o8');
-        }
+        color: var(--baseColor);
+        background-color: var(--bgColorO8);
 
         .body {
           &::before {
-            @include themeify {
-              color: themed('border-color');
-            }
+            color: var(--borderColor);
           }
 
           .week-day {
             .active {
-              @include themeify {
-                color: themed('primary-color');
-              }
+              color: var(--primaryColor);
             }
           }
 
@@ -79,68 +69,50 @@
             .item {
               &:hover {
                 &:after {
-                  @include themeify {
-                    border-color: themed('primary-color');
-                  }
+                  border-color: var(--primaryColor);
                 }
               }
 
               &.active {
                 &:after {
-                  @include themeify {
-                    border-color: themed('primary-color');
-                    background-color: themed('primary-color');
-                    box-shadow: 2px 2px 10px -2px themed('primary-color');
-                  }
+                  border-color: var(--primaryColor);
+                  background-color: var(--primaryColor);
+                  box-shadow: 2px 2px 10px -2px var(--primaryColor);
                 }
               }
             }
 
             .same-date {
               &:after {
-                @include themeify {
-                  border-color: themed('primary-color');
-                }
+                border-color: var(--primaryColor);
               }
             }
           }
 
           .another-month-date {
-            @include themeify {
-              color: themed('gray-color');
-            }
+            color: var(--grayColor);
           }
         }
 
         .from-today {
-          @include themeify {
-            color: themed('gray-color');
-          }
+          color: var(--grayColor);
         }
 
         .select-year-month {
           .content {
-            @include themeify {
-              color: themed('base-color');
-              background-color: themed('bg-color');
-            }
+            color: var(--baseColor);
+            background-color: var(--bgColor);
 
             .up {
-              @include themeify {
-                background-color: themed('linear-background');
-              }
+              background-color: var(--linearBackground-0);
             }
 
             .down {
-              @include themeify {
-                background-color: themed('linear-background-180');
-              }
+              background-color: var(--linearBackground-100);
             }
 
             .active {
-              @include themeify {
-                background-color: themed('primary-color');
-              }
+              background-color: var(--primaryColor);
             }
           }
         }
@@ -151,21 +123,15 @@
 
 .footer {
   margin-bottom: 20px;
-  @include themeify {
-    color: themed('gray-color');
-  }
+  color: var(--grayColor);
 
   a {
     text-decoration: none;
     font-size: 14px;
-    @include themeify {
-      color: themed('gray-color');
-    }
+    color: var(--grayColor);
 
     &:hover {
-      @include themeify {
-        color: themed('primary-color');
-      }
+      color: var(--primaryColor);
     }
   }
 }

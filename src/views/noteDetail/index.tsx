@@ -1,32 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useHistory, useParams, useLocation } from 'react-router';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { useParams, useLocation } from 'react-router';
 import ClipboardJS from 'clipboard';
 import useGlobalModel from '@/model/useGlobalModel';
 import useNoteModel from '@/model/useNoteModel';
-import useScroll from '@/utils/useScroll';
 import Loading from '@/components/Loading';
-import Header from '@/components/Header';
 import Scroll2Top from '@/components/Scroll2Top';
 import MdPreview from '@/components/MdPreview';
 import MdCatalog from '@/components/MdCatalog';
 import PicPreview from '@/components/PicPreview';
 import styles from './styles.scss';
 
+////////////////
+// TODO：图片懒加载
+///////////////
+
 // 详情
 const NoteDetail: React.FC = () => {
-  const { stickyRightStyle } = useGlobalModel((modal) => [
+  const { stickyRightStyle, scrollTop } = useGlobalModel((modal) => [
     modal.stickyRightStyle,
+    modal.scrollTop,
   ]);
   const { getNoteById, fetchNoteByName } = useNoteModel((modal) => [
     modal.getNoteById,
     modal.fetchNoteByName,
   ]);
   const { tag, name } = useParams<{ tag: string; name: string }>();
-  const history = useHistory();
   const location = useLocation();
-  const { scrollTop } = useScroll();
   const [is404, setIs404] = useState(false);
   const [title, setTitle] = useState('');
   const [mdtext, setMdtext] = useState<string | undefined>();
@@ -75,10 +74,6 @@ const NoteDetail: React.FC = () => {
     } catch (err) {
       console.error(err);
     }
-  };
-
-  const onBack = () => {
-    history.push('/');
   };
 
   const onGetTitle = (_title: string) => {
@@ -180,40 +175,24 @@ const NoteDetail: React.FC = () => {
   );
 
   return (
-    <>
-      <Header className={styles.header}>
-        <div className="center-content">
-          <span className={styles.content} onClick={onBack}>
-            <FontAwesomeIcon
-              icon={faChevronLeft}
-              className={styles.back}
-              title="返回首页"
-            />
-            <span className={styles.title} title="title">
-              &nbsp;{title}
-            </span>
-          </span>
-        </div>
-      </Header>
-      <main className={`center-content ${styles['note-detail']}`}>
-        {mdtext ? (
-          <>
-            <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
-            <PicPreview {...picPreview} />
-            <MdCatalog
-              mdtext={mdtext}
-              defaultActive={defaultCateActive}
-              onCateClick={onCateClick}
-              onGetTitle={onGetTitle}
-            />
-          </>
-        ) : (
-          !is404 && <Loading />
-        )}
-        {is404 && <Nomatch />}
-        {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
-      </main>
-    </>
+    <main className={`center-content ${styles['note-detail']}`}>
+      {mdtext ? (
+        <>
+          <MdPreview mdtext={mdtext} onMdRendered={onMdRendered} />
+          <PicPreview {...picPreview} />
+          <MdCatalog
+            mdtext={mdtext}
+            defaultActive={defaultCateActive}
+            onCateClick={onCateClick}
+            onGetTitle={onGetTitle}
+          />
+        </>
+      ) : (
+        !is404 && <Loading />
+      )}
+      {is404 && <Nomatch />}
+      {showScroll2Top && <Scroll2Top position={stickyRightStyle} />}
+    </main>
   );
 };
 

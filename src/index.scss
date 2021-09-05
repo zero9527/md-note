@@ -10,10 +10,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
-  @include themeify {
-    color: themed('base-color');
-    background-color: themed('bg-color');
-  }
+  color: var(--baseColor);
+  background-color: var(--bgColor);
 }
 * {
   line-height: 1.4;
@@ -41,14 +39,12 @@ ol {
 }
 a {
   text-decoration: none;
-  @include themeify {
-    color: themed('primary-color');
-  }
+  color: var(--primaryColor);
 }
 
 ::-webkit-scrollbar {
   /*滚动条整体样式*/
-  width: 6px; /*高宽分别对应横竖滚动条的尺寸*/
+  width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
   height: 2px;
 }
 ::-webkit-scrollbar-thumb {
@@ -132,16 +128,12 @@ a {
   #md-note {
     min-height: 100vh;
     z-index: 1;
-    @include themeify {
-      color: themed('base-color');
-      background-color: themed('bg-color-light');
-    }
+    color: var(--baseColor);
+    background-color: var(--bgColorLight);
   }
 
   .link {
-    @include themeify {
-      color: themed('primary-color');
-    }
+    color: var(--primaryColor);
   }
 
   .blur {
@@ -154,21 +146,17 @@ a {
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-    box-shadow: $box-shadow;
-    @include themeify {
-      color: themed('base-color');
-      border-color: themed('border-color');
-      background-color: themed('bg-color');
-    }
+    box-shadow: var(--boxShadow);
+    color: var(--baseColor);
+    border-color: var(--borderColor);
+    background-color: var(--bgColor);
 
     &:hover {
       box-shadow: 0px 1px 8px 0px rgba(181, 181, 181, 0.3);
     }
     &:active {
       outline: none;
-      @include themeify {
-        background-color: themed('bg-color-light');
-      }
+      background-color: var(--bgColorLight);
     }
     &:focus {
       outline: none;
@@ -189,9 +177,7 @@ a {
       left: 0;
       bottom: 0;
       transform: scale(1, 0.5);
-      @include themeify {
-        background-color: themed('gray-color');
-      }
+      background-color: var(--grayColor);
     }
   }
 

@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { KeepAliveAssist } from 'keep-alive-comp';
 import { Link } from 'react-router-dom';
+import useGlobalModel from '@/model/useGlobalModel';
 import useNoteModel, { NoteItem } from '@/model/useNoteModel';
-import useScroll from '@/utils/useScroll';
-import Header from '@/components/Header';
 import RightPanel from '@/components/RightPanel';
 import Scroll2Top from '@/components/Scroll2Top';
 import ArticleTag from '@/components/ArticleTag';
@@ -17,7 +16,7 @@ export type TagItem = {
 
 // 列表
 const NoteList: React.FC<NoteListProps> = (props) => {
-  const { scrollTop } = useScroll();
+  const { scrollTop } = useGlobalModel(modal => [modal.scrollTop]);
   const { loading, noteList: fullNoteList } = useNoteModel();
   // 当前noteList
   const [noteList, setNoteList] = useState<NoteItem[]>([]);
@@ -104,7 +103,6 @@ const NoteList: React.FC<NoteListProps> = (props) => {
 
   return (
     <>
-      <Header />
       <main className={`center-content ${styles['note-list']}`}>
         <ArticleTag
           className={styles.tags}

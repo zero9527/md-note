@@ -9,11 +9,9 @@
   white-space: nowrap;
   box-shadow: 0 2px 10px -4px rgba(100, 100, 100, 0.1);
   z-index: 20;
-  @include themeify {
-    color: themed('base-color');
-    border-color: themed('border-color');
-    background-color: themed('bg-color');
-  }
+  color: var(--baseColor);
+  border-color: var(--borderColor);
+  background-color: var(--bgColor);
 
   .content {
     padding: 0;
@@ -41,30 +39,25 @@
       top: 0;
       right: 12px;
       pointer-events: none;
-      @include themeify {
-        background-image: themed('linear-background-90');
-      }
+      background-image: var(--linearBackground-90);
     }
   }
 }
 
 .visible {
-  visibility: visible;
-  transform: translateY(-100%);
+  opacity: 1;
+  transform: translateY(-100px);
   animation: show 0.5s forwards;
 
   @keyframes show {
-    from {
-      transform: translateY(-100%) translateZ(0);
-    }
-    to {
-      transform: translateY(0) translateZ(0);
-    }
+    from { transform: translateY(-100px); }
+    to { transform: translateY(0); }
   }
 }
 
 .hidden {
-  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-100px);
 }
 
 @media screen and (max-width: 979px) {

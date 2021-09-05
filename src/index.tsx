@@ -6,7 +6,7 @@ import singleSpaReact from 'single-spa-react';
 import registerServiceWorker from '@/registerServiceWorker';
 import Loading from '@/components/Loading';
 import AxiosConfig from '@/api';
-import Router from './router';
+import App from './App';
 import './index.scss';
 
 // import VConsole from 'vconsole';
@@ -26,7 +26,7 @@ const reactLifeCycles = singleSpaReact({
   domElementGetter,
   rootComponent: () => (
     <React.Suspense fallback={<Loading />}>
-      <Router />
+      <App />
     </React.Suspense>
   ),
 });

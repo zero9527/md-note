@@ -49,11 +49,14 @@ const useNoteModel = () => {
       setLoading(true);
       // TODO: 改为typescript，可以在新增的时候有类型提示
       getNoteListConfig().then((res: any) => {
-        updateNoteList(FastSort<NoteItem>(res, 'create_time').reverse());
-        setLoading(false);
+        setTimeout(() => {
+          const list = FastSort<NoteItem>(res, 'create_time').reverse();
+          updateNoteList(list);
+          setLoading(false);
+        }, 0);
       });
     }
-  }, []);
+  }, [noteList]);
 
   // 请求数据 tag: 标签；name：名称
   const fetchNoteByName = async (tag: NoteTag | string, name: string) => {

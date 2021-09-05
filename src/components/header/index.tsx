@@ -1,6 +1,6 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
+import useGlobalModel from '@/model/useGlobalModel';
 import Tools from '@/components/Tools';
-import useScroll from '@/utils/useScroll';
 import styles from './styles.scss';
 
 interface HeaderProps {
@@ -15,10 +15,10 @@ const Header: React.FC<HeaderProps> = ({
   ...props
 }) => {
   const [toggleVisible, setToggleVisible] = useState('');
-  const { prevScrollTop, scrollTop } = useScroll();
+  const { prevScrollTop, scrollTop } = useGlobalModel(modal => [modal.scrollTop, modal.prevScrollTop]);
 
   useEffect(() => {
-    onScroll();
+    onScroll()
   }, [scrollTop]);
 
   const onScroll = () => {
@@ -35,13 +35,7 @@ const Header: React.FC<HeaderProps> = ({
         props.children
       ) : (
         <div className={`center-content ${styles.content}`}>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://github.com/zero9527"
-            title="https://github.com/zero9527"
-            className={styles.title}
-          >
+          <a href="/" title="ZERO9527的小站" className={styles.title}>
             ZERO9527的小站
           </a>
           <div className={styles.tools}>

@@ -1,14 +1,13 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { lazy } from '@loadable/component';
+import KeepAlive from 'keep-alive-comp';
 import Loading from '@/components/Loading';
 import Page404 from '@/components/Page404';
 
-const App = lazy(() => import(/* webpackPrefetch: true */ '@/App'));
+const NoteList = lazy(() => import(/* webpackPrefetch: true */ '@/views/NoteList'));
 
-const Detail = lazy(() =>
-  import(/* webpackPrefetch: true */ '@/views/NoteDetail')
-);
+const Detail = lazy(() => import(/* webpackPrefetch: true */ '@/views/NoteDetail'));
 
 const Router = () => (
   <BrowserRouter>
@@ -19,7 +18,7 @@ const Router = () => (
         exact={true}
         render={() => (
           <Suspense fallback={<Loading />}>
-            <App />
+            <KeepAlive name="list">{(props) => <NoteList {...props} />}</KeepAlive>
           </Suspense>
         )}
       />

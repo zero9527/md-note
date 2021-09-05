@@ -3,9 +3,7 @@
   overflow: hidden;
 
   > span {
-    @include themeify {
-      color: themed('desc-color');
-    }
+    color: var(--descColor);
   }
 
   .tag {
@@ -13,32 +11,23 @@
     margin-right: 10px;
     word-break: break-word;
     cursor: pointer;
-    @include themeify {
-      color: themed('gray-color');
-    }
+    color: var(--grayColor);
 
     &:hover {
-      @include themeify {
-        color: themed('primary-color');
-      }
+      color: var(--primaryColor);
+      
       .count {
-        @include themeify {
-          color: themed('border-color');
-          background-color: themed('primary-color');
-        }
+        color: var(--borderColor);
+        background-color: var(--primaryColor);
       }
     }
 
     &.active {
-      @include themeify {
-        color: themed('primary-color');
-      }
+      color: var(--primaryColor);
 
       .count {
-        @include themeify {
-          color: themed('border-color');
-          background-color: themed('primary-color');
-        }
+        color: var(--borderColor);
+        background-color: var(--primaryColor);
       }
     }
 
@@ -50,11 +39,8 @@
       border-radius: 4px;
       font-size: 12px;
       transition: none;
-
-      @include themeify {
-        color: themed('gray-color');
-        background-color: themed('border-color');
-      }
+      color: var(--grayColor);
+      background-color: var(--borderColor);
     }
   }
 }

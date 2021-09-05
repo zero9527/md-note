@@ -6,16 +6,14 @@ $padding-edge: 16px;
     padding: 10px 16px;
     background-size: 22.1px 20px;
     background-position: center 0;
-    @include themeify {
-      color: themed('base-color');
-      background-color: themed('bg-color');
-      background-image: linear-gradient(
-          90deg,
-          themed('border-color') 1%,
-          rgba(0, 0, 0, 0) 3%
-        ),
-        linear-gradient(360deg, themed('border-color') 3%, rgba(0, 0, 0, 0) 3%);
-    }
+    color: var(--baseColor);
+    background-color: var(--bgColor);
+    background-image: linear-gradient(
+        90deg,
+        var(--borderColor) 1%,
+        rgba(0, 0, 0, 0) 3%
+      ),
+      linear-gradient(360deg, var(--borderColor) 3%, rgba(0, 0, 0, 0) 3%);
 
     &::before {
       content: attr(data-text);
@@ -24,9 +22,7 @@ $padding-edge: 16px;
       left: 10px;
       color: #ccc;
       font-size: 12px;
-      @include themeify {
-        color: themed('gray-color');
-      }
+      color: var(--grayColor);
     }
 
     h2,
@@ -44,9 +40,7 @@ $padding-edge: 16px;
           bottom: 0;
           opacity: 0.6;
           z-index: -1;
-          @include themeify {
-            background-color: themed('primary-color');
-          }
+          background-color: var(--primaryColor);
         }
       }
     }
@@ -78,10 +72,8 @@ $padding-edge: 16px;
       word-break: break-word;
       font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New,
         monospace;
-      @include themeify {
-        color: themed('primary-color');
-        background-color: themed('bg-color-light');
-      }
+      color: var(--primaryColor);
+      background-color: var(--bgColorLight);
     }
 
     pre {
@@ -91,9 +83,7 @@ $padding-edge: 16px;
       overflow: hidden;
       z-index: 0;
       box-shadow: 0 0 4px rgba(100, 100, 100, 0.4);
-      @include themeify {
-        color: themed('base-color');
-      }
+      color: var(--baseColor);
 
       &::before {
         content: '';
@@ -105,9 +95,7 @@ $padding-edge: 16px;
         left: 0;
         opacity: 0.6;
         z-index: -1;
-        @include themeify {
-          background-color: themed('bg-color-heavy');
-        }
+        background-color: var(--bgColorHeavy);
       }
 
       :global {
@@ -122,10 +110,8 @@ $padding-edge: 16px;
           font-size: 90%;
           box-sizing: border-box;
           line-height: 0;
-          @include themeify {
-            color: themed('gray-color');
-            background-color: themed('bg-color-heavy');
-          }
+          color: var(--grayColor);
+          background-color: var(--bgColorHeavy);
 
           .copy-code {
             display: inline-flex;
@@ -133,9 +119,7 @@ $padding-edge: 16px;
 
             &:hover {
               cursor: pointer;
-              @include themeify {
-                color: themed('primary-color');
-              }
+              color: var(--primaryColor);
 
               & > span {
                 display: inline-block;
@@ -165,9 +149,7 @@ $padding-edge: 16px;
             background-color: transparent;
 
             .hljs-comment {
-              @include themeify {
-                color: themed('gray-color');
-              }
+              color: var(--grayColor);
             }
           }
         }
@@ -193,10 +175,8 @@ $padding-edge: 16px;
       margin: 4px 0;
       border-left: 4px solid #cbcbcb;
       z-index: 1;
-      @include themeify {
-        color: themed('desc-color');
-        border-color: themed('primary-color-light');
-      }
+      color: var(--descColor);
+      border-color: var(--primaryColorLight);
 
       &::before {
         content: '';
@@ -207,10 +187,8 @@ $padding-edge: 16px;
         top: 0;
         left: 0;
         z-index: -1;
-        @include themeify {
-          opacity: 0.1;
-          background-color: themed('primary-color-light');
-        }
+        opacity: 0.1;
+        background-color: var(--primaryColorLight);
       }
     }
 
@@ -219,18 +197,14 @@ $padding-edge: 16px;
       border-collapse: collapse;
 
       thead {
-        @include themeify {
-          background-color: themed('bg-color-heavy');
-        }
+        background-color: var(--bgColorHeavy);
       }
 
       td,
       th {
         padding: 2px 4px;
         border: 1px solid #ccc;
-        @include themeify {
-          border-color: themed('border-color');
-        }
+        border-color: var(--borderColor);
       }
     }
 

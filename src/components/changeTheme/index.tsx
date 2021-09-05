@@ -1,49 +1,54 @@
 import React, { useEffect } from 'react';
 import useGlobalModel from '@/model/useGlobalModel';
+import { ThemeType } from '@/theme/themeType';
 import styles from './styles.scss';
 
 interface ThemeItem {
   text: string;
-  color: string;
+  color: ThemeType;
 }
+
+const themesConfig: ThemeItem[] = [
+  {
+    text: '白兰',
+    color: 'blue',
+  },
+  {
+    text: '暗夜',
+    color: 'dark',
+  },
+  {
+    text: '橘橙',
+    color: 'orange',
+  },
+  {
+    text: '小红',
+    color: 'red',
+  },
+  {
+    text: '浅绿',
+    color: 'green',
+  },
+  {
+    text: '魅紫',
+    color: 'purple',
+  },
+];
+
+////////////////
+// TODO：改成hover下拉显示的方式
+///////////////
 
 const ChangeTheme = () => {
   const { theme, setTheme } = useGlobalModel((modal) => [
     modal.theme,
     modal.setTheme,
   ]);
-  const themesConfig: ThemeItem[] = [
-    {
-      text: '白兰',
-      color: 'blue',
-    },
-    {
-      text: '暗夜',
-      color: 'dark',
-    },
-    {
-      text: '橘橙',
-      color: 'orange',
-    },
-    {
-      text: '小红',
-      color: 'red',
-    },
-    {
-      text: '浅绿',
-      color: 'green',
-    },
-    {
-      text: '媚紫',
-      color: 'purple',
-    },
-  ];
-
   useEffect(() => {
     scrollIntoView();
   }, []);
 
-  const onThemeChange = (color: string) => {
+  const onThemeChange = (color: ThemeType) => {
     setTheme(color);
     scrollIntoView();
   };

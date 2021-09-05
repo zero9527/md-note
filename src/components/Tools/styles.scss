@@ -24,15 +24,11 @@
       text-align: center;
       border-bottom: 1px solid #eee;
       cursor: pointer;
-      @include themeify {
-        border-color: themed('border-color');
-      }
+      border-color: var(--borderColor);
 
       &:hover,
       &:active {
-        @include themeify {
-          color: themed('primary-color');
-        }
+        color: var(--primaryColor);
       }
     }
   }

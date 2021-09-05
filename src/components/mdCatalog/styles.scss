@@ -7,10 +7,8 @@
     border-radius: 50% 0 0 50%;
     font-size: 15px;
     box-shadow: 0 2px 10px -4px rgba(100, 100, 100, 0.1);
-    @include themeify {
-      color: themed('bg-color');
-      background-color: themed('base-color');
-    }
+    color: var(--bgColor);
+    background-color: var(--baseColor);
   }
 
   .bg {
@@ -20,7 +18,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    background-color: $mask-bg;
+    background-color: var(--maskBg);
     z-index: 30;
   }
 
@@ -48,16 +46,12 @@
       border-bottom-left-radius: 2px;
       z-index: 20;
       cursor: pointer;
-      @include themeify {
-        color: themed('base-color');
-        background-color: themed('bg-color-heavy');
-      }
+      color: var(--baseColor);
+      background-color: var(--bgColorHeavy);
 
       &:hover,
       &:active {
-        @include themeify {
-          background-color: themed('bg-color');
-        }
+        background-color: var(--bgColor);
       }
     }
 
@@ -67,16 +61,12 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      @include themeify {
-        color: themed('gray-color');
-      }
+      color: var(--grayColor);
     }
 
     .desc {
       padding: 4px 10px;
-      @include themeify {
-        color: themed('desc-color');
-      }
+      color: var(--descColor);
     }
 
     .cate-content {
@@ -86,9 +76,7 @@
       overflow-x: hidden;
       overflow-y: auto;
       z-index: 10;
-      @include themeify {
-        color: themed('base-color');
-      }
+      color: var(--baseColor);
 
       ul {
         padding-left: 20px;
@@ -129,9 +117,7 @@
         transition: none;
 
         &:hover {
-          @include themeify {
-            background-color: themed('border-color-o8');
-          }
+          background-color: var(--borderColorO8);
 
           &::before {
             content: '';
@@ -140,25 +126,19 @@
             top: 0;
             left: 0px;
             border-left: 1px solid;
-            @include themeify {
-              border-color: themed('primary-color');
-            }
+            border-color: var(--primaryColor);
           }
         }
 
         &:active {
-          @include themeify {
-            color: themed('primary-color');
-            background-color: themed('border-color-o8');
-          }
+          color: var(--primaryColor);
+          background-color: var(--borderColorO8);
         }
       }
 
       .active {
-        @include themeify {
-          color: themed('primary-color');
-          background-color: themed('border-color-o8');
-        }
+        color: var(--primaryColor);
+        background-color: var(--borderColorO8);
 
         &::before {
           content: '';
@@ -167,9 +147,7 @@
           top: 0;
           left: 0px;
           border-left: 1px solid;
-          @include themeify {
-            border-color: themed('primary-color');
-          }
+          border-color: var(--primaryColor);
         }
       }
     }
@@ -226,9 +204,7 @@
       border: transparent;
       transition: 0.3s;
       transform: translateX(100%);
-      @include themeify {
-        background-color: themed('bg-color-light');
-      }
+      background-color: var(--bgColorLight);
 
       .cate-content {
         padding: 8px;

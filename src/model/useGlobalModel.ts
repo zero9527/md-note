@@ -1,27 +1,30 @@
 import { useState, useEffect, CSSProperties } from 'react';
 import { createModel } from 'hox';
+import { ThemeType } from '@/theme/themeType';
+import useScroll from '@/utils/useScroll';
 
 const useGlobalModel = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [height, setHeight] = useState(0);
-  const [theme, updateTheme] = useState('blue');
+  const [theme, updateTheme] = useState<ThemeType>('blue');
   const [stickyRightStyle, setStickyRightStyle] = useState<CSSProperties>();
+  const { prevScrollTop, scrollTop } = useScroll();
 
   useEffect(() => {
     setHeight(window.innerHeight);
-    const _theme = localStorage.getItem('theme');
-    setTheme(_theme || 'blue');
+    const themeCache = localStorage.getItem('theme') as ThemeType;
+    setTheme(themeCache || 'blue');
   }, []);
 
-  const setTheme = (_theme: string) => {
-    updateTheme(_theme);
-    localStorage.setItem('theme', _theme);
-    document.documentElement.setAttribute('data-theme', _theme);
-    setStatusBar(_theme);
+  const setTheme = (themeType: ThemeType) => {
+    updateTheme(themeType);
+    localStorage.setItem('theme', themeType);
+    document.documentElement.setAttribute('data-theme', themeType);
+    setStatusBar(themeType);
   };
 
   // 设置状态栏、地址栏等颜色
-  const setStatusBar = (_theme: string) => {
+  const setStatusBar = (themeType: string) => {
     const config = {
       blue: 'rgba(80, 152, 228, 0.8)',
       red: 'rgba(228, 82, 80, 0.8)',
@@ -31,7 +34,7 @@ const useGlobalModel = () => {
       dark: '#232426',
     };
     const themeColor = document.querySelector('meta[name="theme-color"]');
-    themeColor?.setAttribute('content', config[_theme]);
+    themeColor?.setAttribute('content', config[themeType]);
   };
 
   return {
@@ -42,6 +45,8 @@ const useGlobalModel = () => {
     height,
     stickyRightStyle,
     setStickyRightStyle,
+    prevScrollTop, 
+    scrollTop,
   };
 };
 

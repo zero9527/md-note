@@ -16,10 +16,8 @@
     top: 46%;
     left: 50%;
     transform: translate(-50%, -50%);
-    @include themeify {
-      color: themed('base-color');
-      background-color: themed('bg-color');
-    }
+    color: var(--baseColor);
+    background-color: var(--bgColor);
 
     .close {
       position: absolute;

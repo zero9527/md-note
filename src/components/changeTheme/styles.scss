@@ -4,7 +4,5 @@
 }
 
 .theme {
-  @include themeify {
-    color: themed('primary-color');
-  }
+  color: var(--primaryColor);
 }
