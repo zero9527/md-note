@@ -16,7 +16,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.12.1",
     "@fortawesome/react-fontawesome": "^0.1.10",
     "@loadable/component": "^5.10.2",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "clipboard": "^2.0.6",
     "highlight.js": "^10.4.1",
     "hox": "^1.0.2",
