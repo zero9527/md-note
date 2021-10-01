@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListUl, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import StickyRight from '@/components/StickyRight';
 import useScroll from '@/utils/useScroll';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 export interface CatalogItem {
   id: string; // 标题的id

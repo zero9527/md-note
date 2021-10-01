@@ -8,7 +8,7 @@ import Scroll2Top from '@/components/Scroll2Top';
 import MdPreview from '@/components/MdPreview';
 import MdCatalog from '@/components/MdCatalog';
 import PicPreview from '@/components/PicPreview';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 ////////////////
 // TODO：图片懒加载

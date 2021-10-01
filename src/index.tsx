@@ -7,7 +7,7 @@ import registerServiceWorker from '@/registerServiceWorker';
 import Loading from '@/components/Loading';
 import AxiosConfig from '@/api';
 import App from './App';
-import './index.scss';
+import './index.less';
 
 // import VConsole from 'vconsole';
 // new VConsole();

@@ -7,7 +7,7 @@ import 'highlight.js/styles/atom-one-dark.css';
 // import 'highlight.js/styles/monokai.css';
 // import 'highlight.js/styles/github.css';
 import MoveBtn, { PosParam } from './moveBtn';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 interface MdPreviewProps {
   isEdit?: boolean;

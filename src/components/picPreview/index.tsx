@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 export interface PicPreview {
   show: boolean;

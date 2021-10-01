@@ -6,7 +6,7 @@ import useNoteModel, { NoteItem } from '@/model/useNoteModel';
 import RightPanel from '@/components/RightPanel';
 import Scroll2Top from '@/components/Scroll2Top';
 import ArticleTag from '@/components/ArticleTag';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 interface NoteListProps extends KeepAliveAssist {}
 export type TagItem = {

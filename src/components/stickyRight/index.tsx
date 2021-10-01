@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import useGlobalModel from '@/model/useGlobalModel';
 import useThrottle from '@/utils/useThrottle';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 interface StickyRightProps extends React.HTMLAttributes<HTMLDivElement> {
   onResize?: (position: CSSProperties) => void;

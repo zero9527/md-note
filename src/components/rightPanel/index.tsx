@@ -4,7 +4,7 @@ import { TagItem } from '@/views/NoteList';
 import StickyRight from '@/components/StickyRight';
 import ArticleTag from '../ArticleTag';
 import { mountParcel } from '@/index';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 export interface RightPanelProps {
   tags: TagItem[];

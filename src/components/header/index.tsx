@@ -1,7 +1,7 @@
 import React, { useState, useEffect, CSSProperties } from 'react';
 import useGlobalModel from '@/model/useGlobalModel';
 import Tools from '@/components/Tools';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 interface HeaderProps {
   hiddenTop?: number; // 滚动开始隐藏的距离

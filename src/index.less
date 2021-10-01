@@ -58,21 +58,6 @@ a {
   background: rgba(0, 0, 0, 0);
 }
 
-@mixin keyframes($animationName) {
-  @-webkit-keyframes #{$animationName} {
-    @content;
-  }
-  @-moz-keyframes #{$animationName} {
-    @content;
-  }
-  @-o-keyframes #{$animationName} {
-    @content;
-  }
-  @keyframes #{$animationName} {
-    @content;
-  }
-}
-
 @media screen and (min-width: 800px) {
   html {
     font-size: 15px;
@@ -187,13 +172,10 @@ a {
     margin: 0 auto;
     animation: show 0.2s ease-in-out;
   }
+  
+  @keyframes show {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 }
 
-@keyframes :global(show) {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}

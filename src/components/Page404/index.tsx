@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 const Page404 = () => (
   <div className={styles.page404}>

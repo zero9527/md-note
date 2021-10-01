@@ -7,7 +7,7 @@ import {
   faRedo,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 interface Props {
   onToolbarClick(item: IToolItem): void;

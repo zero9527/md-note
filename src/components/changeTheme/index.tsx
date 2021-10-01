@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import useGlobalModel from '@/model/useGlobalModel';
 import { ThemeType } from '@/theme/themeType';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 interface ThemeItem {
   text: string;

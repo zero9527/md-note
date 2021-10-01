@@ -1,6 +1,6 @@
 import React from 'react';
 import { TagItem } from '@/views/NoteList';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 export interface ArticleTagProps {
   tags: TagItem[];

@@ -2,7 +2,7 @@ import React, { CSSProperties, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleUp } from '@fortawesome/free-solid-svg-icons';
 import useWindowClick from '@/utils/useWindowClick';
-import styles from './styles.scss';
+import styles from './styles.less';
 
 export interface Scroll2TopProps {
   position?: CSSProperties;
@@ -12,6 +12,7 @@ export interface Scroll2TopProps {
 const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
   const scrollTop = useRef(0);
   const canScroll = useRef(false); // 允许滚动
+  const rid = useRef(0);
 
   // 全局点击
   const onWindowClick = () => {
@@ -40,7 +41,9 @@ const Scroll2Top: React.FC<Scroll2TopProps> = ({ position }) => {
       document.body.scrollTop -= 100;
       document.documentElement.scrollTop -= 100;
 
-      if (canScroll.current) setTimeout(scrollHandler, 16);
+      // if (canScroll.current) setTimeout(scrollHandler, 16);
+      if (canScroll.current) rid.current = window.requestAnimationFrame(scrollHandler);
+      else window.cancelAnimationFrame(rid.current);
     } else {
       onRemoveClick();
     }
