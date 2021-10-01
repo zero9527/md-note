@@ -12,6 +12,7 @@ import styles from './styles.scss';
 
 ////////////////
 // TODO：图片懒加载
+// 试试 MutationObserver
 ///////////////
 
 // 详情

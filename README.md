@@ -131,186 +131,141 @@ const onTagChange = (tag: TagItem | undefined) => {
 
 
 ## 2、主题切换
-`scss` 函数实现，通过
+使用 `css变量` 的方式切换主题
+
 
 - 在 `html` 设置 `data-theme` 
-- 然后 `scss` 生成的对应 `data-theme` 值的样式，
-- 匹配到就显示对应的样式配置
-- `sass-resources-loader` 自动引入，不用每次手动引入
-- 使用的地方，`@include` `@mixin 函数名`，样式名不变，值改为 `themed(配置的变量)`， 如 `color: themed('primary-color');`
+- 然后通过**js设置**对应主题的`css变量` 到 `body` 下
 
 
 ### 2.1 定义主题内容
 
-```scss
-// src/theme/index.scss
-$mask-bg: rgba(50, 50, 50, 0.6);
-$box-shadow: 0px 1px 1px -2px rgba(0, 0, 0, 0.8);
+```typescript
+// src\theme\cssVars.base.ts
+/**
+ * 基础变量
+ */
+export const CssVarsBase = {
+  '--maskBg': 'rgba(50, 50, 50, 0.6)',
+  '--boxShadow': '0px 1px 1px -2px rgba(0, 0, 0, 0.8)',
+};
 
-$base: (
-  base-color: #3e3e3e,
-  desc-color: #666,
-  second-color: #999,
-  gray-color: #cccccc,
-  border-color: #e9e9e9,
-  bg-color: #fefefe,
-  bg-color-light: #f6f6f6,
-  bg-color-heavy: #f1f1f1,
-  linear-background-0:
-    linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
-  linear-background-180:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255)),
-);
+/**
+ * 亮色模式-通用变量
+ */
+export const CssVarsLight = {
+  '--baseColor': '#3e3e3e',
+  '--descColor': '#666',
+  '--secondColor': '#999',
+  '--grayColor': '#aaa',
+  '--borderColor': '#e9e9e9',
+  '--bgColor': '#fefefe',
+  '--bgColorLight': '#f6f6f6',
+  '--bgColorHeavy': '#f1f1f1',
+  '--bgColorO6': 'rgba(255, 255, 255, 0.6)',
+  '--bgColorO8': 'rgba(255, 255, 255, 0.8)',
+  '--borderColorO8': 'rgba(233, 233, 233, 0.5)',
+  '--linearBackground-0': 'linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255))',
+  '--linearBackground-90': 'linear-gradient(90deg, transparent, #fff)',
+  '--linearBackground-180': 'linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgb(255, 255, 255))',
+  '--bgImage': 'url(https://s1.ax1x.com/2020/08/20/dJ97PU.th.jpg)',
+};
 
-$blue: (
-  primary-color: rgba(80, 152, 228, 0.8),
-  primary-color-light: rgba(80, 152, 228, 0.6),
-  primary-color-heavy: rgba(80, 152, 228, 1),
-  primary-bg-color: rgba(80, 152, 228, 0.05),
-);
+/**
+ * 暗夜模式-通用变量
+ */
+export const CssVarsDark = {
+  '--baseColor': '#ccc',
+  '--descColor': '#666',
+  '--secondColor': '#999',
+  '--grayColor': '#464444',
+  '--borderColor': '#2e2e2e',
+  '--bgColor': '#232426',
+  '--bgColorLight': '#292b2d',
+  '--bgColorHeavy': '#1e1f21',
+  '--bgColorO6': '#1e1f21',
+  '--bgColorO8': '#292b2d',
+  '--borderColorO8': '#2e2e2e',
+  '--linearBackground-0': 'linear-gradient(0deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38))',
+  '--linearBackground-90': 'linear-gradient(90deg, transparent, #232426)',
+  '--linearBackground-180': 'linear-gradient(180deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38))',
+  '--bgImage': 'url(https://s1.ax1x.com/2020/08/20/dGXIpR.th.jpg)',
+};
 
-$red: (
-  primary-color: rgba(228, 82, 80, 0.8),
-  primary-color-light: rgba(228, 82, 80, 0.6),
-  primary-color-heavy: rgba(228, 82, 80, 1),
-  primary-bg-color: rgba(228, 82, 80, 0.05),
-);
-
-$orange: (
-  primary-color: rgba(228, 149, 80, 0.8),
-  primary-color-light: rgba(228, 149, 80, 0.6),
-  primary-color-heavy: rgba(228, 149, 80, 1),
-  primary-bg-color: rgba(228, 149, 80, 0.05),
-);
-
-$green: (
-  primary-color: rgba(0, 150, 136, 0.8),
-  primary-color-light: rgba(0, 150, 136, 0.6),
-  primary-color-heavy: rgba(0, 150, 136, 1),
-  primary-bg-color: rgba(0, 150, 136, 0.05),
-);
-
-$purple: (
-  primary-color: rgba(198, 37, 239, 0.8),
-  primary-color-light: rgba(198, 37, 239, 0.6),
-  primary-color-heavy: rgba(198, 37, 239, 1),
-  primary-bg-color: rgba(198, 37, 239, 0.05),
-);
-
-$dark: (
-  base-color: #ccc,
-  desc-color: #666,
-  second-color: #999,
-  primary-color: rgba(80, 152, 228, 0.8),
-  primary-color-light: rgba(80, 152, 228, 0.6),
-  primary-color-heavy: rgba(80, 152, 228, 1),
-  primary-bg-color: rgba(80, 152, 228, 0.05),
-  gray-color: #464444,
-  border-color: #2e2e2e,
-  bg-color: #232426,
-  bg-color-light: #292b2d,
-  bg-color-heavy: #1e1f21,
-  linear-background-0:
-    linear-gradient(0deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
-  linear-background-180:
-    linear-gradient(180deg, rgba(35, 36, 38, 0.8), rgb(35, 36, 38)),
-);
-
-$themes: (
-  blue: map-merge($base, $blue),
-  orange: map-merge($base, $orange),
-  red: map-merge($base, $red),
-  green: map-merge($base, $green),
-  purple: map-merge($base, $purple),
-  dark: $dark,
-);
-
-@mixin themeify {
-  @each $theme-name, $theme-map in $themes {
-    $theme-map: $theme-map !global;
-    html[data-theme='#{$theme-name}'] & {
-      @content;
-    }
-  }
-}
-
-@function themed($key) {
-  @return map-get($theme-map, $key);
-}
-```
-
-### 2.2 加一个loader
-这样就不需要每次在用到的地方，都手动引入一遍
-
-```shell
-yarn add -D sass-resources-loader
-```
-
-```js
-{
-  loader: 'sass-resources-loader',
-  options: {
-    resources: [path.resolve(__dirname, './../src/theme/index.scss')],
-  },
-}
 ```
 
 
-### 2.3 主题颜色值使用
-```scss
+### 2.2 主题颜色值使用
+```css
 .theme {
-  @include themeify {
-    color: themed('primary-color');
-  }
+  color: var(--primaryColor);
 }
 ```
 
-### 2.4 主题切换
+### 2.3 主题切换
 ```js
 // src/components/ChangeTheme/index.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import useGlobalModel from '@/model/useGlobalModel';
+import { ThemeType } from '@/theme/themeType';
+import { setThemeCssVars } from '@/theme/themeUtils';
 import styles from './styles.scss';
 
 interface ThemeItem {
   text: string;
-  color: string;
+  color: ThemeType;
 }
+
+const themesConfig: ThemeItem[] = [
+  {
+    text: '白兰',
+    color: 'blue',
+  },
+  {
+    text: '暗夜',
+    color: 'dark',
+  },
+  {
+    text: '橘橙',
+    color: 'orange',
+  },
+  {
+    text: '小红',
+    color: 'red',
+  },
+  {
+    text: '浅绿',
+    color: 'green',
+  },
+  {
+    text: '魅紫',
+    color: 'purple',
+  },
+];
 
 const ChangeTheme = () => {
   const { theme, setTheme } = useGlobalModel((modal) => [
     modal.theme,
     modal.setTheme,
   ]);
-  const themesConfig: ThemeItem[] = [
-    {
-      text: '白兰',
-      color: 'blue',
-    },
-    {
-      text: '暗夜',
-      color: 'dark',
-    },
-    {
-      text: '橘橙',
-      color: 'orange',
-    },
-    {
-      text: '小红',
-      color: 'red',
-    },
-    {
-      text: '浅绿',
-      color: 'green',
-    },
-    {
-      text: '媚紫',
-      color: 'purple',
-    },
-  ];
+  useEffect(() => {
+    scrollIntoView();
+  }, []);
 
-  const onThemeChange = (color: string) => {
+  useEffect(() => {
+    setThemeCssVars(theme);
+  }, [theme]);
+
+  const onThemeChange = (color: ThemeType) => {
     setTheme(color);
+    scrollIntoView();
+  };
+
+  const scrollIntoView = () => {
+    setTimeout(() => {
+      const themeColor = document.querySelector(`.${styles.theme}`);
+      themeColor?.scrollIntoView();
+    }, 0);
   };
 
   return (

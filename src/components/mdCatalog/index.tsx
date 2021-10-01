@@ -223,11 +223,9 @@ const MdCatalog: React.FC<MdCatalogProps> = ({
 
   return (
     <StickyRight id="catalog" className={styles.catalog}>
-      <FontAwesomeIcon
-        className={styles.icon}
-        icon={faListUl}
-        onClick={onCateListShow}
-      />
+      <div className={`btn ${styles.icon}`} onClick={onCateListShow}>
+        <FontAwesomeIcon icon={faListUl} />
+      </div>
       <div
         className={styles.bg}
         style={{ display: showCate ? 'block' : 'none' }}

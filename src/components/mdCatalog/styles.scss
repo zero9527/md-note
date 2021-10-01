@@ -2,13 +2,17 @@
   height: 100%;
 
   .icon {
-    margin-right: -12px;
-    padding: 10px;
-    border-radius: 50% 0 0 50%;
-    font-size: 15px;
+    position: fixed;
+    bottom: 85px;
+    right: 16px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
     box-shadow: 0 2px 10px -4px rgba(100, 100, 100, 0.1);
-    color: var(--bgColor);
-    background-color: var(--baseColor);
+    -webkit-tap-highlight-color: transparent;
   }
 
   .bg {
@@ -180,10 +184,8 @@
       transform: translateX(0%) !important;
     }
 
-    :global {
-      .fa-list-ul {
-        display: none;
-      }
+    .icon {
+      display: none;
     }
   }
 }
@@ -212,13 +214,6 @@
 
       .close {
         display: flex;
-      }
-    }
-
-    :global {
-      .fa-list-ul {
-        display: block;
-        margin-top: 60px;
       }
     }
   }
