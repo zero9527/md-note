@@ -1,7 +1,6 @@
 import { useState, useEffect, CSSProperties, useRef } from 'react';
 import { createModel } from 'hox';
 import { ThemeType } from '@/theme/themeType';
-import { CssVarsThemeConfig } from '@/theme/cssVars.theme';
 import useScroll from '@/utils/useScroll';
 
 const useGlobalModel = () => {
@@ -28,9 +27,6 @@ const useGlobalModel = () => {
 
   // 设置状态栏、地址栏等颜色
   const setStatusBar = (themeType: string) => {
-    const key = '--statusBarColor';
-    const styleContent = CssVarsThemeConfig[themeType]?.[key];
-    metaThemeColor.current?.setAttribute('content', styleContent);
   };
 
   return {
